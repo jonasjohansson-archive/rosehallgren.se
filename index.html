@@ -25,6 +25,21 @@
 			let symbols = ["🌹"]
 			if (days == 450){
 				symbols.push("✨")
+			} else if (days == 500){
+				for (let i = 0; i < 10; i++){
+					let marquee = document.createElement('marquee');
+					marquee.setAttribute('scrollamount',Math.random()*20);
+					if (Math.random() > 0.5){
+						marquee.innerHTML = 'ROSE & JONAS 500 DAGAR!!!';
+					} else {
+						marquee.innerHTML = symbols[0]+symbols[0]+symbols[0]+symbols[0]+symbols[0];
+					}
+					marquee.style.width = '100%';
+					marquee.style.position = 'absolute';
+					marquee.style.left = '0';
+					marquee.style.top = (i*10)+'%';
+					document.body.appendChild(marquee);
+				}
 			}
 			document.querySelector("#days").innerHTML = days
 			setInterval(function(){
@@ -40,7 +55,6 @@
 				el.style.transform = "scale("+scale+")"
 				document.body.appendChild(el)
 			},100)
-
 			function dateDiffInDays(a, b) {
 				var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
 				var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
