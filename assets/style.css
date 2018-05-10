@@ -43,7 +43,7 @@ nav a {
 }
 
 .logo img {
-	width:40px;
+	width:calc(var(--base)*1.25);
    mix-blend-mode: saturation;
   }
 }
@@ -89,7 +89,7 @@ main article .inner div {
 	display:inline-block;
 	text-align:center;
 	cursor:e-resize;
-	padding:var(--base) 0;
+	padding-bottom:var(--base);
 }
 
 main article:last-child .inner div {
@@ -103,6 +103,10 @@ main article .inner div.intro {
 
 main article .inner div.text {
 	text-align:left;
+	padding-right:calc(var(--base)*2);
+	padding-left:calc(var(--base)*2);
+	box-sizing: border-box;
+	font-size:18px;
 }
 
 main article .inner div.intro {
