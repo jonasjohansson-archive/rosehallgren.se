@@ -59,7 +59,7 @@ main {
 	position:relative;
 }
 
-/*main article {
+main article {
 	top: 0;
 	bottom:0;
 	width: 100%;
@@ -68,7 +68,7 @@ main {
 	overflow-x:hidden;
 	opacity:0;
 	z-index:-1;
-}*/
+}
 
 article p {
 	/*padding:2rem;*/
