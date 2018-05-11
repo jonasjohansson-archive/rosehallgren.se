@@ -1,22 +1,23 @@
 window.addEventListener('load', () => {
 	const els = document.querySelectorAll('article');
 	const len = els.length;
+	let curr = 0;
+	let prev = curr;
 
-	els[0].classList.toggle('show');
+	els[curr].classList.toggle('show');
 
 	if (len === 0) {
 		return;
 	}
 
-	for (const el of els) {
-		el.addEventListener('click', () => {
-			el.classList.remove('show');
-			const nextEl = el.nextElementSibling;
-			if (nextEl !== null) {
-				nextEl.classList.toggle('show');
-			} else {
-				els[0].classList.toggle('show');
-			}
-		});
-	}
+	document.querySelector('.next').addEventListener('click', () => {
+		if (curr < len-1){
+			curr++;
+		} else {
+			curr = 0;
+		}
+		els[curr].classList.toggle('show');
+		els[prev].classList.toggle('show');
+		prev = curr;
+	});
 });
