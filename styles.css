@@ -28,7 +28,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
 }
@@ -132,6 +132,7 @@ body {
   color: #fff;
   text-align: center;
   pointer-events: none;
+  mix-blend-mode: difference;
 }
 
 /* ========================================
@@ -143,7 +144,7 @@ body {
   height: 100vh;
   overflow-x: auto;
   overflow-y: hidden;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x proximity;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   scroll-behavior: smooth;
@@ -184,6 +185,8 @@ body {
   text-align: left;
   padding: 1rem;
   margin: 0 auto;
+  position: relative;
+  z-index: 10;
 }
 
 .slide-content h2 {
@@ -263,9 +266,8 @@ body {
   height: auto;
   object-fit: contain;
   object-position: center;
-  position: relative;
-  z-index: 2;
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  z-index: 3;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
   border-radius: 2px;
 }
 

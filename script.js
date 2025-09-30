@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // Check if device is mobile
   const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
+  // Shuffle projects on page load
+  shuffleProjects();
+
   // Get all projects and carousels
   const projects = document.querySelectorAll(".project");
   const carousels = document.querySelectorAll(".project-carousel");
@@ -409,3 +412,31 @@ document.addEventListener("DOMContentLoaded", function () {
     carousel.addEventListener("scroll", updateScrollIndicators);
   });
 });
+
+// Function to shuffle projects on page load
+function shuffleProjects() {
+  // Get all project sections (excluding about section and footer)
+  const projectsContainer = document.querySelector("body");
+  const aboutSection = document.querySelector(".about-section");
+  const footer = document.querySelector(".footer");
+
+  // Get all project sections
+  const projects = Array.from(document.querySelectorAll(".project"));
+
+  if (projects.length <= 1) return; // No need to shuffle if there's only one project
+
+  // Create a copy of projects array and shuffle it
+  const shuffledProjects = [...projects];
+  for (let i = shuffledProjects.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledProjects[i], shuffledProjects[j]] = [shuffledProjects[j], shuffledProjects[i]];
+  }
+
+  // Remove all projects from DOM
+  projects.forEach((project) => project.remove());
+
+  // Insert shuffled projects after about section
+  shuffledProjects.forEach((project) => {
+    aboutSection.insertAdjacentElement("afterend", project);
+  });
+}
