@@ -2,6 +2,9 @@
 document.addEventListener("DOMContentLoaded", function () {
   console.log("Portfolio loaded");
 
+  // Check if device is mobile
+  const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
   // Get all projects and carousels
   const projects = document.querySelectorAll(".project");
   const carousels = document.querySelectorAll(".project-carousel");
@@ -69,28 +72,30 @@ document.addEventListener("DOMContentLoaded", function () {
       carousel.scrollLeft = scrollLeft - walk;
     });
 
-    // Click events for left/right navigation
-    carousel.addEventListener("click", (e) => {
-      // Only trigger if not clicking on a link or interactive element
-      if (e.target.tagName === "A" || e.target.closest("a")) {
-        return;
-      }
-      
-      // If not dragging, determine direction based on click position
-      if (!isDragging) {
-        const rect = carousel.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const centerX = rect.width / 2;
-        
-        if (clickX < centerX) {
-          // Clicked on left side - go left
-          previousSlide(carousel);
-        } else {
-          // Clicked on right side - go right
-          advanceSlide(carousel);
+    // Click events for left/right navigation (disabled on mobile)
+    if (!isMobile) {
+      carousel.addEventListener("click", (e) => {
+        // Only trigger if not clicking on a link or interactive element
+        if (e.target.tagName === "A" || e.target.closest("a")) {
+          return;
         }
-      }
-    });
+
+        // If not dragging, determine direction based on click position
+        if (!isDragging) {
+          const rect = carousel.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const centerX = rect.width / 2;
+
+          if (clickX < centerX) {
+            // Clicked on left side - go left
+            previousSlide(carousel);
+          } else {
+            // Clicked on right side - go right
+            advanceSlide(carousel);
+          }
+        }
+      });
+    }
 
     // Touch events
     carousel.addEventListener("touchstart", (e) => {
@@ -135,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
         left: (currentSlide + 1) * slideWidth,
         behavior: "smooth",
         block: "nearest",
-        inline: "start"
+        inline: "start",
       });
     } else {
       // Move to next project
@@ -155,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
         left: (currentSlide - 1) * slideWidth,
         behavior: "smooth",
         block: "nearest",
-        inline: "start"
+        inline: "start",
       });
     } else {
       // Move to previous project
@@ -284,7 +289,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const aboutSection = document.querySelector(".about-section");
     const aboutRect = aboutSection.getBoundingClientRect();
     const isAboutVisible = aboutRect.top <= windowHeight / 2 && aboutRect.bottom >= windowHeight / 2;
-    
+
     if (isAboutVisible) {
       // Disable click zones when on about section
       clickZoneLeft.classList.remove("active");
@@ -339,35 +344,37 @@ document.addEventListener("DOMContentLoaded", function () {
   // Handle initial permalink on page load
   handlePermalink();
 
-  // Click zone navigation
+  // Click zone navigation (disabled on mobile)
   const clickZoneLeft = document.getElementById("click-zone-left");
   const clickZoneRight = document.getElementById("click-zone-right");
 
-  clickZoneLeft.addEventListener("click", (e) => {
-    // Only trigger if not clicking on a link or interactive element
-    if (e.target.tagName === "A" || e.target.closest("a")) {
-      return;
-    }
-    e.preventDefault();
-    const currentProject = projects[currentProjectIndex];
-    const currentCarousel = currentProject ? currentProject.querySelector(".project-carousel") : null;
-    if (currentCarousel) {
-      previousSlide(currentCarousel);
-    }
-  });
+  if (!isMobile) {
+    clickZoneLeft.addEventListener("click", (e) => {
+      // Only trigger if not clicking on a link or interactive element
+      if (e.target.tagName === "A" || e.target.closest("a")) {
+        return;
+      }
+      e.preventDefault();
+      const currentProject = projects[currentProjectIndex];
+      const currentCarousel = currentProject ? currentProject.querySelector(".project-carousel") : null;
+      if (currentCarousel) {
+        previousSlide(currentCarousel);
+      }
+    });
 
-  clickZoneRight.addEventListener("click", (e) => {
-    // Only trigger if not clicking on a link or interactive element
-    if (e.target.tagName === "A" || e.target.closest("a")) {
-      return;
-    }
-    e.preventDefault();
-    const currentProject = projects[currentProjectIndex];
-    const currentCarousel = currentProject ? currentProject.querySelector(".project-carousel") : null;
-    if (currentCarousel) {
-      advanceSlide(currentCarousel);
-    }
-  });
+    clickZoneRight.addEventListener("click", (e) => {
+      // Only trigger if not clicking on a link or interactive element
+      if (e.target.tagName === "A" || e.target.closest("a")) {
+        return;
+      }
+      e.preventDefault();
+      const currentProject = projects[currentProjectIndex];
+      const currentCarousel = currentProject ? currentProject.querySelector(".project-carousel") : null;
+      if (currentCarousel) {
+        advanceSlide(currentCarousel);
+      }
+    });
+  }
 
   // Smooth scrolling for anchor links
   const links = document.querySelectorAll('a[href^="#"]');
