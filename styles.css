@@ -1,0 +1,389 @@
+/* ========================================
+   FONT DECLARATIONS
+   ======================================== */
+@font-face {
+  font-family: "Surt";
+  src: url("assets/fonts/Surt-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Surt";
+  src: url("assets/fonts/Surt-Bold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ========================================
+   RESET & BASE STYLES
+   ======================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Smooth scrolling for main elements only */
+html {
+  scroll-behavior: smooth;
+}
+
+html::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+body {
+  font-family: "Surt", "Inter", sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  color: #000;
+  background-color: #fff;
+  overflow-x: hidden;
+}
+
+/* ========================================
+   ABOUT SECTION
+   ======================================== */
+.about-section {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: #fff;
+  scroll-snap-align: start;
+}
+
+.about-content {
+  max-width: 600px;
+  text-align: left;
+  width: 100%;
+}
+
+.about-content h1 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 16px;
+}
+
+.about-text {
+  margin-bottom: 40px;
+}
+
+.about-text p {
+  margin-bottom: 16px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #000;
+  text-align: left;
+  max-width: 100%;
+}
+
+.about-contact p {
+  margin-bottom: 8px;
+  font-size: 18px;
+  color: #000;
+  text-align: left;
+}
+
+.about-contact a,
+.about-text a {
+  color: #000;
+  text-decoration: underline;
+}
+
+.about-contact a:hover,
+.about-text a:hover {
+  text-decoration: none;
+}
+
+/* ========================================
+   PROJECTS
+   ======================================== */
+.project {
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  scroll-snap-align: start;
+}
+
+/* Project sections - position relative for proper fixed title positioning */
+
+.project-title {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  font-size: 18px;
+  font-weight: normal;
+  color: #fff;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* ========================================
+   PROJECT CAROUSEL
+   ======================================== */
+.project-carousel {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scroll-behavior: smooth;
+}
+
+.project-carousel::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* ========================================
+   SLIDES
+   ======================================== */
+.slide {
+  min-width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: start;
+  position: relative;
+}
+
+.slide:nth-child(odd) {
+  background: #fff;
+  color: #000;
+}
+
+.slide:nth-child(even) {
+  background: #000;
+  color: #fff;
+}
+
+/* ========================================
+   SLIDE CONTENT
+   ======================================== */
+.slide-content {
+  max-width: 600px;
+  text-align: left;
+  padding: 1rem;
+  margin: 0 auto;
+}
+
+.slide-content h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: inherit;
+}
+
+.slide-content p {
+  margin-bottom: 16px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: inherit;
+}
+
+.slide-content strong {
+  font-weight: 600;
+}
+
+.slide-content em {
+  font-style: italic;
+}
+
+.slide-content a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.slide-content a:hover {
+  text-decoration: none;
+}
+
+/* ========================================
+   IMAGE SLIDES
+   ======================================== */
+.image-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-image) center/cover;
+}
+
+.image-slide::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  filter: blur(25px);
+  transform: scale(1.15);
+  z-index: 1;
+}
+
+.image-slide::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.image-slide img {
+  max-width: 80vw;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.image-slide img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+/* ========================================
+   FIXED PROJECT HEADER
+   ======================================== */
+.project-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 12px 20px;
+  text-align: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.project-title-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+  display: block;
+}
+
+/* Hide header on about section */
+.about-section-visible .project-header {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ========================================
+   CLICK ZONES (DISABLED)
+   ======================================== */
+.click-zone {
+  position: fixed;
+  top: 0;
+  width: 50%;
+  height: 100vh;
+  z-index: 10;
+  cursor: pointer;
+  pointer-events: none; /* Always disabled, using carousel click detection */
+}
+
+.click-zone-left {
+  left: 0;
+}
+
+.click-zone-right {
+  right: 0;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 768px) {
+  .about-section {
+    min-height: auto;
+    padding: 20px;
+  }
+
+  .about-content,
+  .slide-content {
+    max-width: 100%;
+  }
+
+  .about-content h1,
+  .slide-content h2 {
+    font-size: 18px;
+  }
+
+  .slide-content {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-section {
+    min-height: auto;
+    padding: 16px;
+  }
+
+  .about-content h1,
+  .slide-content h2 {
+    font-size: 18px;
+  }
+
+  .slide-content {
+    padding: 0.5rem;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+a:focus {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+button:focus {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+/* ========================================
+   UTILITIES
+   ======================================== */
+.thesis-link {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.thesis-link:hover {
+  text-decoration: none;
+}
