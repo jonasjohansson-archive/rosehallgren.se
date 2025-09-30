@@ -78,8 +78,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Click events for left/right navigation (disabled on mobile)
     if (!isMobile) {
       carousel.addEventListener("click", (e) => {
-        // Only trigger if not clicking on a link or interactive element
-        if (e.target.tagName === "A" || e.target.closest("a")) {
+        // Only trigger if not clicking on a link, interactive element, or text content
+        if (e.target.tagName === "A" || e.target.closest("a") || e.target.closest(".slide-content")) {
           return;
         }
 
