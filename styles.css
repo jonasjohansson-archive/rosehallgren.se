@@ -134,7 +134,6 @@ body {
   color: #fff;
   text-align: center;
   pointer-events: none;
-  mix-blend-mode: difference;
 }
 
 /* ========================================

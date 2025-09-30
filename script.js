@@ -14,6 +14,10 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentProjectIndex = 0;
   let isTransitioning = false;
 
+  // Click zone navigation (disabled on mobile)
+  const clickZoneLeft = document.getElementById("click-zone-left");
+  const clickZoneRight = document.getElementById("click-zone-right");
+
   // Initialize carousels
   carousels.forEach((carousel, carouselIndex) => {
     let startX = 0;
@@ -346,10 +350,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Handle initial permalink on page load
   handlePermalink();
-
-  // Click zone navigation (disabled on mobile)
-  const clickZoneLeft = document.getElementById("click-zone-left");
-  const clickZoneRight = document.getElementById("click-zone-right");
 
   if (!isMobile) {
     clickZoneLeft.addEventListener("click", (e) => {
