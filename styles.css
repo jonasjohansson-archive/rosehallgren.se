@@ -44,8 +44,8 @@ html::-webkit-scrollbar {
 
 body {
   font-family: "Surt", "Inter", sans-serif;
-  font-size: 18px;
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.425;
   color: #000;
   background-color: #fff;
   overflow-x: hidden;
@@ -59,7 +59,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px;
+  padding: 2.5rem;
   background: #fff;
   scroll-snap-align: start;
 }
@@ -71,20 +71,20 @@ body {
 }
 
 .about-content h1 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #000;
   margin-bottom: 16px;
 }
 
 .about-text {
-  margin-bottom: 40px;
+  margin-bottom: 0;
 }
 
 .about-text p {
   margin-bottom: 16px;
-  font-size: 18px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.425;
   color: #000;
   text-align: left;
   max-width: 100%;
@@ -92,7 +92,8 @@ body {
 
 .about-contact p {
   margin-bottom: 8px;
-  font-size: 18px;
+  font-size: 16px;
+  line-height: 1.425;
   color: #000;
   text-align: left;
 }
@@ -127,7 +128,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: normal;
   color: #fff;
   text-align: center;
@@ -190,7 +191,7 @@ body {
 }
 
 .slide-content h2 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 8px;
   color: inherit;
@@ -198,8 +199,8 @@ body {
 
 .slide-content p {
   margin-bottom: 16px;
-  font-size: 18px;
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.425;
   color: inherit;
 }
 
@@ -287,7 +288,7 @@ body {
 }
 
 .project-title-text {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #000;
   display: block;
@@ -325,7 +326,7 @@ body {
    ======================================== */
 @media (max-width: 768px) {
   body {
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.4;
   }
 
@@ -341,18 +342,18 @@ body {
 
   .about-content h1,
   .slide-content h2 {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .about-text p,
   .slide-content p {
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.4;
     margin-bottom: 20px;
   }
 
   .about-contact p {
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.4;
   }
 
@@ -377,13 +378,13 @@ body {
 
   .footer-contact p,
   .footer-info p {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
 @media (max-width: 480px) {
   body {
-    font-size: 15px;
+    font-size: 13px;
     line-height: 1.3;
   }
 
@@ -394,18 +395,18 @@ body {
 
   .about-content h1,
   .slide-content h2 {
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .about-text p,
   .slide-content p {
-    font-size: 15px;
+    font-size: 13px;
     line-height: 1.3;
     margin-bottom: 18px;
   }
 
   .about-contact p {
-    font-size: 15px;
+    font-size: 13px;
     line-height: 1.3;
   }
 
@@ -423,7 +424,7 @@ body {
 
   .footer-contact p,
   .footer-info p {
-    font-size: 15px;
+    font-size: 13px;
   }
 }
 
@@ -462,8 +463,8 @@ button:focus {
 .footer-contact p,
 .footer-info p {
   margin-bottom: 8px;
-  font-size: 18px;
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.425;
 }
 
 .footer-contact a,
