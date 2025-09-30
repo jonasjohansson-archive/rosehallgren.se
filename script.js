@@ -25,6 +25,25 @@ document.addEventListener("DOMContentLoaded", function () {
     let isDown = false;
     let isDragging = false;
 
+    // Create slide counter
+    const slideCounter = document.createElement("div");
+    slideCounter.className = "slide-counter";
+    carousel.parentElement.appendChild(slideCounter);
+
+    // Function to update slide counter
+    function updateSlideCounter() {
+      const slides = carousel.querySelectorAll(".slide");
+      const slideWidth = carousel.offsetWidth;
+      const currentSlide = Math.round(carousel.scrollLeft / slideWidth) + 1;
+      slideCounter.textContent = `${currentSlide}/${slides.length}`;
+    }
+
+    // Update counter on scroll
+    carousel.addEventListener("scroll", updateSlideCounter);
+
+    // Initial counter update
+    updateSlideCounter();
+
     // Set background images for image slides and add project heading
     const imageSlides = carousel.querySelectorAll(".image-slide");
 
