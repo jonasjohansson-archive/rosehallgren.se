@@ -35,6 +35,13 @@
   pointer-events: none;
 }
 
+/* Hide slide counter on wide screens */
+@media (min-width: 1200px) {
+  .slide-counter {
+    display: none;
+  }
+}
+
 /* Thesis Link */
 .thesis-link {
   color: inherit;

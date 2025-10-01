@@ -1,4 +1,12 @@
 /* ========================================
+   CSS IMPORTS
+   ======================================== */
+@import url("./fonts.css");
+@import url("./reset.css");
+@import url("./components.css");
+@import url("./responsive.css");
+
+/* ========================================
    CSS VARIABLES
    ======================================== */
 :root {
@@ -45,10 +53,28 @@ body {
   scroll-snap-align: start;
 }
 
+/* Wide screens - left column layout */
+@media (min-width: 1200px) {
+  .about-section {
+    min-height: 50vh;
+    justify-content: flex-start;
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+}
+
 .about-content {
   max-width: 600px;
   text-align: center;
   width: 100%;
+}
+
+/* Wide screens - left column about content */
+@media (min-width: 1200px) {
+  .about-content {
+    max-width: 600px;
+    text-align: left;
+  }
 }
 
 .about-content h1 {
@@ -149,6 +175,13 @@ body {
   scroll-snap-stop: always;
   scroll-margin: 0;
   position: relative;
+}
+
+/* Wide screens - 50vw slides */
+@media (min-width: 1200px) {
+  .slide {
+    min-width: 50vw;
+  }
 }
 
 .slide:nth-child(odd) {
@@ -258,6 +291,79 @@ body {
   border-radius: 2px;
 }
 
+/* Wide screens - 50vw image with padding */
+@media (min-width: 1200px) {
+  .image-slide img {
+    max-width: calc(50vw - 10vw);
+    max-height: 80vh;
+  }
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
+.footer {
+  background: var(--color-bg);
+  color: var(--color-text);
+  padding: 2.5rem;
+  scroll-snap-align: start;
+}
+
+.footer-content {
+  max-width: 600px;
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.footer-contact p {
+  margin-bottom: var(--spacing-medium);
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  text-align: inherit;
+}
+
+.footer-message p {
+  margin-bottom: 0;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  text-align: inherit;
+  font-style: italic;
+}
+
+.footer-contact p:last-child {
+  margin-bottom: 0;
+}
+
+.footer-contact a {
+  color: inherit;
+  text-decoration: underline;
+  margin-right: var(--spacing-medium);
+}
+
+.footer-contact a:last-child {
+  margin-right: 0;
+}
+
+.footer-contact a:hover {
+  text-decoration: none;
+}
+
+/* Wide screens - left column footer layout */
+@media (min-width: 1200px) {
+  .footer {
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+
+  .footer-content {
+    max-width: 600px;
+    text-align: center;
+  }
+}
+
 /* ========================================
    ACCESSIBILITY
    ======================================== */
@@ -274,12 +380,30 @@ button:focus {
 /* ========================================
    TEXT SELECTION
    ======================================== */
-::selection {
+.about-text p::selection,
+.slide-content p::selection,
+.footer-contact p::selection,
+.footer-message p::selection {
   background-color: #f4a6a6;
   color: #000;
 }
 
-::-moz-selection {
+.about-text p::-moz-selection,
+.slide-content p::-moz-selection,
+.footer-contact p::-moz-selection,
+.footer-message p::-moz-selection {
   background-color: #f4a6a6;
   color: #000;
+}
+
+/* Disable selection on images, titles, and navigation */
+.project-title,
+.slide-counter,
+.image-slide,
+.image-slide img,
+.click-zone {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
