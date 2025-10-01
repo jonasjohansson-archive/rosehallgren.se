@@ -1,0 +1,46 @@
+/* ========================================
+   COMPONENTS
+   ======================================== */
+
+/* Click Zones */
+.click-zone {
+  position: fixed;
+  top: 0;
+  width: 50%;
+  height: 100vh;
+  z-index: 10;
+  cursor: pointer;
+  pointer-events: none; /* Always disabled, using carousel click detection */
+}
+
+.click-zone-left {
+  left: 0;
+}
+
+.click-zone-right {
+  right: 0;
+}
+
+/* Slide Counter */
+.slide-counter {
+  position: absolute;
+  bottom: var(--spacing-large);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  font-size: inherit;
+  font-weight: normal;
+  color: var(--color-white);
+  text-align: inherit;
+  pointer-events: none;
+}
+
+/* Thesis Link */
+.thesis-link {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.thesis-link:hover {
+  text-decoration: none;
+}

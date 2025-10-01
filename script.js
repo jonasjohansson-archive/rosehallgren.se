@@ -1,6 +1,14 @@
+// Always start at the top of the page on reload (instant, no transition)
+window.addEventListener("beforeunload", function () {
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+});
+
 // Portfolio carousel functionality
 document.addEventListener("DOMContentLoaded", function () {
   console.log("Portfolio loaded");
+
+  // Ensure we start at the top of the page (instant, no transition)
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 
   // Check if device is mobile
   const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -98,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
       carousel.scrollLeft = scrollLeft - walk;
     });
 
-    // Click events for left/right navigation (disabled on mobile)
+    // Click events for left/right navigation (disabled on mobile - mobile uses swipe only)
     if (!isMobile) {
       carousel.addEventListener("click", (e) => {
         // Only trigger if not clicking on a link, interactive element, or text content
@@ -165,8 +173,6 @@ document.addEventListener("DOMContentLoaded", function () {
       carousel.scrollTo({
         left: (currentSlide + 1) * slideWidth,
         behavior: "smooth",
-        block: "nearest",
-        inline: "start",
       });
     } else {
       // Move to next project
@@ -185,8 +191,6 @@ document.addEventListener("DOMContentLoaded", function () {
       carousel.scrollTo({
         left: (currentSlide - 1) * slideWidth,
         behavior: "smooth",
-        block: "nearest",
-        inline: "start",
       });
     } else {
       // Move to previous project
