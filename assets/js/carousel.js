@@ -1,7 +1,3 @@
-/* ========================================
-   CAROUSEL FUNCTIONALITY
-   ======================================== */
-
 export class CarouselManager {
   constructor() {
     this.carousels = document.querySelectorAll(".project-carousel");
@@ -21,7 +17,6 @@ export class CarouselManager {
     let isDown = false;
     let isDragging = false;
 
-    // Create slide counter (only on smaller screens)
     const isWideScreen = window.innerWidth >= 1200;
     let slideCounter = null;
 
@@ -31,7 +26,6 @@ export class CarouselManager {
       carousel.parentElement.appendChild(slideCounter);
     }
 
-    // Function to update slide counter
     const updateSlideCounter = () => {
       if (!slideCounter) return;
       const slides = carousel.querySelectorAll(".slide");
@@ -40,23 +34,14 @@ export class CarouselManager {
       slideCounter.textContent = `${currentSlide}/${slides.length}`;
     };
 
-    // Update counter on scroll
     carousel.addEventListener("scroll", updateSlideCounter);
     updateSlideCounter();
 
-    // Set background images for image slides
     this.setupImageSlides(carousel);
-
-    // Mouse events for dragging
     this.setupMouseEvents(carousel, startX, scrollLeft, isDown, isDragging);
-
-    // Touch events
     this.setupTouchEvents(carousel, startX, isDragging);
-
-    // Click events for navigation
     this.setupClickEvents(carousel, isDragging);
 
-    // Make carousel focusable for keyboard navigation
     carousel.setAttribute("tabindex", "0");
     carousel.style.cursor = "grab";
   }
@@ -67,11 +52,9 @@ export class CarouselManager {
     imageSlides.forEach((slide) => {
       const img = slide.querySelector("img");
       if (img) {
-        // Set background image immediately if already loaded
         if (img.complete) {
           slide.style.setProperty("--bg-image", `url(${img.src})`);
         } else {
-          // Wait for image to load
           img.addEventListener("load", () => {
             slide.style.setProperty("--bg-image", `url(${img.src})`);
           });
@@ -98,7 +81,6 @@ export class CarouselManager {
       isDown = false;
       carousel.style.cursor = "grab";
 
-      // If not dragging, advance to next slide
       if (!isDragging) {
         this.advanceSlide(carousel);
       }
@@ -141,26 +123,33 @@ export class CarouselManager {
     const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
     if (!isMobile) {
-      carousel.addEventListener("click", (e) => {
-        // Only trigger if not clicking on a link, interactive element, or text content
-        if (e.target.tagName === "A" || e.target.closest("a") || e.target.closest(".slide-content")) {
-          return;
-        }
+      let mouseDownButton = null;
 
-        // If not dragging, determine direction based on click position
-        if (!isDragging) {
+      carousel.addEventListener("mousedown", (e) => {
+        mouseDownButton = e.button;
+      });
+
+      carousel.addEventListener("mouseup", (e) => {
+        if (mouseDownButton === 0 && e.button === 0 && !isDragging) {
+          if (e.target.tagName === "A" || e.target.closest("a") || e.target.closest(".slide-content")) {
+            return;
+          }
+
           const rect = carousel.getBoundingClientRect();
           const clickX = e.clientX - rect.left;
           const centerX = rect.width / 2;
 
           if (clickX < centerX) {
-            // Clicked on left side - go left
             this.previousSlide(carousel);
           } else {
-            // Clicked on right side - go right
             this.advanceSlide(carousel);
           }
         }
+        mouseDownButton = null;
+      });
+
+      carousel.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
       });
     }
   }
@@ -173,13 +162,11 @@ export class CarouselManager {
     const currentSlide = Math.round(carousel.scrollLeft / slideWidth);
 
     if (currentSlide < slides.length - 1) {
-      // Move to next slide with smooth scrolling
       carousel.scrollTo({
         left: (currentSlide + 1) * slideWidth,
         behavior: "smooth",
       });
     } else {
-      // Move to next project
       this.nextProject();
     }
   }
@@ -196,18 +183,15 @@ export class CarouselManager {
         behavior: "smooth",
       });
     } else {
-      // Move to previous project
       this.previousProject();
     }
   }
 
   nextProject() {
-    // This will be handled by the main app
     window.dispatchEvent(new CustomEvent("nextProject"));
   }
 
   previousProject() {
-    // This will be handled by the main app
     window.dispatchEvent(new CustomEvent("previousProject"));
   }
 }

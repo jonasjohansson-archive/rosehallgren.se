@@ -1,12 +1,10 @@
-/* ========================================
-   NAVIGATION FUNCTIONALITY
-   ======================================== */
-
 export class NavigationManager {
   constructor() {
     this.projects = document.querySelectorAll(".project");
     this.currentProjectIndex = 0;
     this.isTransitioning = false;
+    this.lastScrollTime = 0;
+    this.scrollTimeout = null;
     this.clickZoneLeft = document.getElementById("click-zone-left");
     this.clickZoneRight = document.getElementById("click-zone-right");
     this.init();
@@ -24,7 +22,10 @@ export class NavigationManager {
     document.addEventListener("keydown", (e) => {
       if (this.isTransitioning) return;
 
-      // Get the currently visible project's carousel
+      if (this.currentProjectIndex < 0 || this.currentProjectIndex >= this.projects.length) {
+        this.currentProjectIndex = 0;
+      }
+
       const currentProject = this.projects[this.currentProjectIndex];
       const currentCarousel = currentProject ? currentProject.querySelector(".project-carousel") : null;
 
@@ -58,7 +59,6 @@ export class NavigationManager {
 
     if (!isMobile) {
       this.clickZoneLeft.addEventListener("click", (e) => {
-        // Only trigger if not clicking on a link or interactive element
         if (e.target.tagName === "A" || e.target.closest("a")) {
           return;
         }
@@ -71,7 +71,6 @@ export class NavigationManager {
       });
 
       this.clickZoneRight.addEventListener("click", (e) => {
-        // Only trigger if not clicking on a link or interactive element
         if (e.target.tagName === "A" || e.target.closest("a")) {
           return;
         }
@@ -86,35 +85,44 @@ export class NavigationManager {
   }
 
   setupScrollTracking() {
-    // Update current project index on scroll
     const updateCurrentProject = () => {
-      const windowHeight = window.innerHeight;
-      let newProjectIndex = this.currentProjectIndex;
+      if (this.isTransitioning) return;
 
-      this.projects.forEach((project, index) => {
-        const rect = project.getBoundingClientRect();
-        if (rect.top <= windowHeight / 2 && rect.bottom >= windowHeight / 2) {
-          newProjectIndex = index;
-        }
-      });
+      const now = Date.now();
+      this.lastScrollTime = now;
 
-      // If we've changed projects, reset the carousel to first slide
-      if (newProjectIndex !== this.currentProjectIndex) {
-        this.currentProjectIndex = newProjectIndex;
-        const currentCarousel = this.projects[this.currentProjectIndex].querySelector(".project-carousel");
-        if (currentCarousel) {
-          currentCarousel.scrollTo({
-            left: 0,
-            behavior: "smooth",
-          });
-        }
+      if (this.scrollTimeout) {
+        clearTimeout(this.scrollTimeout);
       }
 
-      // Enable/disable click zones based on current section
-      this.updateClickZones();
+      this.scrollTimeout = setTimeout(() => {
+        if (this.isTransitioning || Date.now() - this.lastScrollTime > 100) return;
+
+        const windowHeight = window.innerHeight;
+        let newProjectIndex = this.currentProjectIndex;
+
+        this.projects.forEach((project, index) => {
+          const rect = project.getBoundingClientRect();
+          if (rect.top <= windowHeight / 2 && rect.bottom >= windowHeight / 2) {
+            newProjectIndex = index;
+          }
+        });
+
+        if (newProjectIndex !== this.currentProjectIndex) {
+          this.currentProjectIndex = newProjectIndex;
+          const currentCarousel = this.projects[this.currentProjectIndex].querySelector(".project-carousel");
+          if (currentCarousel) {
+            currentCarousel.scrollTo({
+              left: 0,
+              behavior: "auto",
+            });
+          }
+        }
+
+        this.updateClickZones();
+      }, 50);
     };
 
-    // Listen for scroll events to update current project
     window.addEventListener("scroll", updateCurrentProject);
     updateCurrentProject();
   }
@@ -126,13 +134,19 @@ export class NavigationManager {
     const isAboutVisible = aboutRect.top <= windowHeight / 2 && aboutRect.bottom >= windowHeight / 2;
 
     if (isAboutVisible) {
-      // Disable click zones when on about section
       this.clickZoneLeft.classList.remove("active");
       this.clickZoneRight.classList.remove("active");
     } else {
-      // Enable click zones when on project sections
       this.clickZoneLeft.classList.add("active");
       this.clickZoneRight.classList.add("active");
+    }
+  }
+
+  ensureValidProjectIndex() {
+    if (this.currentProjectIndex < 0) {
+      this.currentProjectIndex = 0;
+    } else if (this.currentProjectIndex >= this.projects.length) {
+      this.currentProjectIndex = this.projects.length - 1;
     }
   }
 
@@ -150,13 +164,12 @@ export class NavigationManager {
               block: "start",
             });
 
-            // Reset carousel to first slide
             setTimeout(() => {
               const carousel = targetProject.querySelector(".project-carousel");
               if (carousel) {
                 carousel.scrollTo({
                   left: 0,
-                  behavior: "smooth",
+                  behavior: "auto",
                 });
               }
             }, 100);
@@ -165,14 +178,11 @@ export class NavigationManager {
       }
     };
 
-    // Listen for hash changes
     window.addEventListener("hashchange", handlePermalink);
-    // Handle initial permalink on page load
     handlePermalink();
   }
 
   setupAnchorLinks() {
-    // Smooth scrolling for anchor links
     const links = document.querySelectorAll('a[href^="#"]');
     links.forEach((link) => {
       link.addEventListener("click", function (e) {
@@ -196,13 +206,11 @@ export class NavigationManager {
     const currentSlide = Math.round(carousel.scrollLeft / slideWidth);
 
     if (currentSlide < slides.length - 1) {
-      // Move to next slide with smooth scrolling
       carousel.scrollTo({
         left: (currentSlide + 1) * slideWidth,
         behavior: "smooth",
       });
     } else {
-      // Move to next project
       this.nextProject();
     }
   }
@@ -219,7 +227,6 @@ export class NavigationManager {
         behavior: "smooth",
       });
     } else {
-      // Move to previous project
       this.previousProject();
     }
   }
@@ -228,6 +235,8 @@ export class NavigationManager {
     if (this.isTransitioning) return;
     this.isTransitioning = true;
 
+    this.ensureValidProjectIndex();
+
     if (this.currentProjectIndex < this.projects.length - 1) {
       this.currentProjectIndex++;
       this.projects[this.currentProjectIndex].scrollIntoView({
@@ -235,13 +244,12 @@ export class NavigationManager {
         block: "start",
       });
 
-      // Reset the new project's carousel to first slide
       setTimeout(() => {
         const newCarousel = this.projects[this.currentProjectIndex].querySelector(".project-carousel");
         if (newCarousel) {
           newCarousel.scrollTo({
             left: 0,
-            behavior: "smooth",
+            behavior: "auto",
           });
         }
       }, 100);
@@ -256,6 +264,8 @@ export class NavigationManager {
     if (this.isTransitioning) return;
     this.isTransitioning = true;
 
+    this.ensureValidProjectIndex();
+
     if (this.currentProjectIndex > 0) {
       this.currentProjectIndex--;
       this.projects[this.currentProjectIndex].scrollIntoView({
@@ -263,13 +273,12 @@ export class NavigationManager {
         block: "start",
       });
 
-      // Reset the new project's carousel to first slide
       setTimeout(() => {
         const newCarousel = this.projects[this.currentProjectIndex].querySelector(".project-carousel");
         if (newCarousel) {
           newCarousel.scrollTo({
             left: 0,
-            behavior: "smooth",
+            behavior: "auto",
           });
         }
       }, 100);

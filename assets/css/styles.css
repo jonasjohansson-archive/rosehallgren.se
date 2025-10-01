@@ -1,14 +1,8 @@
-/* ========================================
-   CSS IMPORTS
-   ======================================== */
 @import url("./fonts.css");
 @import url("./reset.css");
 @import url("./components.css");
 @import url("./responsive.css");
 
-/* ========================================
-   CSS VARIABLES
-   ======================================== */
 :root {
   --font-size-base: 14px;
   --font-size-mobile: 11px;
@@ -28,9 +22,6 @@
   --spacing-xl: 24px;
 }
 
-/* ========================================
-   BASE STYLES
-   ======================================== */
 body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: var(--font-size-base);
@@ -42,20 +33,16 @@ body {
   scroll-behavior: smooth;
 }
 
-/* ========================================
-   ABOUT SECTION
-   ======================================== */
 .about-section {
   min-height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2.5rem 2.5rem 5rem 2.5rem;
+  padding: 2.5rem;
   background: var(--color-bg);
   scroll-snap-align: start;
 }
 
-/* Wide screens - left column layout */
 @media (min-width: 1200px) {
   .about-section {
     min-height: 50vh;
@@ -71,7 +58,6 @@ body {
   width: 100%;
 }
 
-/* Wide screens - left column about content */
 @media (min-width: 1200px) {
   .about-content {
     max-width: 600px;
@@ -118,11 +104,8 @@ body {
   text-decoration: none;
 }
 
-/* ========================================
-   PROJECTS
-   ======================================== */
 .project {
-  min-height: 100vh;
+  min-height: 50vh;
   width: 100%;
   overflow: hidden;
   position: relative;
@@ -142,17 +125,14 @@ body {
   pointer-events: none;
 }
 
-/* ========================================
-   PROJECT CAROUSEL
-   ======================================== */
 .project-carousel {
   display: flex;
   width: 100%;
-  height: 100vh;
+  height: 50vh;
   overflow-x: auto;
   overflow-y: hidden;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   scroll-snap-stop: always;
@@ -161,15 +141,13 @@ body {
 }
 
 .project-carousel::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 
-/* ========================================
-   SLIDES
-   ======================================== */
 .slide {
   min-width: 100vw;
-  height: 100vh;
+  height: auto;
+  min-height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -179,7 +157,21 @@ body {
   position: relative;
 }
 
-/* Wide screens - 50vw slides */
+@media (min-width: 720px) {
+  .project {
+    min-height: 100vh;
+  }
+
+  .project-carousel {
+    height: 100vh;
+  }
+
+  .slide {
+    height: 100vh;
+    min-height: 100vh;
+  }
+}
+
 @media (min-width: 1200px) {
   .slide {
     min-width: 50vw;
@@ -196,9 +188,6 @@ body {
   color: #fff;
 }
 
-/* ========================================
-   SLIDE CONTENT
-   ======================================== */
 .slide-content {
   max-width: 600px;
   text-align: center;
@@ -236,9 +225,6 @@ body {
   text-decoration: none;
 }
 
-/* ========================================
-   IMAGE SLIDES
-   ======================================== */
 .image-slide {
   position: relative;
   width: 100%;
@@ -291,7 +277,6 @@ body {
   border-radius: 2px;
 }
 
-/* Wide screens - 50vw image with padding */
 @media (min-width: 1200px) {
   .image-slide img {
     max-width: calc(50vw - 10vw);
@@ -299,9 +284,6 @@ body {
   }
 }
 
-/* ========================================
-   FOOTER
-   ======================================== */
 .footer {
   background: var(--color-bg);
   color: var(--color-text);
@@ -351,7 +333,6 @@ body {
   text-decoration: none;
 }
 
-/* Wide screens - left column footer layout */
 @media (min-width: 1200px) {
   .footer {
     padding-left: 5vw;
@@ -364,9 +345,6 @@ body {
   }
 }
 
-/* ========================================
-   ACCESSIBILITY
-   ======================================== */
 a:focus {
   outline: 2px solid #000;
   outline-offset: 2px;
@@ -377,9 +355,6 @@ button:focus {
   outline-offset: 2px;
 }
 
-/* ========================================
-   TEXT SELECTION
-   ======================================== */
 .about-text p::selection,
 .slide-content p::selection,
 .footer-contact p::selection,
@@ -396,7 +371,6 @@ button:focus {
   color: #000;
 }
 
-/* Disable selection on images, titles, and navigation */
 .project-title,
 .slide-counter,
 .image-slide,
