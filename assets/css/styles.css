@@ -19,7 +19,9 @@
   --color-text: #000;
   --color-bg: #fff;
   --color-white: #fff;
-  --color-text-slide-bg: #000;
+  --color-text-slide-bg: #1a1a1a;
+  --color-dark-bg: #1a1a1a;
+  --project-primary-color: #1a1a1a;
   --spacing-small: 8px;
   --spacing-medium: 16px;
   --spacing-large: 20px;
@@ -190,7 +192,7 @@ body {
 }
 
 .slide:nth-child(even) {
-  background: #000;
+  background: color-mix(in srgb, var(--project-primary-color) 100%, black 20%);
   color: #fff;
 }
 
@@ -204,8 +206,6 @@ body {
   margin: 0 auto;
   position: relative;
   z-index: 10;
-  background: var(--color-text-slide-bg);
-  border-radius: 8px;
 }
 
 .slide-content h2 {
@@ -275,7 +275,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(26, 26, 26, 0.1);
   z-index: 1;
 }
 

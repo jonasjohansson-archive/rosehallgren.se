@@ -6,6 +6,7 @@ import { initializePagePosition, shuffleProjects } from "./utils.js";
 import { CarouselManager } from "./carousel.js";
 import { NavigationManager } from "./navigation.js";
 import { DebugManager } from "./debug.js";
+import { ColorExtractor } from "./color-extractor.js";
 
 // Initialize the application
 document.addEventListener("DOMContentLoaded", function () {
@@ -21,6 +22,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const carouselManager = new CarouselManager();
   const navigationManager = new NavigationManager();
   const debugManager = new DebugManager();
+  const colorExtractor = new ColorExtractor();
+
+  // Initialize project colors
+  colorExtractor.initializeProjectColors();
 
   // Set up event listeners for cross-module communication
   window.addEventListener("nextProject", () => {
