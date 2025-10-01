@@ -260,8 +260,8 @@ body {
   background-image: var(--bg-image);
   background-size: cover;
   background-position: center;
-  filter: blur(25px);
-  transform: scale(1.25);
+  filter: blur(55px);
+  transform: scale(1.95);
   mix-blend-mode: normal;
   z-index: 1;
   background-repeat: no-repeat;
