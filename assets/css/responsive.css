@@ -54,6 +54,12 @@
     left: 20px;
     transform: none;
   }
+
+  .slide-counter {
+    text-align: left;
+    left: 20px;
+    transform: none;
+  }
 }
 
 @media (max-width: 480px) {
@@ -100,5 +106,11 @@
 
   .project-title {
     left: 16px;
+  }
+
+  .slide-counter {
+    text-align: left;
+    left: 16px;
+    transform: none;
   }
 }
