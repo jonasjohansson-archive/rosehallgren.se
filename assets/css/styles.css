@@ -33,6 +33,10 @@ body {
   scroll-behavior: smooth;
 }
 
+#logo {
+  height: 2.5rem;
+}
+
 .about-section {
   min-height: 50vh;
   display: flex;

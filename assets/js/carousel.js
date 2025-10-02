@@ -80,10 +80,6 @@ export class CarouselManager {
     carousel.addEventListener("mouseup", (e) => {
       isDown = false;
       carousel.style.cursor = "grab";
-
-      if (!isDragging) {
-        this.advanceSlide(carousel);
-      }
     });
 
     carousel.addEventListener("mousemove", (e) => {
@@ -112,46 +108,12 @@ export class CarouselManager {
     });
 
     carousel.addEventListener("touchend", (e) => {
-      if (!isDragging) {
-        this.advanceSlide(carousel);
-      }
       startX = 0;
     });
   }
 
   setupClickEvents(carousel, isDragging) {
-    const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    if (!isMobile) {
-      let mouseDownButton = null;
-
-      carousel.addEventListener("mousedown", (e) => {
-        mouseDownButton = e.button;
-      });
-
-      carousel.addEventListener("mouseup", (e) => {
-        if (mouseDownButton === 0 && e.button === 0 && !isDragging) {
-          if (e.target.tagName === "A" || e.target.closest("a") || e.target.closest(".slide-content")) {
-            return;
-          }
-
-          const rect = carousel.getBoundingClientRect();
-          const clickX = e.clientX - rect.left;
-          const centerX = rect.width / 2;
-
-          if (clickX < centerX) {
-            this.previousSlide(carousel);
-          } else {
-            this.advanceSlide(carousel);
-          }
-        }
-        mouseDownButton = null;
-      });
-
-      carousel.addEventListener("contextmenu", (e) => {
-        e.preventDefault();
-      });
-    }
+    // Click functionality removed - keeping only scroll behavior
   }
 
   advanceSlide(carousel) {

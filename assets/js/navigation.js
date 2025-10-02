@@ -110,13 +110,6 @@ export class NavigationManager {
 
         if (newProjectIndex !== this.currentProjectIndex) {
           this.currentProjectIndex = newProjectIndex;
-          const currentCarousel = this.projects[this.currentProjectIndex].querySelector(".project-carousel");
-          if (currentCarousel) {
-            currentCarousel.scrollTo({
-              left: 0,
-              behavior: "auto",
-            });
-          }
         }
 
         this.updateClickZones();
@@ -163,16 +156,6 @@ export class NavigationManager {
               behavior: "smooth",
               block: "start",
             });
-
-            setTimeout(() => {
-              const carousel = targetProject.querySelector(".project-carousel");
-              if (carousel) {
-                carousel.scrollTo({
-                  left: 0,
-                  behavior: "auto",
-                });
-              }
-            }, 100);
           }
         }
       }
@@ -243,16 +226,6 @@ export class NavigationManager {
         behavior: "smooth",
         block: "start",
       });
-
-      setTimeout(() => {
-        const newCarousel = this.projects[this.currentProjectIndex].querySelector(".project-carousel");
-        if (newCarousel) {
-          newCarousel.scrollTo({
-            left: 0,
-            behavior: "auto",
-          });
-        }
-      }, 100);
     }
 
     setTimeout(() => {
@@ -272,16 +245,6 @@ export class NavigationManager {
         behavior: "smooth",
         block: "start",
       });
-
-      setTimeout(() => {
-        const newCarousel = this.projects[this.currentProjectIndex].querySelector(".project-carousel");
-        if (newCarousel) {
-          newCarousel.scrollTo({
-            left: 0,
-            behavior: "auto",
-          });
-        }
-      }, 100);
     }
 
     setTimeout(() => {
