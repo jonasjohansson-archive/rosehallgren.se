@@ -33,8 +33,26 @@ body {
   scroll-behavior: smooth;
 }
 
-#logo {
+#logo-top,
+#logo-bottom {
   height: 2.5rem;
+  width: auto;
+}
+
+#logo-top path,
+#logo-bottom path {
+  fill: var(--logo-color, #000);
+}
+
+/* About text styling to match top logo color */
+.about-text h1,
+.about-text p {
+  color: var(--logo-color, #000) !important;
+}
+
+/* Footer text styling to match bottom logo color */
+.footer-contact p a {
+  color: var(--logo-color, #000) !important;
 }
 
 .about-section {

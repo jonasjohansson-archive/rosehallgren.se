@@ -102,5 +102,36 @@ export class ColorExtractor {
         }
       }
     }
+
+    this.setLogoColorsFromProjects();
+  }
+
+  setLogoColorsFromProjects() {
+    const projects = document.querySelectorAll(".project");
+
+    if (projects.length === 0) return;
+
+    const firstProject = projects[0];
+    const lastProject = projects[projects.length - 1];
+
+    const firstProjectColor = firstProject.style.getPropertyValue("--project-primary-color");
+    const lastProjectColor = lastProject.style.getPropertyValue("--project-primary-color");
+
+    if (firstProjectColor) {
+      this.setLogoColor("logo-top", firstProjectColor);
+    }
+
+    if (lastProjectColor) {
+      this.setLogoColor("logo-bottom", lastProjectColor);
+    }
+  }
+
+  setLogoColor(logoId, color) {
+    const logo = document.getElementById(logoId);
+    if (logo) {
+      const hexColor = typeof color === "string" ? color : this.rgbToHex(color.r, color.g, color.b);
+      logo.style.setProperty("--logo-color", `color-mix(in srgb, ${hexColor} 60%, black 40%)`);
+      console.log(`Logo ${logoId} color set: ${hexColor}`);
+    }
   }
 }
