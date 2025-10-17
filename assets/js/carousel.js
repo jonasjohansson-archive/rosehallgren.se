@@ -56,7 +56,17 @@ export class CarouselManager {
     const updateNavigation = () => {
       if (!navigationContainer) return;
       const slides = carousel.querySelectorAll(".slide");
-      const slideWidth = carousel.offsetWidth;
+
+      // Calculate slide width based on screen size
+      let slideWidth;
+      if (window.innerWidth >= 1200) {
+        // On large screens, slides are 50vw (half viewport width)
+        slideWidth = window.innerWidth / 2;
+      } else {
+        // On smaller screens, slides are full carousel width
+        slideWidth = carousel.offsetWidth;
+      }
+
       const currentSlide = Math.round(carousel.scrollLeft / slideWidth);
 
       // Update active dot
@@ -193,7 +203,16 @@ export class CarouselManager {
     if (this.isTransitioning) return;
 
     const slides = carousel.querySelectorAll(".slide");
-    const slideWidth = carousel.offsetWidth;
+
+    // Calculate slide width based on screen size
+    let slideWidth;
+    if (window.innerWidth >= 1200) {
+      // On large screens, slides are 50vw (half viewport width)
+      slideWidth = window.innerWidth / 2;
+    } else {
+      // On smaller screens, slides are full carousel width
+      slideWidth = carousel.offsetWidth;
+    }
 
     if (slideIndex >= 0 && slideIndex < slides.length) {
       carousel.scrollTo({
