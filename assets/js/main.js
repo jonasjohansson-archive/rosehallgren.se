@@ -1,4 +1,4 @@
-import { initializePagePosition, shuffleProjects } from "./utils.js";
+import { initializePagePosition } from "./utils.js";
 import { CarouselManager } from "./carousel.js";
 import { NavigationManager } from "./navigation.js";
 import { DebugManager } from "./debug.js";
@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
   console.log("Portfolio loaded");
 
   initializePagePosition();
-  shuffleProjects();
 
   const carouselManager = new CarouselManager();
   const navigationManager = new NavigationManager();

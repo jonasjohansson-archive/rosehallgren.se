@@ -130,7 +130,22 @@ export class ColorExtractor {
     const logo = document.getElementById(logoId);
     if (logo) {
       const hexColor = typeof color === "string" ? color : this.rgbToHex(color.r, color.g, color.b);
-      logo.style.setProperty("--logo-color", `color-mix(in srgb, ${hexColor} 60%, black 40%)`);
+      const logoColor = `color-mix(in srgb, ${hexColor} 60%, black 40%)`;
+      logo.style.setProperty("--logo-color", logoColor);
+
+      // Also set the logo color on the parent sections so text can inherit it
+      if (logoId === "logo-top") {
+        const aboutSection = document.querySelector(".about-section");
+        if (aboutSection) {
+          aboutSection.style.setProperty("--logo-color", logoColor);
+        }
+      } else if (logoId === "logo-bottom") {
+        const footerSection = document.querySelector(".footer");
+        if (footerSection) {
+          footerSection.style.setProperty("--logo-color", logoColor);
+        }
+      }
+
       console.log(`Logo ${logoId} color set: ${hexColor}`);
     }
   }

@@ -43,3 +43,56 @@
 .thesis-link:hover {
   text-decoration: none;
 }
+
+/* Carousel Navigation */
+.carousel-navigation {
+  position: absolute;
+  bottom: var(--spacing-large);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.carousel-dots {
+  display: flex;
+  gap: var(--spacing-medium);
+  align-items: center;
+}
+
+.carousel-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.carousel-dot:hover {
+  background: rgba(255, 255, 255, 0.6);
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.carousel-dot.active {
+  background: var(--color-white);
+  transform: scale(1.3);
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+@media (min-width: 1200px) {
+  .carousel-navigation {
+    display: none;
+  }
+}

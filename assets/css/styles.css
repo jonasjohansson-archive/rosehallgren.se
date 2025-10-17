@@ -1,12 +1,12 @@
-@import url("./fonts.css");
-@import url("./reset.css");
-@import url("./components.css");
-@import url("./responsive.css");
+@import url("./fonts.css?v=20241217-4");
+@import url("./reset.css?v=20241217-4");
+@import url("./components.css?v=20241217-4");
+@import url("./responsive.css?v=20241217-4");
 
 :root {
-  --font-size-base: 14px;
-  --font-size-mobile: 11px;
-  --font-size-small: 10px;
+  --font-size-base: 12px;
+  --font-size-mobile: 10px;
+  --font-size-small: 8px;
   --line-height-base: 1.425;
   --line-height-mobile: 1.4;
   --line-height-small: 1.3;
@@ -39,20 +39,17 @@ body {
   width: auto;
 }
 
+/* Footer root element with color inheritance */
+.footer {
+  color: var(--logo-color, #000);
+  transition: color 1s ease;
+}
+
+/* SVG logos with transition */
 #logo-top path,
 #logo-bottom path {
   fill: var(--logo-color, #000);
-}
-
-/* About text styling to match top logo color */
-.about-text h1,
-.about-text p {
-  color: var(--logo-color, #000) !important;
-}
-
-/* Footer text styling to match bottom logo color */
-.footer-contact p a {
-  color: var(--logo-color, #000) !important;
+  transition: fill 1s ease;
 }
 
 .about-section {
@@ -63,6 +60,8 @@ body {
   padding: 2.5rem;
   background: var(--color-bg);
   scroll-snap-align: start;
+  color: var(--logo-color, #000);
+  transition: color 1s ease;
 }
 
 @media (min-width: 1200px) {
@@ -90,8 +89,9 @@ body {
 .about-content h1 {
   font-size: inherit;
   font-weight: 600;
-  color: inherit;
+  color: var(--logo-color, inherit);
   margin-bottom: var(--spacing-medium);
+  transition: color 1s ease;
 }
 
 .about-text {
@@ -102,17 +102,19 @@ body {
   margin-bottom: var(--spacing-medium);
   font-size: inherit;
   line-height: inherit;
-  color: inherit;
+  color: var(--logo-color, inherit);
   text-align: inherit;
   max-width: 100%;
+  transition: color 1s ease;
 }
 
 .about-contact p {
   margin-bottom: var(--spacing-small);
   font-size: inherit;
   line-height: inherit;
-  color: inherit;
+  color: var(--logo-color, inherit);
   text-align: inherit;
+  transition: color 1s ease;
 }
 
 .about-contact a,

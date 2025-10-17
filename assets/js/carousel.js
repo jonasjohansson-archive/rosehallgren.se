@@ -19,23 +19,55 @@ export class CarouselManager {
 
     const isWideScreen = window.innerWidth >= 1200;
     let slideCounter = null;
+    let navigationContainer = null;
 
     if (!isWideScreen) {
-      slideCounter = document.createElement("div");
-      slideCounter.className = "slide-counter";
-      carousel.parentElement.appendChild(slideCounter);
+      // Create navigation container with dots only
+      navigationContainer = document.createElement("div");
+      navigationContainer.className = "carousel-navigation";
+      carousel.parentElement.appendChild(navigationContainer);
+
+      // Add dots container
+      const dotsContainer = document.createElement("div");
+      dotsContainer.className = "carousel-dots";
+      navigationContainer.appendChild(dotsContainer);
+
+      // Create dots for each slide
+      const slides = carousel.querySelectorAll(".slide");
+      slides.forEach((_, index) => {
+        const dot = document.createElement("button");
+        dot.className = "carousel-dot";
+        dot.setAttribute("data-slide", index);
+        dot.setAttribute("aria-label", `Go to slide ${index + 1}`);
+        dotsContainer.appendChild(dot);
+      });
+
+      // Add event listeners for dots
+      dotsContainer.addEventListener("click", (e) => {
+        if (e.target.classList.contains("carousel-dot")) {
+          e.preventDefault();
+          e.stopPropagation();
+          const slideIndex = parseInt(e.target.getAttribute("data-slide"));
+          this.goToSlide(carousel, slideIndex);
+        }
+      });
     }
 
-    const updateSlideCounter = () => {
-      if (!slideCounter) return;
+    const updateNavigation = () => {
+      if (!navigationContainer) return;
       const slides = carousel.querySelectorAll(".slide");
       const slideWidth = carousel.offsetWidth;
-      const currentSlide = Math.round(carousel.scrollLeft / slideWidth) + 1;
-      slideCounter.textContent = `${currentSlide}/${slides.length}`;
+      const currentSlide = Math.round(carousel.scrollLeft / slideWidth);
+
+      // Update active dot
+      const dots = navigationContainer.querySelectorAll(".carousel-dot");
+      dots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === currentSlide);
+      });
     };
 
-    carousel.addEventListener("scroll", updateSlideCounter);
-    updateSlideCounter();
+    carousel.addEventListener("scroll", updateNavigation);
+    updateNavigation();
 
     this.setupImageSlides(carousel);
     this.setupMouseEvents(carousel, startX, scrollLeft, isDown, isDragging);
@@ -155,5 +187,19 @@ export class CarouselManager {
 
   previousProject() {
     window.dispatchEvent(new CustomEvent("previousProject"));
+  }
+
+  goToSlide(carousel, slideIndex) {
+    if (this.isTransitioning) return;
+
+    const slides = carousel.querySelectorAll(".slide");
+    const slideWidth = carousel.offsetWidth;
+
+    if (slideIndex >= 0 && slideIndex < slides.length) {
+      carousel.scrollTo({
+        left: slideIndex * slideWidth,
+        behavior: "smooth",
+      });
+    }
   }
 }
