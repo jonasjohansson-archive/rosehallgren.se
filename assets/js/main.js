@@ -197,37 +197,7 @@ class OptimizedPortfolio {
 
   setupCarouselEvents(carousel, navigationContainer) {
     let startX = 0;
-    let scrollLeft = 0;
-    let isDown = false;
     let isDragging = false;
-
-    // Mouse events
-    carousel.addEventListener("mousedown", (e) => {
-      isDown = true;
-      isDragging = false;
-      carousel.style.cursor = "grabbing";
-      startX = e.pageX - carousel.offsetLeft;
-      scrollLeft = carousel.scrollLeft;
-    });
-
-    carousel.addEventListener("mouseleave", () => {
-      isDown = false;
-      carousel.style.cursor = "grab";
-    });
-
-    carousel.addEventListener("mouseup", () => {
-      isDown = false;
-      carousel.style.cursor = "grab";
-    });
-
-    carousel.addEventListener("mousemove", (e) => {
-      if (!isDown) return;
-      isDragging = true;
-      e.preventDefault();
-      const x = e.pageX - carousel.offsetLeft;
-      const walk = (x - startX) * 2;
-      carousel.scrollLeft = scrollLeft - walk;
-    });
 
     // Touch events
     carousel.addEventListener("touchstart", (e) => {
@@ -249,7 +219,6 @@ class OptimizedPortfolio {
     });
 
     carousel.setAttribute("tabindex", "0");
-    carousel.style.cursor = "grab";
   }
 
   setupNavigationUpdates(carousel, navigationContainer) {
@@ -321,6 +290,21 @@ class OptimizedPortfolio {
       const color = `rgb(${r}, ${g}, ${b})`;
       const lighterColor = `rgba(${r}, ${g}, ${b}, 0.3)`;
 
+      // Find the project this image belongs to
+      const project = img.closest(".project");
+      if (project) {
+        // Check if this is the first image of the project
+        const firstImage = project.querySelector(".image-slide img");
+        if (img === firstImage) {
+          // Only set project colors from the first image
+          const darkerColor = `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 50)}, ${Math.max(0, b - 50)}, 0.8)`;
+          project.style.setProperty("--project-logo-color", color);
+          project.style.setProperty("--project-pagination-color", lighterColor);
+          project.style.setProperty("--project-text-bg", darkerColor);
+        }
+      }
+
+      // Also update global colors for current project
       document.documentElement.style.setProperty("--logo-color", color);
       document.documentElement.style.setProperty("--pagination-color", lighterColor);
     } catch (e) {
