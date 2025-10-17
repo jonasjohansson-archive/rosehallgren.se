@@ -90,8 +90,7 @@ body {
 
 a:focus,
 button:focus {
-  outline: 2px solid #000;
-  outline-offset: 2px;
+  outline: none;
 }
 
 /* Logo Styles */
@@ -445,16 +444,12 @@ button:focus {
 }
 
 /* Selection */
-.about-text p::selection,
-.slide-content p::selection,
-.footer-contact p::selection {
+*::selection {
   background-color: #f4a6a6;
   color: #000;
 }
 
-.about-text p::-moz-selection,
-.slide-content p::-moz-selection,
-.footer-contact p::-moz-selection {
+*::-moz-selection {
   background-color: #f4a6a6;
   color: #000;
 }
