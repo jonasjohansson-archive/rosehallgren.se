@@ -3,7 +3,7 @@
 /* CSS Variables */
 :root {
   --font-size-base: 12px;
-  --font-size-mobile: 10px;
+  --font-size-mobile: 14px;
   --font-size-small: 8px;
   --line-height-base: 1.425;
   --line-height-mobile: 1.4;
@@ -389,6 +389,52 @@ button:focus {
   box-shadow: none;
   mix-blend-mode: difference;
   filter: brightness(4);
+  position: relative;
+}
+
+.carousel-dot::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border-radius: 50%;
+  background: transparent;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .project-carousel {
+    scroll-snap-type: none;
+  }
+
+  .slide {
+    scroll-snap-align: none;
+  }
+
+  .carousel-dot {
+    width: 13px;
+    height: 13px;
+    mix-blend-mode: normal;
+    filter: none;
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  .carousel-dot::before {
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+  }
+
+  .carousel-dot:hover {
+    background: rgba(255, 255, 255, 0.8);
+  }
+
+  .carousel-dot.active {
+    background: rgba(255, 255, 255, 1);
+  }
 }
 
 .carousel-dot:hover {
@@ -526,6 +572,10 @@ button:focus {
     --line-height-base: var(--line-height-mobile);
   }
 
+  body {
+    font-size: 14px;
+  }
+
   .about-section {
     min-height: auto;
     padding: 2.5rem;
@@ -585,8 +635,22 @@ button:focus {
     margin: 0 auto;
   }
 
+  .image-slide {
+    position: relative;
+    overflow: hidden;
+  }
+
   .image-slide img {
-    max-height: 80vh;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    transition: transform 0.1s ease-out;
+    cursor: grab;
+  }
+
+  .image-slide img:active {
+    cursor: grabbing;
   }
 }
 

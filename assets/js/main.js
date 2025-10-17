@@ -196,28 +196,6 @@ class OptimizedPortfolio {
   }
 
   setupCarouselEvents(carousel, navigationContainer) {
-    let startX = 0;
-    let isDragging = false;
-
-    // Touch events
-    carousel.addEventListener("touchstart", (e) => {
-      startX = e.touches[0].clientX;
-      isDragging = false;
-    });
-
-    carousel.addEventListener("touchmove", (e) => {
-      if (!startX) return;
-      isDragging = true;
-      const currentX = e.touches[0].clientX;
-      const diffX = startX - currentX;
-      carousel.scrollLeft += diffX;
-      startX = currentX;
-    });
-
-    carousel.addEventListener("touchend", () => {
-      startX = 0;
-    });
-
     carousel.setAttribute("tabindex", "0");
   }
 
