@@ -6,42 +6,56 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0" />
     <title>Studio Rose Hallgren</title>
+
+    <!-- Optimized CSS - Single file -->
     <link
       rel="stylesheet"
-      href="assets/css/styles.css?v=20241217-3" />
+      href="assets/css/styles.css" />
+
+    <!-- Preload critical fonts -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet" />
+      rel="preload"
+      href="assets/fonts/NaNHoloVF.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin />
     <link
-      rel="icon"
-      type="image/png"
-      href="assets/favicon/favicon-96x96.png"
-      sizes="96x96" />
+      rel="preload"
+      href="assets/fonts/Surt-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin />
+
+    <!-- Optimized favicon -->
     <link
       rel="icon"
       type="image/svg+xml"
       href="assets/favicon/favicon.svg" />
     <link
-      rel="shortcut icon"
-      href="assets/favicon/favicon.ico" />
-    <link
       rel="apple-touch-icon"
-      sizes="180x180"
       href="assets/favicon/apple-touch-icon.png" />
-    <meta
-      name="apple-mobile-web-app-title"
-      content="Rose Java Hallgren" />
     <link
       rel="manifest"
       href="assets/favicon/site.webmanifest" />
+
+    <!-- Meta tags -->
+    <meta
+      name="description"
+      content="Multidisciplinary architect and designer based in Stockholm, Sweden. Current focus includes weaving and ceramics, investigating how traditional craft techniques can inform contemporary architectural practice." />
+    <meta
+      name="apple-mobile-web-app-title"
+      content="Rose Java Hallgren" />
   </head>
   <body>
+    <!-- Navigation zones -->
     <div
       class="click-zone click-zone-left"
       id="click-zone-left"></div>
     <div
       class="click-zone click-zone-right"
       id="click-zone-right"></div>
+
+    <!-- About Section -->
     <section class="about-section">
       <div class="about-content">
         <div class="about-text">
@@ -107,6 +121,7 @@
       </div>
     </section>
 
+    <!-- Projects -->
     <section class="project">
       <div class="project-title">Folkbastu Larsberg / Dalénum</div>
       <div class="project-carousel">
@@ -394,8 +409,7 @@
               title="Drömmarens Malmö - Film"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen>
-            </iframe>
+              allowfullscreen></iframe>
           </div>
         </div>
       </div>
@@ -486,6 +500,7 @@
       </div>
     </section>
 
+    <!-- Footer -->
     <footer class="footer">
       <div class="footer-content">
         <div class="footer-contact">
@@ -528,8 +543,7 @@
       </div>
     </footer>
 
-    <script
-      type="module"
-      src="assets/js/main.js"></script>
+    <!-- Optimized JavaScript -->
+    <script src="assets/js/main.js"></script>
   </body>
 </html>
