@@ -18,15 +18,30 @@ fi
 # Create optimized images directory
 mkdir -p assets/images/optimized
 
-# Function to convert image to WebP with orientation preservation
+# Function to convert image to WebP and bake correct orientation into pixels
 convert_to_webp() {
     local input_file="$1"
     local output_file="$2"
-    
+
     if [ -f "$input_file" ]; then
         echo "Converting: $input_file"
-        # Use -metadata all to preserve EXIF data including orientation
-        cwebp -q 85 -m 6 -metadata all "$input_file" -o "$output_file"
+
+        # If ImageMagick is available, auto-orient and strip metadata first, then feed to cwebp
+        if command -v magick &> /dev/null; then
+            # Use a temp file to ensure orientation is baked into pixels
+            tmpfile=$(mktemp /tmp/auto_oriented.XXXXXX.jpg)
+            magick "$input_file" -auto-orient -strip "$tmpfile"
+            cwebp -q 85 -m 6 "$tmpfile" -o "$output_file"
+            rm -f "$tmpfile"
+        elif command -v convert &> /dev/null; then
+            tmpfile=$(mktemp /tmp/auto_oriented.XXXXXX.jpg)
+            convert "$input_file" -auto-orient -strip "$tmpfile"
+            cwebp -q 85 -m 6 "$tmpfile" -o "$output_file"
+            rm -f "$tmpfile"
+        else
+            # Fallback: convert directly (may not fix rotation on some images)
+            cwebp -q 85 -m 6 "$input_file" -o "$output_file"
+        fi
         return 0
     else
         echo "⚠️  File not found: $input_file"
