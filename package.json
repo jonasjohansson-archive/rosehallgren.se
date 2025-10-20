@@ -1,0 +1,14 @@
+{
+  "name": "rose-hallgren-portfolio",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "preview": "vite preview",
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "vite-plugin-html": "^3.2.2"
+  }
+}

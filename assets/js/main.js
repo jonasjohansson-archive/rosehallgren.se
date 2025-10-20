@@ -45,31 +45,31 @@ class OptimizedPortfolio {
 
     if (otherProjects.length <= 1) return;
 
-    // Shuffle other projects (excluding photography)
+    
     const shuffledProjects = [...otherProjects];
     for (let i = shuffledProjects.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffledProjects[i], shuffledProjects[j]] = [shuffledProjects[j], shuffledProjects[i]];
     }
 
-    // Remove only the other projects from DOM (keep photography)
+    
     otherProjects.forEach((project) => project.remove());
 
-    // Insert shuffled projects before photography
+    
     shuffledProjects.forEach((project) => {
       photographyProject.insertAdjacentElement("beforebegin", project);
     });
 
-    // Update cached elements after shuffle
+    
     this.cacheElements();
 
-    // Reset current project index to 0 (first project after about section)
+    
     this.currentProjectIndex = 0;
 
-    // Force scroll to top to ensure we start with the first project
+    
     window.scrollTo({ top: 0, behavior: "auto" });
 
-    // Debug: Log the shuffle process
+    
     console.log("Photography project:", photographyProject?.id);
     console.log("Other projects count:", otherProjects.length);
     console.log(
@@ -77,9 +77,9 @@ class OptimizedPortfolio {
       shuffledProjects.map((p) => p.id || p.querySelector(".project-title")?.textContent)
     );
 
-    // Wait a moment for DOM to update, then log final order
+    
     setTimeout(() => {
-      this.cacheElements(); // Re-cache after DOM updates
+      this.cacheElements(); 
       console.log(
         "Final order:",
         this.projects.map((p) => p.id || p.querySelector(".project-title")?.textContent)
@@ -88,7 +88,7 @@ class OptimizedPortfolio {
   }
 
   setupEventListeners() {
-    // Optimized scroll handler using requestAnimationFrame
+    
     let scrollRAF = null;
     window.addEventListener("scroll", () => {
       if (scrollRAF) return;
@@ -98,16 +98,16 @@ class OptimizedPortfolio {
       });
     });
 
-    // Keyboard navigation
+    
     document.addEventListener("keydown", (e) => this.handleKeyboard(e));
 
-    // Click zones
+    
     if (this.clickZoneLeft && this.clickZoneRight) {
       this.clickZoneLeft.addEventListener("click", (e) => this.handleClickZone(e, "left"));
       this.clickZoneRight.addEventListener("click", (e) => this.handleClickZone(e, "right"));
     }
 
-    // Window resize
+    
     let resizeTimeout;
     window.addEventListener("resize", () => {
       if (resizeTimeout) return;
@@ -117,7 +117,7 @@ class OptimizedPortfolio {
       }, 250);
     });
 
-    // Page unload
+    
     window.addEventListener("beforeunload", () => {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     });
@@ -132,16 +132,16 @@ class OptimizedPortfolio {
   setupCarousel(carousel) {
     let navigationContainer = null;
 
-    // Create navigation for all screen sizes
+    
     navigationContainer = this.createNavigation(carousel);
 
-    // Setup image slides
+    
     this.setupImageSlides(carousel);
 
-    // Setup mouse/touch events
+    
     this.setupCarouselEvents(carousel, navigationContainer);
 
-    // Setup navigation updates
+    
     if (navigationContainer) {
       this.setupNavigationUpdates(carousel, navigationContainer);
     }
@@ -165,7 +165,7 @@ class OptimizedPortfolio {
       dotsContainer.appendChild(dot);
     });
 
-    // Event delegation for dots
+    
     dotsContainer.addEventListener("click", (e) => {
       if (e.target.classList.contains("carousel-dot")) {
         e.preventDefault();
@@ -237,7 +237,7 @@ class OptimizedPortfolio {
   }
 
   setupColorExtraction() {
-    // Simplified color extraction - only extract from visible images
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -268,13 +268,13 @@ class OptimizedPortfolio {
       const color = `rgb(${r}, ${g}, ${b})`;
       const lighterColor = `rgba(${r}, ${g}, ${b}, 0.3)`;
 
-      // Find the project this image belongs to
+      
       const project = img.closest(".project");
       if (project) {
-        // Check if this is the first image of the project
+        
         const firstImage = project.querySelector(".image-slide img");
         if (img === firstImage) {
-          // Only set project colors from the first image
+          
           const darkerColor = `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 50)}, ${Math.max(0, b - 50)}, 0.8)`;
           project.style.setProperty("--project-logo-color", color);
           project.style.setProperty("--project-pagination-color", lighterColor);
@@ -282,11 +282,11 @@ class OptimizedPortfolio {
         }
       }
 
-      // Also update global colors for current project
+      
       document.documentElement.style.setProperty("--logo-color", color);
       document.documentElement.style.setProperty("--pagination-color", lighterColor);
     } catch (e) {
-      // Fallback to default color
+      
       document.documentElement.style.setProperty("--logo-color", "#000");
       document.documentElement.style.setProperty("--pagination-color", "rgba(0, 0, 0, 0.3)");
     }
@@ -315,7 +315,7 @@ class OptimizedPortfolio {
 
   updateCurrentProject() {
     const windowHeight = window.innerHeight;
-    let newProjectIndex = 0; // Start with first project
+    let newProjectIndex = 0; 
 
     this.projects.forEach((project, index) => {
       const rect = project.getBoundingClientRect();
@@ -324,7 +324,7 @@ class OptimizedPortfolio {
       }
     });
 
-    // Ensure we don't go beyond the last project
+    
     newProjectIndex = Math.min(newProjectIndex, this.projects.length - 1);
 
     if (newProjectIndex !== this.currentProjectIndex) {
@@ -480,7 +480,7 @@ class OptimizedPortfolio {
   }
 
   optimizeImages() {
-    // Add lazy loading to all images for better performance
+    
     const images = document.querySelectorAll("img:not([loading])");
     images.forEach((img) => {
       img.setAttribute("loading", "lazy");
@@ -488,26 +488,26 @@ class OptimizedPortfolio {
   }
 
   setupSocialSharing() {
-    // Add social sharing optimization
+    
     this.updateSocialMetaTags();
     this.addSocialSharingButtons();
   }
 
   updateSocialMetaTags() {
-    // Update social media meta tags based on current project
+    
     const currentProject = this.getCurrentProject();
     if (currentProject) {
       const projectName = currentProject.querySelector(".project-title")?.textContent || "Rose Hallgren";
       const projectImage =
-        currentProject.querySelector("img")?.src || "https://rosehallgren.se/assets/images/social-sharing-rose-hallgren.jpg";
+        currentProject.querySelector("img")?.src || "https:
 
-      // Update Open Graph image dynamically
+      
       const ogImage = document.querySelector('meta[property="og:image"]');
       if (ogImage) {
         ogImage.setAttribute("content", projectImage);
       }
 
-      // Update Twitter image
+      
       const twitterImage = document.querySelector('meta[name="twitter:image"]');
       if (twitterImage) {
         twitterImage.setAttribute("content", projectImage);
@@ -516,16 +516,16 @@ class OptimizedPortfolio {
   }
 
   addSocialSharingButtons() {
-    // Add social sharing buttons (optional enhancement)
-    // This could be expanded to add actual sharing buttons to the UI
+    
+    
     console.log("Social sharing optimization enabled");
   }
 
   handleResize() {
-    // Debounce resize events for better performance
+    
     clearTimeout(this.resizeTimeout);
     this.resizeTimeout = setTimeout(() => {
-      // Recalculate slide widths and update navigation
+      
       this.carousels.forEach((carousel) => {
         const navigationContainer = carousel.parentElement.querySelector(".carousel-navigation");
         if (navigationContainer) {
@@ -536,7 +536,7 @@ class OptimizedPortfolio {
   }
 }
 
-// Initialize when DOM is ready
+
 document.addEventListener("DOMContentLoaded", () => {
   new OptimizedPortfolio();
 });
