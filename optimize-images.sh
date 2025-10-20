@@ -18,14 +18,15 @@ fi
 # Create optimized images directory
 mkdir -p assets/images/optimized
 
-# Function to convert image to WebP
+# Function to convert image to WebP with orientation preservation
 convert_to_webp() {
     local input_file="$1"
     local output_file="$2"
     
     if [ -f "$input_file" ]; then
         echo "Converting: $input_file"
-        cwebp -q 85 -m 6 "$input_file" -o "$output_file"
+        # Use -metadata all to preserve EXIF data including orientation
+        cwebp -q 85 -m 6 -metadata all "$input_file" -o "$output_file"
         return 0
     else
         echo "⚠️  File not found: $input_file"
