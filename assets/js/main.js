@@ -45,31 +45,24 @@ class OptimizedPortfolio {
 
     if (otherProjects.length <= 1) return;
 
-    
     const shuffledProjects = [...otherProjects];
     for (let i = shuffledProjects.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffledProjects[i], shuffledProjects[j]] = [shuffledProjects[j], shuffledProjects[i]];
     }
 
-    
     otherProjects.forEach((project) => project.remove());
 
-    
     shuffledProjects.forEach((project) => {
       photographyProject.insertAdjacentElement("beforebegin", project);
     });
 
-    
     this.cacheElements();
 
-    
     this.currentProjectIndex = 0;
 
-    
     window.scrollTo({ top: 0, behavior: "auto" });
 
-    
     console.log("Photography project:", photographyProject?.id);
     console.log("Other projects count:", otherProjects.length);
     console.log(
@@ -77,9 +70,8 @@ class OptimizedPortfolio {
       shuffledProjects.map((p) => p.id || p.querySelector(".project-title")?.textContent)
     );
 
-    
     setTimeout(() => {
-      this.cacheElements(); 
+      this.cacheElements();
       console.log(
         "Final order:",
         this.projects.map((p) => p.id || p.querySelector(".project-title")?.textContent)
@@ -88,7 +80,6 @@ class OptimizedPortfolio {
   }
 
   setupEventListeners() {
-    
     let scrollRAF = null;
     window.addEventListener("scroll", () => {
       if (scrollRAF) return;
@@ -98,16 +89,13 @@ class OptimizedPortfolio {
       });
     });
 
-    
     document.addEventListener("keydown", (e) => this.handleKeyboard(e));
 
-    
     if (this.clickZoneLeft && this.clickZoneRight) {
       this.clickZoneLeft.addEventListener("click", (e) => this.handleClickZone(e, "left"));
       this.clickZoneRight.addEventListener("click", (e) => this.handleClickZone(e, "right"));
     }
 
-    
     let resizeTimeout;
     window.addEventListener("resize", () => {
       if (resizeTimeout) return;
@@ -117,7 +105,6 @@ class OptimizedPortfolio {
       }, 250);
     });
 
-    
     window.addEventListener("beforeunload", () => {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     });
@@ -132,16 +119,12 @@ class OptimizedPortfolio {
   setupCarousel(carousel) {
     let navigationContainer = null;
 
-    
     navigationContainer = this.createNavigation(carousel);
 
-    
     this.setupImageSlides(carousel);
 
-    
     this.setupCarouselEvents(carousel, navigationContainer);
 
-    
     if (navigationContainer) {
       this.setupNavigationUpdates(carousel, navigationContainer);
     }
@@ -165,7 +148,6 @@ class OptimizedPortfolio {
       dotsContainer.appendChild(dot);
     });
 
-    
     dotsContainer.addEventListener("click", (e) => {
       if (e.target.classList.contains("carousel-dot")) {
         e.preventDefault();
@@ -237,7 +219,6 @@ class OptimizedPortfolio {
   }
 
   setupColorExtraction() {
-    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -268,13 +249,10 @@ class OptimizedPortfolio {
       const color = `rgb(${r}, ${g}, ${b})`;
       const lighterColor = `rgba(${r}, ${g}, ${b}, 0.3)`;
 
-      
       const project = img.closest(".project");
       if (project) {
-        
         const firstImage = project.querySelector(".image-slide img");
         if (img === firstImage) {
-          
           const darkerColor = `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 50)}, ${Math.max(0, b - 50)}, 0.8)`;
           project.style.setProperty("--project-logo-color", color);
           project.style.setProperty("--project-pagination-color", lighterColor);
@@ -282,11 +260,9 @@ class OptimizedPortfolio {
         }
       }
 
-      
       document.documentElement.style.setProperty("--logo-color", color);
       document.documentElement.style.setProperty("--pagination-color", lighterColor);
     } catch (e) {
-      
       document.documentElement.style.setProperty("--logo-color", "#000");
       document.documentElement.style.setProperty("--pagination-color", "rgba(0, 0, 0, 0.3)");
     }
@@ -315,7 +291,7 @@ class OptimizedPortfolio {
 
   updateCurrentProject() {
     const windowHeight = window.innerHeight;
-    let newProjectIndex = 0; 
+    let newProjectIndex = 0;
 
     this.projects.forEach((project, index) => {
       const rect = project.getBoundingClientRect();
@@ -324,7 +300,6 @@ class OptimizedPortfolio {
       }
     });
 
-    
     newProjectIndex = Math.min(newProjectIndex, this.projects.length - 1);
 
     if (newProjectIndex !== this.currentProjectIndex) {
@@ -480,34 +455,51 @@ class OptimizedPortfolio {
   }
 
   optimizeImages() {
-    
     const images = document.querySelectorAll("img:not([loading])");
     images.forEach((img) => {
       img.setAttribute("loading", "lazy");
     });
   }
 
+  getCurrentProject() {
+    // Get the currently visible project based on scroll position
+    const projects = this.projects;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    for (let i = 0; i < projects.length; i++) {
+      const project = projects[i];
+      const rect = project.getBoundingClientRect();
+      const projectTop = rect.top + scrollTop;
+      const projectBottom = projectTop + rect.height;
+
+      // Check if the project is in the viewport
+      if (scrollTop >= projectTop - window.innerHeight / 2 && scrollTop < projectBottom - window.innerHeight / 2) {
+        return project;
+      }
+    }
+
+    // Fallback to first project if none found
+    return projects[0] || null;
+  }
+
   setupSocialSharing() {
-    
     this.updateSocialMetaTags();
     this.addSocialSharingButtons();
   }
 
   updateSocialMetaTags() {
-    
     const currentProject = this.getCurrentProject();
     if (currentProject) {
       const projectName = currentProject.querySelector(".project-title")?.textContent || "Rose Hallgren";
       const projectImage =
-        currentProject.querySelector("img")?.src || "https:
+        currentProject.querySelector("img")?.src || "https://rosehallgren.se/assets/images/social-sharing-rose-hallgren.jpg";
 
-      
+      // Update Open Graph image dynamically
       const ogImage = document.querySelector('meta[property="og:image"]');
       if (ogImage) {
         ogImage.setAttribute("content", projectImage);
       }
 
-      
       const twitterImage = document.querySelector('meta[name="twitter:image"]');
       if (twitterImage) {
         twitterImage.setAttribute("content", projectImage);
@@ -516,16 +508,12 @@ class OptimizedPortfolio {
   }
 
   addSocialSharingButtons() {
-    
-    
     console.log("Social sharing optimization enabled");
   }
 
   handleResize() {
-    
     clearTimeout(this.resizeTimeout);
     this.resizeTimeout = setTimeout(() => {
-      
       this.carousels.forEach((carousel) => {
         const navigationContainer = carousel.parentElement.querySelector(".carousel-navigation");
         if (navigationContainer) {
@@ -535,7 +523,6 @@ class OptimizedPortfolio {
     }, 100);
   }
 }
-
 
 document.addEventListener("DOMContentLoaded", () => {
   new OptimizedPortfolio();
