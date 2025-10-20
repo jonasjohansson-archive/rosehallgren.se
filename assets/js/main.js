@@ -9,6 +9,7 @@ class OptimizedPortfolio {
     this.currentProjectIndex = 0;
     this.lastScrollTime = 0;
     this.scrollTimeout = null;
+    this.resizeTimeout = null;
     this.projects = [];
     this.carousels = [];
     this.clickZoneLeft = null;
@@ -24,6 +25,8 @@ class OptimizedPortfolio {
     this.initializeCarousels();
     this.setupColorExtraction();
     this.setupNavigation();
+    this.optimizeImages();
+    this.setupSocialSharing();
   }
 
   cacheElements() {
@@ -85,14 +88,14 @@ class OptimizedPortfolio {
   }
 
   setupEventListeners() {
-    // Throttled scroll handler
-    let scrollTimeout;
+    // Optimized scroll handler using requestAnimationFrame
+    let scrollRAF = null;
     window.addEventListener("scroll", () => {
-      if (scrollTimeout) return;
-      scrollTimeout = setTimeout(() => {
+      if (scrollRAF) return;
+      scrollRAF = requestAnimationFrame(() => {
         this.handleScroll();
-        scrollTimeout = null;
-      }, 16); // ~60fps
+        scrollRAF = null;
+      });
     });
 
     // Keyboard navigation
@@ -127,13 +130,10 @@ class OptimizedPortfolio {
   }
 
   setupCarousel(carousel) {
-    const isWideScreen = window.innerWidth >= 1200;
     let navigationContainer = null;
 
-    // Create navigation for mobile/tablet
-    if (!isWideScreen) {
-      navigationContainer = this.createNavigation(carousel);
-    }
+    // Create navigation for all screen sizes
+    navigationContainer = this.createNavigation(carousel);
 
     // Setup image slides
     this.setupImageSlides(carousel);
@@ -479,14 +479,60 @@ class OptimizedPortfolio {
     handlePermalink();
   }
 
-  handleResize() {
-    // Recalculate slide widths and update navigation
-    this.carousels.forEach((carousel) => {
-      const navigationContainer = carousel.parentElement.querySelector(".carousel-navigation");
-      if (navigationContainer) {
-        this.setupNavigationUpdates(carousel, navigationContainer);
-      }
+  optimizeImages() {
+    // Add lazy loading to all images for better performance
+    const images = document.querySelectorAll("img:not([loading])");
+    images.forEach((img) => {
+      img.setAttribute("loading", "lazy");
     });
+  }
+
+  setupSocialSharing() {
+    // Add social sharing optimization
+    this.updateSocialMetaTags();
+    this.addSocialSharingButtons();
+  }
+
+  updateSocialMetaTags() {
+    // Update social media meta tags based on current project
+    const currentProject = this.getCurrentProject();
+    if (currentProject) {
+      const projectName = currentProject.querySelector(".project-title")?.textContent || "Rose Hallgren";
+      const projectImage =
+        currentProject.querySelector("img")?.src || "https://rosehallgren.se/assets/images/social-sharing-rose-hallgren.jpg";
+
+      // Update Open Graph image dynamically
+      const ogImage = document.querySelector('meta[property="og:image"]');
+      if (ogImage) {
+        ogImage.setAttribute("content", projectImage);
+      }
+
+      // Update Twitter image
+      const twitterImage = document.querySelector('meta[name="twitter:image"]');
+      if (twitterImage) {
+        twitterImage.setAttribute("content", projectImage);
+      }
+    }
+  }
+
+  addSocialSharingButtons() {
+    // Add social sharing buttons (optional enhancement)
+    // This could be expanded to add actual sharing buttons to the UI
+    console.log("Social sharing optimization enabled");
+  }
+
+  handleResize() {
+    // Debounce resize events for better performance
+    clearTimeout(this.resizeTimeout);
+    this.resizeTimeout = setTimeout(() => {
+      // Recalculate slide widths and update navigation
+      this.carousels.forEach((carousel) => {
+        const navigationContainer = carousel.parentElement.querySelector(".carousel-navigation");
+        if (navigationContainer) {
+          this.setupNavigationUpdates(carousel, navigationContainer);
+        }
+      });
+    }, 100);
   }
 }
 
