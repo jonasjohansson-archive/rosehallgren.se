@@ -348,24 +348,6 @@ button:focus {
   object-fit: contain;
 }
 
-.click-zone {
-  position: fixed;
-  top: 0;
-  width: 50%;
-  height: 100vh;
-  z-index: 10;
-  cursor: pointer;
-  pointer-events: none;
-}
-
-.click-zone-left {
-  left: 0;
-}
-
-.click-zone-right {
-  right: 0;
-}
-
 .carousel-navigation {
   position: absolute;
   bottom: var(--spacing-large);
@@ -516,8 +498,7 @@ button:focus {
 
 .project-title,
 .image-slide,
-.image-slide img,
-.click-zone {
+.image-slide img {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;

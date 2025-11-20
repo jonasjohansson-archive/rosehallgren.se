@@ -12,8 +12,6 @@ class OptimizedPortfolio {
     this.resizeTimeout = null;
     this.projects = [];
     this.carousels = [];
-    this.clickZoneLeft = null;
-    this.clickZoneRight = null;
 
     this.init();
   }
@@ -32,8 +30,6 @@ class OptimizedPortfolio {
   cacheElements() {
     this.projects = Array.from(document.querySelectorAll(".project"));
     this.carousels = Array.from(document.querySelectorAll(".project-carousel"));
-    this.clickZoneLeft = document.getElementById("click-zone-left");
-    this.clickZoneRight = document.getElementById("click-zone-right");
   }
 
   shuffleProjects() {
@@ -90,11 +86,6 @@ class OptimizedPortfolio {
     });
 
     document.addEventListener("keydown", (e) => this.handleKeyboard(e));
-
-    if (this.clickZoneLeft && this.clickZoneRight) {
-      this.clickZoneLeft.addEventListener("click", (e) => this.handleClickZone(e, "left"));
-      this.clickZoneRight.addEventListener("click", (e) => this.handleClickZone(e, "right"));
-    }
 
     let resizeTimeout;
     window.addEventListener("resize", () => {
@@ -304,22 +295,6 @@ class OptimizedPortfolio {
 
     if (newProjectIndex !== this.currentProjectIndex) {
       this.currentProjectIndex = newProjectIndex;
-      this.updateClickZones();
-    }
-  }
-
-  updateClickZones() {
-    const aboutSection = document.querySelector(".about-section");
-    const aboutRect = aboutSection.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    const isAboutVisible = aboutRect.top <= windowHeight / 2 && aboutRect.bottom >= windowHeight / 2;
-
-    if (isAboutVisible) {
-      this.clickZoneLeft?.classList.remove("active");
-      this.clickZoneRight?.classList.remove("active");
-    } else {
-      this.clickZoneLeft?.classList.add("active");
-      this.clickZoneRight?.classList.add("active");
     }
   }
 
@@ -346,22 +321,6 @@ class OptimizedPortfolio {
         e.preventDefault();
         this.nextProject();
         break;
-    }
-  }
-
-  handleClickZone(e, direction) {
-    if (e.target.tagName === "A" || e.target.closest("a")) return;
-
-    e.preventDefault();
-    const currentProject = this.projects[this.currentProjectIndex];
-    const currentCarousel = currentProject?.querySelector(".project-carousel");
-
-    if (currentCarousel) {
-      if (direction === "left") {
-        this.previousSlide(currentCarousel);
-      } else {
-        this.advanceSlide(currentCarousel);
-      }
     }
   }
 
@@ -492,7 +451,7 @@ class OptimizedPortfolio {
     if (currentProject) {
       const projectName = currentProject.querySelector(".project-title")?.textContent || "Rose Hallgren";
       const projectImage =
-        currentProject.querySelector("img")?.src || "https://rosehallgren.se/assets/images/social-sharing-rose-hallgren.jpg";
+        currentProject.querySelector("img")?.src || "https://rosehallgren.se/assets/images/rose-hallgren.jpg";
 
       // Update Open Graph image dynamically
       const ogImage = document.querySelector('meta[property="og:image"]');
