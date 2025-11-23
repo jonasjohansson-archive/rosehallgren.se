@@ -341,8 +341,8 @@ button:focus {
 }
 
 .video-slide iframe {
-  width: min(75vw, calc(75vh * 16 / 9));
-  height: min(calc(75vw * 9 / 16), 75vh);
+  width: min(80vw, calc(80vh * 16 / 9));
+  height: min(calc(80vw * 9 / 16), 80vh);
   object-fit: contain;
   object-position: center;
   z-index: 3;
@@ -566,8 +566,8 @@ button:focus {
   }
 
   .video-slide iframe {
-    width: min(calc(40vw - 10vw), calc(70vh * 16 / 9));
-    height: min(calc((40vw - 10vw) * 9 / 16), 70vh);
+    width: min(calc(50vw - 10vw), calc(80vh * 16 / 9));
+    height: min(calc((50vw - 10vw) * 9 / 16), 80vh);
   }
 
   .footer {
