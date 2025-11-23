@@ -426,6 +426,27 @@ button:focus {
   .carousel-dot.active {
     background: rgba(255, 255, 255, 1);
   }
+
+.placeholder-slide {
+  height: 100%;
+  min-height: 60vh;
+  display: var(--flex-center);
+  align-items: var(--flex-center-props);
+  justify-content: var(--flex-center-props);
+  flex-direction: column;
+  gap: var(--spacing-medium);
+  text-align: center;
+  padding: var(--spacing-large);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.placeholder-slide p {
+  max-width: 420px;
+  margin: 0;
+}
 }
 
 .carousel-dot:hover {
