@@ -1,2 +1,4 @@
 .DS_Store
 node_modules
+v2/node_modules
+v2/dist
