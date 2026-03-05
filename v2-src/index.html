@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Studio Rose Hallgren</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html, body {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        background: #ffffff;
+      }
+
+      #canvas-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      #label-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .house-label {
+        color: #000;
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        pointer-events: auto;
+        cursor: pointer;
+        padding: 4px 8px;
+        transition: opacity 0.3s;
+        font-weight: 300;
+      }
+
+      .house-label:hover {
+        opacity: 0.6;
+      }
+
+      #crosshair {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 4px;
+        height: 4px;
+        margin: -2px 0 0 -2px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.25);
+        z-index: 50;
+        pointer-events: none;
+        mix-blend-mode: difference;
+      }
+
+      #nav-hint {
+        position: fixed;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #999;
+        font-weight: 300;
+        z-index: 50;
+        transition: opacity 0.6s;
+        pointer-events: none;
+      }
+
+      #nav-hint.hidden {
+        opacity: 0;
+      }
+
+      #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 200;
+        transition: opacity 0.6s;
+      }
+
+      #loading.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      #loading span {
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        font-weight: 300;
+        color: #999;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading"><span>Loading</span></div>
+    <div id="canvas-container"></div>
+    <div id="crosshair"></div>
+    <div id="label-container"></div>
+    <div id="nav-hint">WASD to move &middot; Click to look &middot; Click house to enter</div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
