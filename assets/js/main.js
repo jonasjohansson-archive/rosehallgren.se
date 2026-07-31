@@ -376,11 +376,31 @@ class Portfolio {
 
   // --- colour --------------------------------------------------------------
 
+  /**
+   * The slide's blurred backdrop, taken from the image already on screen.
+   *
+   * currentSrc, so it reuses the exact file the browser picked off the srcset
+   * and costs no second request. Set after load because before that currentSrc
+   * is empty and the background shorthand would be invalid.
+   */
+  setBackdrop(img) {
+    const slide = img.closest(".image-slide");
+    if (!slide) return;
+    const apply = () => {
+      const src = img.currentSrc || img.src;
+      if (src) slide.style.setProperty("--bg-image", `url("${src}")`);
+    };
+    if (img.complete && img.naturalWidth) apply();
+    else img.addEventListener("load", apply, { once: true });
+  }
+
   setupColorExtraction() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) this.extractColorFromImage(entry.target);
+          if (!entry.isIntersecting) return;
+          this.setBackdrop(entry.target);
+          this.extractColorFromImage(entry.target);
         });
       },
       { threshold: 0.1 },

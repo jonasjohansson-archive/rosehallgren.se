@@ -71,6 +71,12 @@
      colour, so the palette stays in one place. */
   --paper: #eeece8;
   --ink: #141414;
+
+  /* How much paper sits over the blurred backdrop. This is a contrast floor,
+     not a taste setting: at 0.72 the darkest possible photograph still veils to
+     roughly L=0.41, which keeps --ink above 8:1 on every slide. Lower it and
+     the guarantee goes with it. */
+  --backdrop-veil: 0.72;
   --ink-on-paper: var(--ink);
   --ink-on-panel: var(--color-white);
 
@@ -419,6 +425,37 @@ body {
 .slide:has(.slide-content),
 .slide:has(.video-slide) {
   content-visibility: visible;
+}
+
+/* The photograph again as its own backdrop, blurred and scaled, so a contained
+   image sits in a wash of its own colour rather than on flat paper.
+
+   Over it, a sheet of paper at --backdrop-veil. That is what makes the title
+   and dots safe: the surface under them is no longer "whatever this photograph
+   happens to be" but always paper tinted by it, so ink stays legible without
+   sampling anything or shadowing anything. Sampling is what produced a 1.16:1
+   title here once already.
+
+   --bg-image is set by main.js from the image's own currentSrc after it loads,
+   so the backdrop costs no extra request; until then the shorthand is invalid
+   and simply paints nothing. */
+.image-slide::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--bg-image) center / cover no-repeat;
+  filter: blur(40px);
+  transform: scale(1.4);
+  z-index: 1;
+}
+
+.image-slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  opacity: var(--backdrop-veil);
+  z-index: 2;
 }
 
 /* Keyed off content, not DOM position. With :nth-child, inserting a single
