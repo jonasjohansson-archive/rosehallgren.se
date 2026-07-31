@@ -4,21 +4,12 @@
  * Type is self-hosted. Previously the site used the system stack, which meant
  * it rendered differently on every machine and the PDF could not embed it.
  *
- * Two faces: Syne for the display sizes, where its character shows, and
- * Instrument Sans for running copy, which Syne is too idiosyncratic to carry
- * across long paragraphs. Both are SIL Open Font License, Latin subset,
- * 34KB and 30KB.
+ * Instrument Sans throughout, SIL Open Font License, Latin subset, 30KB.
  *
- * To try another, change --font-display or --font-body below. Bricolage,
- * Fraunces and SpaceGrotesk are already in assets/fonts/ for exactly that.
+ * To try another, change --font-display or --font-body below. Syne, Bricolage,
+ * Fraunces and SpaceGrotesk are in assets/fonts/ for exactly that; Syne in
+ * particular works well on --font-display alone.
  */
-
-@font-face {
-  font-family: "Syne";
-  src: url("../fonts/Syne.woff2") format("woff2");
-  font-weight: 400 800;
-  font-display: swap;
-}
 
 @font-face {
   font-family: "Instrument";
@@ -31,7 +22,7 @@
   /* rem so the page respects the reader's browser font-size setting.
      Body copy sits at 14px; the chrome (titles, contact links) stays at 12px
      via --font-size-chrome. */
-  --font-display: "Syne", Georgia, serif;
+  --font-display: "Instrument", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body: "Instrument", -apple-system, BlinkMacSystemFont, sans-serif;
 
   --font-size-base: 0.875rem;
