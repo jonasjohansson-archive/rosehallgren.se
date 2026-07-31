@@ -33,7 +33,6 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y proximity;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -109,7 +108,6 @@ body {
   justify-content: center;
   padding: 2.5rem;
   background: var(--color-bg);
-  scroll-snap-align: start;
   color: var(--logo-color, #000);
   transition: color 1s ease;
 }
@@ -159,7 +157,6 @@ body {
   width: 100%;
   overflow: hidden;
   position: relative;
-  scroll-snap-align: start;
 }
 
 .project-title {
@@ -374,7 +371,6 @@ body {
 .footer {
   background: var(--color-bg);
   padding: 2.5rem;
-  scroll-snap-align: start;
   color: var(--logo-color, #000);
   transition: color 1s ease;
 }
