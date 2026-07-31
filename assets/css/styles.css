@@ -223,6 +223,16 @@ body {
   display: none;
 }
 
+/* Set by the pointer handler: the outer fifth on each side navigates, so the
+   cursor says so. Only ever applied for a mouse. */
+.project-carousel.zone-prev {
+  cursor: w-resize;
+}
+
+.project-carousel.zone-next {
+  cursor: e-resize;
+}
+
 .slide {
   min-width: 100vw;
   height: 100vh;

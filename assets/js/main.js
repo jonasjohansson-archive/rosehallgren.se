@@ -87,7 +87,7 @@ class Portfolio {
       carousel.setAttribute("tabindex", "0");
       carousel.setAttribute("role", "group");
       carousel.setAttribute("aria-label", `${this.titleOf(carousel)} images`);
-      this.setupTapToAdvance(carousel);
+      this.setupPointerNavigation(carousel);
       // Bound to the carousel, not the document, so the arrow keys act on the
       // carousel that actually has focus and page scrolling is left alone.
       carousel.addEventListener("keydown", (e) => this.handleCarouselKeys(e, carousel));
@@ -95,19 +95,26 @@ class Portfolio {
   }
 
   /**
-   * On touch, tapping an image advances the carousel.
+   * Click and tap navigation.
    *
-   * Guarded three ways: only for coarse pointers, never when the tap lands on
-   * a link or a dot, and only when the finger barely moved, so a swipe or a
-   * text selection is not mistaken for a tap. Wraps to the first slide at the
-   * end rather than jumping to the next project, which would be a surprising
-   * amount of travel for one tap.
+   * Touch: tapping an image advances, since aiming for a 20% strip with a
+   * thumb is fiddly.
+   * Mouse: the outer fifth on each side steps back or forward, the middle
+   * three fifths do nothing, so text stays selectable and the image stays
+   * clickable-through to nothing by accident.
+   *
+   * Guarded either way: never on a link, a dot or the copy, never when the
+   * pointer moved more than 10px, never on a press longer than 500ms. Both
+   * wrap within the project rather than jumping to the next one, which would
+   * be a lot of travel for one click.
    */
-  setupTapToAdvance(carousel) {
-    if (!window.matchMedia("(pointer: coarse)").matches) return;
+  setupPointerNavigation(carousel) {
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    const EDGE = 0.2;
     let x = 0;
     let y = 0;
     let t = 0;
+
     carousel.addEventListener(
       "pointerdown",
       (e) => {
@@ -117,13 +124,48 @@ class Portfolio {
       },
       { passive: true }
     );
+
     carousel.addEventListener("pointerup", (e) => {
       if (e.target.closest("a, button, .slide-content")) return;
       if (Math.hypot(e.clientX - x, e.clientY - y) > 10) return;
       if (e.timeStamp - t > 500) return;
+
+      const rect = carousel.getBoundingClientRect();
+      const frac = (e.clientX - rect.left) / rect.width;
       const current = this.currentSlide(carousel);
-      this.goToSlide(carousel, current >= this.maxIndex(carousel) ? 0 : current + 1);
+      const max = this.maxIndex(carousel);
+
+      if (coarse) {
+        this.goToSlide(carousel, current >= max ? 0 : current + 1);
+      } else if (frac < EDGE) {
+        this.goToSlide(carousel, current <= 0 ? max : current - 1);
+      } else if (frac > 1 - EDGE) {
+        this.goToSlide(carousel, current >= max ? 0 : current + 1);
+      }
     });
+
+    // Show which way a click will go, without a pointermove listener doing
+    // work on every frame: the class only changes when the zone changes.
+    if (!coarse) {
+      let zone = "";
+      carousel.addEventListener(
+        "pointermove",
+        (e) => {
+          const rect = carousel.getBoundingClientRect();
+          const frac = (e.clientX - rect.left) / rect.width;
+          const next = frac < EDGE ? "prev" : frac > 1 - EDGE ? "next" : "";
+          if (next === zone) return;
+          zone = next;
+          carousel.classList.toggle("zone-prev", next === "prev");
+          carousel.classList.toggle("zone-next", next === "next");
+        },
+        { passive: true }
+      );
+      carousel.addEventListener("pointerleave", () => {
+        zone = "";
+        carousel.classList.remove("zone-prev", "zone-next");
+      });
+    }
   }
 
   titleOf(carousel) {
