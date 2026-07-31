@@ -1,6 +1,10 @@
 User-agent: *
 Allow: /
 
+# The editor is a redirect into Pages CMS, not content.
+# The page also carries <meta name="robots" content="noindex">.
+Disallow: /admin
+
 # Sitemap
 Sitemap: https://rosehallgren.se/sitemap.xml
 

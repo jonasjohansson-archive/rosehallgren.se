@@ -3,4 +3,5 @@
 # permanently out of step: prettier makes it 296KB, Eleventy writes 239KB,
 # and each run reverts the other.
 index.html
+admin/index.html
 _site/

@@ -1,0 +1,77 @@
+---
+permalink: /admin/
+eleventyExcludeFromCollections: true
+---
+{#
+  rosehallgren.se/admin — a memorable door to the editor.
+
+  Pages CMS is a hosted app, and this site is served by GitHub Pages, which
+  only serves static files: there is nothing to self-host into /admin. So this
+  is a redirect, and it is one page rather than a server rule because Pages
+  cannot issue a 301.
+
+  Three ways in, so it works with JS off and with meta-refresh blocked:
+  location.replace (no history entry, so Back leaves the site rather than
+  bouncing you here again), a meta refresh, and a plain link.
+
+  NOTE the branch: this repo is on master, not main. app.pagescms.org 404s on
+  the wrong branch.
+#}
+{%- set cmsUrl = "https://app.pagescms.org/jonasjohansson-archive/rosehallgren.se/master" %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Edit · Studio Rose Hallgren</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href="{{ cmsUrl }}" />
+    <meta http-equiv="refresh" content="0; url={{ cmsUrl }}" />
+    <script>
+      location.replace("{{ cmsUrl }}");
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg" />
+    <style>
+      @font-face {
+        font-family: "Instrument";
+        src: url("/assets/fonts/Instrument.woff2") format("woff2");
+        font-weight: 400 700;
+        font-display: optional;
+      }
+      html {
+        color-scheme: light;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 2.5rem;
+        background: #eeece8;
+        color: #141414;
+        font:
+          400 1rem/1.5 "Instrument",
+          Helvetica,
+          Arial,
+          sans-serif;
+        text-align: center;
+      }
+      a {
+        color: inherit;
+      }
+      .note {
+        margin-top: 1.5rem;
+        font-size: 0.75rem;
+        opacity: 0.6;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p>Opening the <a href="{{ cmsUrl }}">Studio Rose Hallgren editor</a>…</p>
+      <p class="note">
+        If nothing happens, follow the link above and sign in with GitHub.
+      </p>
+    </main>
+  </body>
+</html>
