@@ -486,9 +486,21 @@ body {
     text-align: left;
   }
 
+  /* Slides are fixed at 100vh with the project clipping overflow, so long copy
+     on a small phone was being cut off: Barneval needed 812px inside 667px on
+     an iPhone SE. Text slides now start at the top and scroll internally, so
+     nothing is lost whatever the copy length or device. */
+  .slide:has(.slide-content) {
+    align-items: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
   .slide-content {
     text-align: left;
-    padding: 1.5rem;
+    padding: 1.5rem 1.5rem 3rem;
+    width: 100%;
   }
 
   #logo-top,
@@ -539,7 +551,12 @@ body {
 
 @media (max-width: 480px) {
   .slide-content {
-    padding: 1.25rem;
+    padding: 1.25rem 1.25rem 3rem;
+    font-size: 0.9375rem;
+  }
+
+  .slide-content p {
+    margin-bottom: var(--spacing-medium);
   }
 }
 
