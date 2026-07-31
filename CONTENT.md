@@ -1,15 +1,15 @@
 # Editing the site
 
-The site is edited at [app.pagescms.org](https://app.pagescms.org) — no code, no
-Git. Everything you save is committed to this repository, a build runs, and the
-page updates a minute or so later.
+Go to **[rosehallgren.se/admin](https://rosehallgren.se/admin/)** and sign in
+with GitHub. No code, no Git. Everything you save is committed to this
+repository, a build runs, and the page updates a minute or so later.
 
 ## Setup, once
 
-1. Sign in to Pages CMS with GitHub.
+1. Open [rosehallgren.se/admin](https://rosehallgren.se/admin/) — it takes you
+   to Pages CMS. Sign in with GitHub.
 2. Install the Pages CMS GitHub App on `jonasjohansson-archive/rosehallgren.se`.
-3. Open the repo in Pages CMS. It reads `.pages.yml` and shows two sections:
-   **Projects** and **Intro and contact**.
+3. You will see two sections: **Projects** and **Intro and contact**.
 
 ## Projects
 
