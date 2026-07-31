@@ -114,7 +114,7 @@ body {
 
 .about-content {
   max-width: 600px;
-  text-align: center;
+  text-align: left;
   width: 100%;
 }
 
@@ -162,8 +162,7 @@ body {
 .project-title {
   position: absolute;
   top: var(--spacing-large);
-  left: 50%;
-  transform: translateX(-50%);
+  left: var(--spacing-large);
   z-index: 100;
   font-size: var(--font-size-title);
   font-weight: normal;
@@ -172,7 +171,7 @@ body {
      (or darkened, over a bright photo) until it clears 4.5:1 against the band
      it sits on. No shadow — the contrast is in the colour itself. */
   color: var(--project-title-color, var(--color-white));
-  text-align: center;
+  text-align: left;
   pointer-events: none;
   text-transform: uppercase;
 }
@@ -225,7 +224,8 @@ body {
 
 .slide-content {
   max-width: 600px;
-  text-align: center;
+  text-align: left;
+  font-size: 1rem;
   padding: 1rem;
   margin: 0 auto;
   position: relative;
@@ -388,7 +388,7 @@ body {
 
 .footer-content {
   max-width: 600px;
-  text-align: center;
+  text-align: left;
   width: 100%;
   margin: 0 auto;
 }
@@ -571,7 +571,7 @@ body {
     break-after: auto; /* no trailing blank slide */
     min-height: 158mm;
     padding-top: 55mm;
-    text-align: center;
+    text-align: left;
   }
 
   .about-content {
