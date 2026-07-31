@@ -21,7 +21,7 @@
 
 set -euo pipefail
 
-SRC_DIRS=("assets/images/projects" "assets/images/photography" "assets/images/berensson")
+SRC_DIRS=("assets/images/projects" "assets/images/photography" "assets/images/berensson" "assets/images/codesign")
 OUT="assets/images/w"
 WIDTHS=(640 1000 1500 2000)
 Q=80   # measured indistinguishable from q85 on contain-fitted photos
