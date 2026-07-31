@@ -11,6 +11,30 @@
  * particular works well on --font-display alone.
  */
 
+/*
+ * Registered so these carry a real colour type and a sane value before any
+ * script runs, rather than being untyped strings.
+ *
+ * Note that registering them does NOT make them safe to transition. Chrome
+ * latches a background-color transition between two color-mix() results built
+ * from a custom property: the dots stuck at a mid-interpolation oklab value
+ * and never arrived, so white ink over the dark panel painted as near-black,
+ * permanently. Measured with and without @property, and with `all` narrowed to
+ * `background-color`; only removing the transition fixes it. The dots
+ * therefore change colour instantly, which at 8-11px reads as no different.
+ */
+@property --project-title-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #141414;
+}
+
+@property --project-dots-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #141414;
+}
+
 @font-face {
   font-family: "Instrument";
   src: url("../fonts/Instrument.woff2") format("woff2");
@@ -42,8 +66,13 @@
   --font-size-title: 1.0625rem;
   --line-height-base: 1.5;
 
+  /* The two surfaces a slide can present, and the ink that belongs on each.
+     main.js names the surface (data-title-on / data-dots-on) and never a
+     colour, so the palette stays in one place. */
   --paper: #eeece8;
   --ink: #141414;
+  --ink-on-paper: var(--ink);
+  --ink-on-panel: var(--color-white);
 
   --color-text: #000;
   --color-bg: #fff;
@@ -237,6 +266,22 @@ body {
   contain-intrinsic-size: auto 100vh;
 }
 
+/* Set from data-title-on / data-dots-on, which main.js writes as the name of
+   the surface underneath. Paper is the default so the title is legible before
+   any script runs. */
+.project {
+  --project-title-color: var(--ink-on-paper);
+  --project-dots-color: var(--ink-on-paper);
+}
+
+.project[data-title-on="panel"] {
+  --project-title-color: var(--ink-on-panel);
+}
+
+.project[data-dots-on="panel"] {
+  --project-dots-color: var(--ink-on-panel);
+}
+
 /* The first project holds the preloaded LCP image and is one short scroll from
    the fold, so it is never worth skipping. Selected via the intro rather than
    :first-of-type, which matches .about-section, not the first .project. */
@@ -259,10 +304,9 @@ body {
   font-size: var(--font-size-title);
   font-weight: 600;
   letter-spacing: 0.11em;
-  /* A tint of the lead image's own colour rather than flat white, lightened
-     (or darkened, over a bright photo) until it clears 4.5:1 against the band
-     it sits on. No shadow — the contrast is in the colour itself. */
-  color: var(--project-title-color, var(--color-white));
+  /* Ink or white depending on the surface underneath, resolved above. No
+     shadow — the contrast is in the colour itself. */
+  color: var(--project-title-color);
   text-align: left;
   pointer-events: none;
   text-transform: uppercase;
@@ -478,13 +522,9 @@ body {
   border: none;
   border-radius: 50%;
   padding: 0;
-  background: color-mix(
-    in srgb,
-    var(--project-dots-color, var(--color-white)) 45%,
-    transparent
-  );
+  background: color-mix(in srgb, var(--project-dots-color) 45%, transparent);
   cursor: pointer;
-  transition: var(--transition-fast);
+  /* Deliberately not transitioned: see the @property note at the top. */
   position: relative;
 }
 
@@ -497,19 +537,15 @@ body {
 }
 
 .carousel-dot:hover {
-  background: color-mix(
-    in srgb,
-    var(--project-dots-color, var(--color-white)) 75%,
-    transparent
-  );
+  background: color-mix(in srgb, var(--project-dots-color) 75%, transparent);
 }
 
 .carousel-dot.active {
-  background: var(--project-dots-color, var(--color-white));
+  background: var(--project-dots-color);
 }
 
 .carousel-dot:focus-visible {
-  outline: 2px solid var(--project-dots-color, var(--color-white));
+  outline: 2px solid var(--project-dots-color);
   outline-offset: 4px;
 }
 

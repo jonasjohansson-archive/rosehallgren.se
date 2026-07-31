@@ -233,21 +233,23 @@ class Portfolio {
       // Surfaces are flat and known: paper under an image slide, the dark
       // panel under a text slide. No sampling needed, and no way for the
       // title to land on a backdrop it was not measured against.
-      const shade = (slide) =>
-        slide && slide.querySelector(".slide-content") ? "#fff" : "#141414";
+      // Names a surface, never a colour. Which ink belongs on paper and which
+      // on the dark panel is a design decision, so it lives in the stylesheet
+      // next to --paper and --ink rather than as a hex literal in here.
+      const surface = (slide) =>
+        slide && slide.querySelector(".slide-content") ? "panel" : "paper";
 
       const under = slides[Math.min(current, slides.length - 1)];
       if (under && project) {
-        project.style.setProperty("--project-title-color", shade(under));
+        project.dataset.titleOn = surface(under);
 
         // The title sits top-left and the dots top-right. Above 1600px the
         // carousel shows two slides at once, so the dots are over the NEXT
         // slide and can need the opposite colour from the title.
         const twoUp = carousel.clientWidth / this.slideWidth(carousel) > 1.5;
-        const underDots = twoUp
-          ? slides[Math.min(current + 1, slides.length - 1)]
-          : under;
-        project.style.setProperty("--project-dots-color", shade(underDots));
+        project.dataset.dotsOn = surface(
+          twoUp ? slides[Math.min(current + 1, slides.length - 1)] : under,
+        );
       }
 
       dots.forEach((dot, index) => {
