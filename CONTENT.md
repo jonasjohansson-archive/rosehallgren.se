@@ -8,7 +8,7 @@ repository, a build runs, and the page updates a minute or so later.
 
 1. Open [rosehallgren.se/admin](https://rosehallgren.se/admin/) — it takes you
    to Pages CMS. Sign in with GitHub.
-2. Install the Pages CMS GitHub App on `jonasjohansson-archive/rosehallgren.se`.
+2. Install the Pages CMS GitHub App on `jonasjohansson/rosehallgren.se`.
 3. You will see two sections: **Projects** and **Intro and contact**.
 
 ## Projects
