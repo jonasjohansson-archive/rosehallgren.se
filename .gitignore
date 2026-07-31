@@ -2,3 +2,8 @@
 node_modules
 v2-src/node_modules
 .claude/
+
+# Build input for the v2 experiment, byte-identical to the deployed v2/images.
+# Kept out of the repo so the same 77MB is not stored and deployed twice.
+# To restore before running the v2 build:  cp v2/images/* v2-src/public/images/
+v2-src/public/images/
