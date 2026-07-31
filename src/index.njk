@@ -30,7 +30,7 @@ permalink: index.html
 
     <link
       rel="stylesheet"
-      href="assets/css/styles.css?v=20260801l"
+      href="assets/css/styles.css?v=20260801m"
       media="all"
     />
     <link rel="icon" type="image/svg+xml" href="assets/favicon/favicon.svg" />
@@ -205,9 +205,10 @@ permalink: index.html
             it. Restored, and driven by the "Heading" field, which until now wrote
             to nothing. #}
             <h1>{{ settings.site.heading }}</h1>
-{%- for para in settings.site.intro | paragraphs %}
-            <p>{{ para | safe }}</p>
-{%- endfor %}
+            {#- Already whole paragraphs: the CMS field is rich-text saving HTML,
+                so it arrives with its own <p> tags. Splitting it again would
+                nest them. #}
+            {{ settings.site.intro | safe }}
           </div>
           <div class="about-contact">
             <p>

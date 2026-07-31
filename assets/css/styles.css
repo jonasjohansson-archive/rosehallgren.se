@@ -224,13 +224,26 @@ body {
    It sits FIRST in the DOM and is reordered here, because in the deck it is a
    right float and a float only affects content that follows it. As the last
    child it simply stacked under the copy and took the cover from 36 pages
-   to 37. */
+   to 37.
+
+   flex: 1 rather than a fixed width, so the figure IS the right-hand column and
+   the photograph centres inside it. Sized to its own width it sat immediately
+   after the 600px copy, which read as trailing the text rather than as a
+   column of its own. */
 .about-portrait {
   order: 2;
-  flex: 0 0 auto;
-  width: var(--portrait-width);
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 0;
   line-height: 0;
+}
+
+.about-portrait picture {
+  display: block;
+  width: var(--portrait-width);
+  max-width: 100%;
 }
 
 .about-portrait img {
@@ -662,6 +675,11 @@ body {
   /* Under the copy, and only two thirds of the width: at full width a 3:4
      portrait is 520px tall on a 390px phone and buries the contact links. */
   .about-portrait {
+    display: block;
+    flex: 0 0 auto;
+  }
+
+  .about-portrait picture {
     width: min(66%, 320px);
   }
 
@@ -865,9 +883,15 @@ body {
      to 37. Floated, it sits in the 306.667mm live box beside the 195mm text
      column and costs the cover nothing. */
   .about-portrait {
+    display: block;
     float: right;
     width: 62mm;
     margin: 0 0 6mm 10mm;
+  }
+
+  .about-portrait picture {
+    display: block;
+    width: 100%;
   }
 
   .about-portrait img.screen-only {

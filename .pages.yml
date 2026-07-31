@@ -197,13 +197,21 @@ content:
               required: true,
               description: 'The main heading at the top of the page.',
             }
-          - {
-              name: intro,
-              label: Intro text,
-              type: text,
-              required: true,
-              description: 'Leave a blank line between paragraphs. To add a link, paste this and change the address and the words: <a href="https://example.com" target="_blank" rel="noopener noreferrer">the words you want linked</a>',
-            }
+          - name: intro
+            label: Intro text
+            type: rich-text
+            required: true
+            # format: html because the template prints this straight into the
+            # page. Markdown would need a converter at build time for no gain.
+            # switcher leaves an escape hatch to the underlying HTML without
+            # making that the default way in. media: false because there are no
+            # images in the intro — only the portrait beside it, which has its
+            # own field.
+            options:
+              format: html
+              switcher: true
+              media: false
+            description: 'Select a word and use the link button to add a link. Enter starts a new paragraph.'
           - {
               name: description,
               label: 'Search description',
