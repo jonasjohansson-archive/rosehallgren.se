@@ -30,6 +30,9 @@ for tool in magick cwebp; do
   command -v "$tool" >/dev/null || { echo "missing required tool: $tool" >&2; exit 1; }
 done
 
+# Clean, so a source that shrank (e.g. after trimming white borders) cannot
+# leave stale wider derivatives behind for the HTML to point at.
+rm -rf "$OUT"
 mkdir -p "$OUT"
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
@@ -54,20 +57,24 @@ for dir in "${SRC_DIRS[@]}"; do
     count=$((count + 1))
     printf '==> %-46s %5spx\n' "$base" "$src_w"
 
+    emitted=""
     for w in "${WIDTHS[@]}"; do
-      # Never upscale, but always emit 640 so tiny sources get a derivative.
-      if [ "$w" -gt "$src_w" ] && [ "$w" -ne 640 ]; then continue; fi
+      # Never upscale: cap each rung at the source width, and skip a rung that
+      # would duplicate one already emitted. A 984px source yields 640 and 984,
+      # not a lone 640.
       target=$(( w > src_w ? src_w : w ))
+      case " $emitted " in *" $target "*) continue ;; esac
+      emitted="$emitted $target"
 
-      flat="$tmp/$base-$w.png"
+      flat="$tmp/$base-$target.png"
       magick "$src[0]" -auto-orient -resize "${target}x>" -strip \
              -colorspace sRGB "$flat"
-      cwebp -quiet -q "$Q" -m 6 "$flat" -o "$OUT/$base-$w.webp"
+      cwebp -quiet -q "$Q" -m 6 "$flat" -o "$OUT/$base-$target.webp"
       rm -f "$flat"
 
-      sz=$(stat -f%z "$OUT/$base-$w.webp")
+      sz=$(stat -f%z "$OUT/$base-$target.webp")
       total_out=$((total_out + sz))
-      printf '      %5spx  %8s B\n' "$w" "$sz"
+      printf '      %5spx  %8s B\n' "$target" "$sz"
     done
   done < <(find "$dir" -maxdepth 1 -type f \
              \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) -print0)
@@ -84,12 +91,15 @@ printf 'derivatives (all widths): %s MB\n' "$(echo "scale=2; $total_out/1048576"
 # through untouched. So the print path gets its own JPEG set, wired up with
 # <source media="print"> so the screen still gets WebP.
 #
-# 1500px covers the largest print slot (the ~175mm hero at ~200dpi).
+# The deck is 16:9 and screen-first. Its largest slot is the ~210mm hero,
+# which is ~1180px when the PDF is shown full-screen on a 1920px display, so
+# 1200px is exactly right and 1500 was simply heavier for no visible gain.
 
 PRINT_OUT="assets/images/print"
-PRINT_W=1500
-PRINT_Q=82
+PRINT_W=1200
+PRINT_Q=80
 
+rm -rf "$PRINT_OUT"
 mkdir -p "$PRINT_OUT"
 print_total=0
 for dir in "${SRC_DIRS[@]}"; do

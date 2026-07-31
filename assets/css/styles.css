@@ -236,6 +236,12 @@ body {
   margin-bottom: var(--spacing-medium);
 }
 
+.slide-content .credit {
+  margin-top: var(--spacing-large);
+  font-size: var(--font-size-chrome);
+  opacity: 0.7;
+}
+
 .slide-content a {
   color: inherit;
   text-decoration: underline;
@@ -673,6 +679,12 @@ body {
   .slide-content p {
     margin-bottom: 3mm;
     text-align: left;
+  }
+
+  .slide-content .credit {
+    margin-top: 5mm;
+    font-size: 7.5pt;
+    opacity: 0.6;
   }
 
   /* Floated right so it sits beside the copy regardless of DOM order — most
