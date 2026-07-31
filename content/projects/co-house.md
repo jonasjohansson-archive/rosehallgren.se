@@ -2,8 +2,8 @@
 title: "c/o"
 slug: "co-house"
 order: 3
-year: "Sweden"
-location: "with Sommarnöjen"
+year: "2023"
+location: "Sweden"
 link:
   label: "See the project at Anders Berensson Architects"
   url: "https://andersberenssonarchitects.com/work/c-o/"

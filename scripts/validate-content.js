@@ -124,6 +124,17 @@ for (const f of files) {
     seenOrder.set(data.order, where);
   }
 
+  // The year and place come from one "2022 · Stockholm" line that was split on
+  // the middot at migration. A project with no year, like c/o, shifted its
+  // place into the year column and its credit into the place — visible only
+  // once the CMS listed the columns side by side.
+  if (data.year && !/^\d/.test(String(data.year))) {
+    warnings.push(
+      `${where}: year is "${data.year}", which does not start with a digit — ` +
+        `it may belong in Place`,
+    );
+  }
+
   const media = data.media || [];
   const images = media.filter((m) => m.file);
   if (!images.length) {

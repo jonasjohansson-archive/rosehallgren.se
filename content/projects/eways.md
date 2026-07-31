@@ -2,7 +2,7 @@
 title: "Eways"
 slug: "eways"
 order: 9
-year: "2021–22"
+year: "2021"
 location: "Täby Centrum and Mall of Scandinavia"
 link:
   label: "See the project at Anders Berensson Architects"
