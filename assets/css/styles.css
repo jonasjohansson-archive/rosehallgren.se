@@ -559,9 +559,12 @@ body {
     transition: none;
   }
 
+  /* The cover has to fit 162.5mm exactly: logo, heading, three paragraphs and
+     three stacked contact links. At 30mm top padding it overflowed and pushed
+     the last two links onto a slide of their own. */
   .about-section {
-    min-height: 158mm;
-    padding-top: 30mm;
+    min-height: 0;
+    padding-top: 8mm;
   }
 
   .footer {
@@ -578,9 +581,9 @@ body {
   }
 
   .about-content h1 {
-    font-size: 30pt;
+    font-size: 27pt;
     font-weight: 600;
-    margin-bottom: 7mm;
+    margin-bottom: 6mm;
   }
 
   .about-text p {
@@ -594,8 +597,8 @@ body {
   #logo-top,
   #logo-bottom {
     display: block;
-    height: 18mm;
-    margin: 0 0 8mm 0;
+    height: 15mm;
+    margin: 0 0 6mm 0;
   }
 
   /* Stacked, and flush left: the screen rule pulls these 8px left with a
@@ -606,9 +609,9 @@ body {
 
   .about-contact a {
     display: block;
-    margin: 0 0 2.5mm 0;
+    margin: 0 0 2mm 0;
     padding: 0;
-    font-size: 12pt;
+    font-size: 11.5pt;
   }
 
   #logo-top path,
