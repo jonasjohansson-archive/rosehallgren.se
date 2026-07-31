@@ -1,9 +1,39 @@
 /* Studio Rose Hallgren */
 
+/*
+ * Type is self-hosted. Previously the site used the system stack, which meant
+ * it rendered differently on every machine and the PDF could not embed it.
+ *
+ * Two faces: Syne for the display sizes, where its character shows, and
+ * Instrument Sans for running copy, which Syne is too idiosyncratic to carry
+ * across long paragraphs. Both are SIL Open Font License, Latin subset,
+ * 34KB and 30KB.
+ *
+ * To try another, change --font-display or --font-body below. Bricolage,
+ * Fraunces and SpaceGrotesk are already in assets/fonts/ for exactly that.
+ */
+
+@font-face {
+  font-family: "Syne";
+  src: url("../fonts/Syne.woff2") format("woff2");
+  font-weight: 400 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Instrument";
+  src: url("../fonts/Instrument.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+
 :root {
   /* rem so the page respects the reader's browser font-size setting.
      Body copy sits at 14px; the chrome (titles, contact links) stays at 12px
      via --font-size-chrome. */
+  --font-display: "Syne", Georgia, serif;
+  --font-body: "Instrument", -apple-system, BlinkMacSystemFont, sans-serif;
+
   --font-size-base: 0.875rem;
   --font-size-chrome: 0.75rem;
   --font-size-title: 1.0625rem;
@@ -42,7 +72,7 @@ html::-webkit-scrollbar {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-body);
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
   color: var(--color-text);
@@ -119,7 +149,9 @@ body {
 }
 
 .about-content h1 {
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
   margin-bottom: var(--spacing-medium);
 }
 
@@ -164,8 +196,9 @@ body {
   top: var(--spacing-large);
   left: var(--spacing-large);
   z-index: 100;
+  font-family: var(--font-display);
   font-size: var(--font-size-title);
-  font-weight: normal;
+  font-weight: 600;
   letter-spacing: 0.11em;
   /* A tint of the lead image's own colour rather than flat white, lightened
      (or darkened, over a bright photo) until it clears 4.5:1 against the band
@@ -581,8 +614,9 @@ body {
   }
 
   .about-content h1 {
+    font-family: var(--font-display);
     font-size: 27pt;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 6mm;
   }
 
@@ -622,6 +656,7 @@ body {
   .project-title {
     position: static;
     transform: none;
+    font-family: var(--font-display);
     font-size: 12pt;
     letter-spacing: 0.11em;
     color: #000 !important;
