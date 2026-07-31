@@ -1,0 +1,96 @@
+{#
+  One project per markdown file in content/projects. Everything derivable is
+  derived: the srcset ladders and intrinsic sizes come from the files on disk,
+  and deck-tiles-N / deck-rows-M is the collage grid that wastes the fewest
+  slots for this project's image count. Rose never sees any of it.
+
+  Two shapes the old markup taught us and this has to keep:
+    * a project can have more than one copy panel (a --- rule in the body);
+    * a video can sit anywhere among the images, so `media` is one ordered
+      list. Videos are hidden in print and never count toward the collage.
+#}
+{%- set SIZES = "(min-width: 1600px) 50vw, 100vw" %}
+{%- macro imageSlide(img, extraClass, projectName) %}
+        <div{% if projectName %} data-project="{{ projectName }}"{% endif %} class="slide{% if extraClass %} {{ extraClass }}{% endif %}">
+          <div class="image-slide">
+            <picture>
+              <source
+                type="image/avif"
+                srcset="{{ img.file | srcset('avif') }}"
+                sizes="{{ SIZES }}" />
+              <img
+                class="screen-only"
+                src="{{ img.file | largest('webp') }}"
+                srcset="{{ img.file | srcset('webp') }}"
+                sizes="{{ SIZES }}"
+                alt="{{ img.alt }}"
+                width="{{ img.file | intrinsicWidth }}"
+                height="{{ img.file | intrinsicHeight }}"
+                decoding="async"
+                loading="lazy" />
+            </picture>
+            <img
+              class="print-only"
+              src="{{ img.file | printSrc }}"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
+          </div>
+        </div>
+{%- endmacro %}
+{%- macro videoSlide(v) %}
+        <div class="slide">
+          <div class="video-slide">
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/{{ v.video }}"
+              title="{{ v.title }}"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen;"
+              allowfullscreen
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox"></iframe>
+          </div>
+        </div>
+{%- endmacro %}
+{%- for p in projects %}
+      <section
+        class="project deck-tiles-{{ p.supportCount | collageTiles }} deck-rows-{{ p.supportCount | collageRows }}"
+        id="{{ p.slug }}"
+        aria-labelledby="title-{{ p.slug }}">
+        <h2 class="project-title" id="title-{{ p.slug }}"{% if p.lang %} lang="{{ p.lang }}"{% endif %}>{{ p.title }}</h2>
+{%- if p.year or p.location %}
+        <p class="project-meta">{{ p.year }}{% if p.year and p.location %} · {% endif %}{{ p.location }}</p>
+{%- endif %}
+        <div class="project-carousel">
+{%- if p.hero %}{{ imageSlide(p.hero, "deck-hero", "") }}{% endif %}
+{%- for panel in p.panels %}
+        <div class="slide">
+          <div class="slide-content">
+{%- for para in panel %}
+            <p>{{ para | safe }}</p>
+{%- endfor %}
+{%- if loop.last %}
+{%- if p.link %}
+            <p>
+              <a href="{{ p.link.url }}" target="_blank" rel="noopener noreferrer">{{ p.link.label }}</a>
+            </p>
+{%- endif %}
+{%- if p.credits | length %}
+            <p class="credit">{% for c in p.credits %}<span class="credit-line">{{ c }}</span>{% endfor %}</p>
+{%- endif %}
+{%- if p.press | length %}
+            <p class="press">Press: {% for x in p.press %}<a href="{{ x.url }}" target="_blank" rel="noopener noreferrer">{{ x.label }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</p>
+{%- endif %}
+{%- endif %}
+          </div>
+        </div>
+{%- endfor %}
+{%- for m in p.rest %}
+{%- if m.video %}{{ videoSlide(m) }}
+{%- else %}
+{{- imageSlide(m, ("deck-drawing " if m.drawing else "") + "deck-more" + (" deck-break" if m.leadsCollage else ""), p.title if m.leadsCollage else "") }}
+{%- endif %}
+{%- endfor %}
+        </div>
+      </section>
+{% endfor %}

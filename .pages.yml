@@ -1,0 +1,192 @@
+# Pages CMS config — https://pagescms.org
+# Install the Pages CMS GitHub App on this repo, then edit at app.pagescms.org.
+#
+# Everything a person writes lives in content/. Everything derivable is derived
+# at build time by .eleventy.js: the srcset ladders, the `sizes` strings, the
+# width/height attributes that hold the layout still while images load, the
+# print-JPEG swap, and the collage grid on each deck page. Editing here can
+# never produce broken markup, because there is no markup to edit.
+
+media:
+  - name: projects
+    label: Project images
+    input: assets/images/projects
+    output: /assets/images/projects
+    categories: [image]
+  - name: berensson
+    label: Anders Berensson Architects
+    input: assets/images/berensson
+    output: /assets/images/berensson
+    categories: [image]
+  - name: athh
+    label: AT–HH
+    input: assets/images/athh
+    output: /assets/images/athh
+    categories: [image]
+  - name: codesign
+    label: Codesign
+    input: assets/images/codesign
+    output: /assets/images/codesign
+    categories: [image]
+  - name: photography
+    label: Photography
+    input: assets/images/photography
+    output: /assets/images/photography
+    categories: [image]
+
+content:
+  - name: projects
+    label: Projects
+    type: collection
+    path: content/projects
+    filename: '{fields.slug}.md'
+    view:
+      fields: [title, order, year, location]
+      primary: title
+      sort: [order, title, year]
+      default:
+        sort: order
+        order: asc
+    fields:
+      - {
+          name: title,
+          label: Title,
+          type: string,
+          required: true,
+          description: 'Shown over the images, in capitals',
+        }
+      - {
+          name: slug,
+          label: Web address,
+          type: string,
+          required: true,
+          pattern: '^[a-z0-9-]+$',
+          description: "The bit after the # in the link to this project, e.g. rock-stage. Lowercase letters, numbers and hyphens. Changing it breaks any link anyone has already shared — usually best left alone.",
+        }
+      - {
+          name: order,
+          label: Position,
+          type: number,
+          required: true,
+          description: 'Lower numbers come first. The projects list is sorted by this — change it to move a project up or down the page.',
+        }
+      - {
+          name: year,
+          label: Year,
+          type: string,
+          description: 'e.g. 2022, or 2021–22. Shown only in the PDF.',
+        }
+      - {
+          name: location,
+          label: Place,
+          type: string,
+          description: 'e.g. Stockholm. Shown only in the PDF, after the year.',
+        }
+      - {
+          name: lang,
+          label: Title language,
+          type: select,
+          options: { values: [{ value: '', label: 'English' }, { value: 'sv', label: 'Swedish' }] },
+          description: "Set to Swedish for Swedish titles like Torö or Folkbastu, so screen readers pronounce them correctly.",
+        }
+      - name: link
+        label: Link out
+        type: object
+        description: 'Optional. A single link at the end of the text, e.g. to the practice that ran the project.'
+        fields:
+          - { name: label, label: Link text, type: string }
+          - { name: url, label: URL, type: string, pattern: '^$|^https?://' }
+      - name: credits
+        label: Credits
+        type: string
+        list:
+          sortable: true
+        description: 'One per line, each on its own row: practice, then role, then photographer. e.g. “Anders Berensson Architects”, “Rose Hallgren, Architect”, “Photo: Linda Hutchins”.'
+      - name: press
+        label: Press
+        type: object
+        list:
+          sortable: true
+          collapsible: { collapsed: true, summary: '{label}' }
+        fields:
+          - { name: label, label: Publication, type: string }
+          - { name: url, label: URL, type: string, pattern: '^$|^https?://' }
+      - name: media
+        label: Images and video
+        type: object
+        description: 'Drag to reorder. The FIRST image is the one shown with the title and used as the large image on the PDF page; the rest become the collage on the following page. A video can sit anywhere in the list.'
+        list:
+          sortable: true
+          collapsible: { collapsed: true, summary: '{alt}{title}' }
+        fields:
+          - {
+              name: file,
+              label: Image,
+              type: image,
+              options: { media: [projects, berensson, athh, codesign, photography] },
+            }
+          - {
+              name: alt,
+              label: Description,
+              type: string,
+              description: 'What is in the picture, for people who cannot see it. One short sentence.',
+            }
+          - {
+              name: drawing,
+              label: This is a drawing or plan,
+              type: boolean,
+              description: 'Tick for plans, sections and maps. In the PDF these get a soft background and are fitted whole instead of being cropped, so the linework is never sliced through.',
+            }
+          - {
+              name: video,
+              label: YouTube ID (instead of an image),
+              type: string,
+              description: 'Only for a video. The code after v= in a YouTube link, e.g. yn3Wk3m__r0. Leave the image above empty.',
+            }
+          - { name: title, label: Video title, type: string, description: 'Only for a video.' }
+      - {
+          name: body,
+          label: Text,
+          type: text,
+          description: 'The project description. Leave a blank line between paragraphs. A line containing only --- splits the text onto a second slide, for long descriptions.',
+        }
+
+  - name: settings
+    label: Intro and contact
+    type: file
+    path: content/settings.json
+    fields:
+      - name: site
+        label: Intro
+        type: object
+        fields:
+          - { name: title, label: Browser tab title, type: string }
+          - { name: heading, label: Heading, type: string }
+          - {
+              name: intro,
+              label: Intro text,
+              type: text,
+              description: 'Blank line between paragraphs. Links may be written as HTML.',
+            }
+          - {
+              name: description,
+              label: 'Search description',
+              type: text,
+              description: 'The text search engines and link previews show (~150 characters).',
+            }
+          - { name: portrait, label: Portrait, type: image, options: { media: projects } }
+          - {
+              name: portrait_alt,
+              label: Portrait description,
+              type: string,
+              description: 'What is in the picture, for people who cannot see it.',
+            }
+      - name: contact
+        label: Contact links
+        type: object
+        list:
+          sortable: true
+          collapsible: { collapsed: true, summary: '{label}' }
+        fields:
+          - { name: label, label: Label, type: string }
+          - { name: url, label: URL, type: string }
