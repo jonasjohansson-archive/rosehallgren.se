@@ -79,6 +79,45 @@ function webpSize(file) {
   return null;
 }
 
+/**
+ * Pixel size of any jpg/png/webp, read from its header.
+ *
+ * Used for og:image:width/height, which were declared 1200x630 against a file
+ * that is actually 1500x998 — a number nobody rechecks once written. Reading
+ * the file means the declaration cannot drift from the image.
+ */
+function fileSize(file) {
+  const abs = path.join(__dirname, String(file || "").replace(/^\//, ""));
+  let b;
+  try {
+    b = fs.readFileSync(abs);
+  } catch {
+    return null;
+  }
+  if (b.slice(0, 4).toString("ascii") === "RIFF") return webpSize(abs);
+  // PNG: IHDR width/height are big-endian at a fixed offset
+  if (b.length > 24 && b.readUInt32BE(0) === 0x89504e47) {
+    return { width: b.readUInt32BE(16), height: b.readUInt32BE(20) };
+  }
+  // JPEG: walk the segment chain to the start-of-frame marker
+  if (b[0] === 0xff && b[1] === 0xd8) {
+    let i = 2;
+    while (i < b.length - 9) {
+      if (b[i] !== 0xff) {
+        i++;
+        continue;
+      }
+      const marker = b[i + 1];
+      // SOF0-SOF15, excluding the non-frame markers DHT/JPG/DAC
+      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+        return { height: b.readUInt16BE(i + 5), width: b.readUInt16BE(i + 7) };
+      }
+      i += 2 + b.readUInt16BE(i + 2);
+    }
+  }
+  return null;
+}
+
 const sizeCache = new Map();
 function intrinsic(base) {
   if (sizeCache.has(base)) return sizeCache.get(base);
@@ -140,6 +179,10 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("printSrc", (file) => `${PRINT_DIR}/${stem(file)}.jpg`);
   eleventyConfig.addFilter("intrinsicWidth", (file) => intrinsic(stem(file))?.width || "");
   eleventyConfig.addFilter("intrinsicHeight", (file) => intrinsic(stem(file))?.height || "");
+
+  eleventyConfig.addFilter("imageSize", (file) => fileSize(file) || { width: "", height: "" });
+
+  eleventyConfig.addFilter("isoDate", (d) => new Date(d).toISOString().slice(0, 10));
 
   eleventyConfig.addFilter("collageTiles", (n) => collage(n).tiles);
   eleventyConfig.addFilter("collageRows", (n) => collage(n).rows);

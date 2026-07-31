@@ -28,6 +28,12 @@ const PAGES = [
     requires: ["</html>", "<section", 'class="project-carousel"', "</footer>"],
   },
   {
+    from: "sitemap.xml",
+    to: "sitemap.xml",
+    minBytes: 150,
+    requires: ["<urlset", "https://rosehallgren.se/", "</urlset>"],
+  },
+  {
     from: path.join("admin", "index.html"),
     to: path.join("admin", "index.html"),
     minBytes: 400,

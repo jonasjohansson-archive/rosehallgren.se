@@ -7,32 +7,51 @@
 # print-JPEG swap, and the collage grid on each deck page. Editing here can
 # never produce broken markup, because there is no markup to edit.
 
+# rename: safe rewrites the uploaded filename to something that survives being
+# dropped into a srcset. Without it "Ö Sommar bild (2).JPG" is stored verbatim,
+# and srcset separates a URL from its width descriptor on whitespace — so the
+# markup is invalid per the HTML grammar even though browsers currently cope.
+# On a Swedish site edited by a non-technical person that is the ordinary case.
+#
+# extensions keeps out HEIC, the iPhone default: build-images.sh cannot read it,
+# so it would commit fine and then fail the build with a message pointing at a
+# script that cannot help.
 media:
   - name: projects
     label: Project images
     input: assets/images/projects
     output: /assets/images/projects
     categories: [image]
+    extensions: [jpg, jpeg, png]
+    rename: safe
   - name: berensson
     label: Anders Berensson Architects
     input: assets/images/berensson
     output: /assets/images/berensson
     categories: [image]
+    extensions: [jpg, jpeg, png]
+    rename: safe
   - name: athh
     label: AT–HH
     input: assets/images/athh
     output: /assets/images/athh
     categories: [image]
+    extensions: [jpg, jpeg, png]
+    rename: safe
   - name: codesign
     label: Codesign
     input: assets/images/codesign
     output: /assets/images/codesign
     categories: [image]
+    extensions: [jpg, jpeg, png]
+    rename: safe
   - name: photography
     label: Photography
     input: assets/images/photography
     output: /assets/images/photography
     categories: [image]
+    extensions: [jpg, jpeg, png]
+    rename: safe
 
 content:
   - name: projects
@@ -99,31 +118,36 @@ content:
       - name: credits
         label: Credits
         type: string
-        list:
-          sortable: true
+        list: true
         description: 'One per line, each on its own row: practice, then role, then photographer. e.g. “Anders Berensson Architects”, “Rose Hallgren, Architect”, “Photo: Linda Hutchins”.'
       - name: press
         label: Press
         type: object
         list:
-          sortable: true
           collapsible: { collapsed: true, summary: '{label}' }
         fields:
           - { name: label, label: Publication, type: string }
           - { name: url, label: URL, type: string, pattern: '^$|^https?://' }
       - name: media
         label: Images and video
+        required: true
         type: object
-        description: 'Drag to reorder. The FIRST image is the one shown with the title and used as the large image on the PDF page; the rest become the collage on the following page. A video can sit anywhere in the list.'
+        description: 'Drag to reorder. The FIRST image is the one shown with the title and used as the large image on the PDF page; the rest become the collage on the following page. A video can sit anywhere in the list. Keep it to about 20 images — beyond that the PDF gives the project a third page.'
         list:
-          sortable: true
           collapsible: { collapsed: true, summary: '{alt}{title}' }
         fields:
           - {
               name: file,
               label: Image,
               type: image,
-              options: { media: [projects, berensson, athh, codesign, photography] },
+              # A single name, not a list. Pages CMS reads options.media only
+              # when it is a string; given an array it silently falls back to
+              # the first media entry, so the picker would have browsed
+              # assets/images/projects either way — but by accident, and with
+              # four entries here implying a choice that does not exist.
+              # Images already committed under berensson/athh/codesign/
+              # photography keep rendering; new uploads land in projects/.
+              options: { media: projects },
             }
           - {
               name: alt,
@@ -160,33 +184,88 @@ content:
         label: Intro
         type: object
         fields:
-          - { name: title, label: Browser tab title, type: string }
-          - { name: heading, label: Heading, type: string }
+          - {
+              name: title,
+              label: Browser tab title,
+              type: string,
+              required: true,
+            }
+          - {
+              name: heading,
+              label: Heading,
+              type: string,
+              required: true,
+              description: 'The main heading at the top of the page.',
+            }
           - {
               name: intro,
               label: Intro text,
               type: text,
-              description: 'Blank line between paragraphs. Links may be written as HTML.',
+              required: true,
+              description: 'Leave a blank line between paragraphs. To add a link, paste this and change the address and the words: <a href="https://example.com" target="_blank" rel="noopener noreferrer">the words you want linked</a>',
             }
           - {
               name: description,
               label: 'Search description',
               type: text,
+              required: true,
               description: 'The text search engines and link previews show (~150 characters).',
             }
-          - { name: portrait, label: Portrait, type: image, options: { media: projects } }
+          - {
+              name: portrait,
+              label: Portrait,
+              type: image,
+              options: { media: projects },
+              required: true,
+            }
           - {
               name: portrait_alt,
               label: Portrait description,
               type: string,
               description: 'What is in the picture, for people who cannot see it.',
             }
+          - {
+              name: studio_address,
+              label: Studio address,
+              type: string,
+              description: 'Shown at the foot of the PDF.',
+            }
+          - {
+              name: social_title,
+              label: 'Share title',
+              type: string,
+              description: 'Headline shown when someone shares the site on social media. Leave blank to use the browser tab title.',
+            }
+          - {
+              name: social_image,
+              label: 'Share image',
+              type: image,
+              options: { media: projects },
+              description: 'The picture shown when the site is shared or linked. Use a wide photo, at least 1200 pixels across. Its size is read from the file, so nothing needs to be typed in.',
+            }
+          - {
+              name: social_image_alt,
+              label: 'Share image description',
+              type: string,
+              description: 'What is in the share image, for people who cannot see it.',
+            }
       - name: contact
         label: Contact links
         type: object
         list:
-          sortable: true
           collapsible: { collapsed: true, summary: '{label}' }
         fields:
-          - { name: label, label: Label, type: string }
-          - { name: url, label: URL, type: string }
+          - { name: label, label: Label, type: string, required: true }
+          - { name: url, label: URL, type: string, required: true }
+          - {
+              name: print,
+              label: 'Printed as',
+              type: string,
+              description: 'What the PDF prints instead of the label, e.g. the full email address. Leave blank to print the label.',
+            }
+          - {
+              name: footer_only,
+              label: 'Only show at the foot of the page',
+              type: boolean,
+              description: 'Tick to keep this link out of the intro and show it only in the footer.',
+            }

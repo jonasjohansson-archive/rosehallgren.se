@@ -17,17 +17,45 @@ const SETTINGS = path.join(ROOT, "content", "settings.json");
 const errors = [];
 const warnings = [];
 
+const hasImageFile = (p) => fs.existsSync(path.join(ROOT, String(p).replace(/^\//, "")));
+
 const stem = (f) =>
   String(f || "")
     .split("/")
     .pop()
     .replace(/\.[^.]+$/, "");
 
+/**
+ * All three derivative sets, not just AVIF. build-images.sh swaps the three
+ * output directories together so in practice they agree, but that is a
+ * property of the script rather than a guarantee, and a page missing its print
+ * JPEG only shows up as a blank tile in the PDF.
+ */
 const hasDerivatives = (file) => {
   const base = stem(file);
-  const dir = path.join(ROOT, "assets", "images", "avif");
-  if (!fs.existsSync(dir)) return false;
-  return fs.readdirSync(dir).some((f) => new RegExp(`^${base}-\\d+\\.avif$`).test(f));
+  const esc = base.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const has = (sub, ext) => {
+    const dir = path.join(ROOT, "assets", "images", sub);
+    if (!fs.existsSync(dir)) return false;
+    return fs.readdirSync(dir).some((f) => new RegExp(`^${esc}-\\d+\\.${ext}$`).test(f));
+  };
+  if (!has("avif", "avif")) return false;
+  if (!has("w", "webp")) return false;
+  return fs.existsSync(path.join(ROOT, "assets", "images", "print", `${base}.jpg`));
+};
+
+/**
+ * A filename that survives being dropped into a srcset.
+ *
+ * Derivatives are looked up by basename, and srcset separates the URL from its
+ * width descriptor on whitespace — so a space in a filename produces markup
+ * that is invalid per the HTML grammar even though browsers currently cope.
+ * On a Swedish site edited by a non-technical person, "Ö Sommar bild (2).JPG"
+ * is the ordinary case, not the exotic one.
+ */
+const unsafeName = (file) => {
+  const base = stem(file);
+  return /[^a-zA-Z0-9._-]/.test(base) ? base : null;
 };
 
 // --- settings --------------------------------------------------------------
@@ -44,6 +72,12 @@ if (!fs.existsSync(SETTINGS)) {
   if (s) {
     if (!s.site?.heading) errors.push("settings: heading is empty");
     if (!s.site?.intro) errors.push("settings: intro text is empty");
+    if (!s.site?.title) errors.push("settings: browser tab title is empty");
+    if (!s.site?.description) errors.push("settings: search description is empty");
+    if (!s.site?.portrait) errors.push("settings: portrait is empty");
+    if (s.site?.social_image && !hasImageFile(s.site.social_image)) {
+      errors.push(`settings: share image ${s.site.social_image} is not in the repository`);
+    }
     if (s.site?.portrait && !hasDerivatives(s.site.portrait)) {
       errors.push(`settings: no web versions built for the portrait ${s.site.portrait}`);
     }
@@ -92,17 +126,49 @@ for (const f of files) {
 
   const media = data.media || [];
   const images = media.filter((m) => m.file);
-  if (!images.length) errors.push(`${where}: no images`);
+  if (!images.length) {
+    errors.push(
+      `${where}: no images — a project needs at least one, and the first one ` +
+        `is used as its opening picture`,
+    );
+  }
+
+  // The deck's collage grid tops out at 5 tiles x 4 rows. Past that the tiles
+  // keep their size and spill onto a third page, quietly breaking the
+  // two-pages-per-project shape the whole PDF is built around.
+  if (images.length > 21) {
+    warnings.push(
+      `${where}: ${images.length} images — beyond about 21 the PDF gives this ` +
+        `project a third page instead of the usual two`,
+    );
+  }
 
   media.forEach((m, i) => {
     const at = `${where}: item ${i + 1}`;
     if (m.video) {
+      if (m.file) {
+        warnings.push(
+          `${at}: has both an image and a YouTube ID; the video wins and the ` +
+            `image is ignored`,
+        );
+      }
       if (!m.title) warnings.push(`${at}: video has no title (screen readers announce it)`);
       return;
     }
     if (!m.file) {
-      errors.push(`${at}: neither an image nor a YouTube ID`);
+      errors.push(
+        `${at}: neither an image nor a YouTube ID — pick an image, or paste a ` +
+          `YouTube ID, or remove the row`,
+      );
       return;
+    }
+    const bad = unsafeName(m.file);
+    if (bad) {
+      errors.push(
+        `${at}: the filename "${bad}" has spaces or accented characters. ` +
+          `Rename it using only letters a-z, numbers, hyphens and dots, then ` +
+          `re-upload — image addresses cannot contain spaces`,
+      );
     }
     const onDisk = path.join(ROOT, m.file.replace(/^\//, ""));
     if (!fs.existsSync(onDisk)) errors.push(`${at}: ${m.file} is not in the repository`);
@@ -117,10 +183,16 @@ for (const f of files) {
 
   for (const p of data.press || []) {
     if (p.url && !/^https?:\/\//.test(p.url)) errors.push(`${where}: press link "${p.url}" is not a URL`);
+    // A publication name with no URL renders as a link with an empty href,
+    // which reloads the page: it looks clickable and does nothing.
+    if (p.label && !p.url) errors.push(`${where}: press entry "${p.label}" has no URL`);
+    if (p.url && !p.label) errors.push(`${where}: a press URL has no publication name`);
   }
   if (data.link?.url && !/^https?:\/\//.test(data.link.url)) {
     errors.push(`${where}: link out "${data.link.url}" is not a URL`);
   }
+  if (data.link?.label && !data.link?.url) errors.push(`${where}: "link out" has text but no URL`);
+  if (data.link?.url && !data.link?.label) errors.push(`${where}: "link out" has a URL but no text`);
   if (!content.trim()) warnings.push(`${where}: no description text`);
 }
 

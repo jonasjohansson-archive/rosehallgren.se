@@ -4,4 +4,5 @@
 # and each run reverts the other.
 index.html
 admin/index.html
+sitemap.xml
 _site/

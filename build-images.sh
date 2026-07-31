@@ -39,6 +39,42 @@ for tool in magick cwebp avifenc; do
   command -v "$tool" >/dev/null || { echo "missing required tool: $tool" >&2; exit 1; }
 done
 
+# All five source folders write into ONE flat output namespace, and the site
+# looks derivatives up by basename alone. Two folders holding the same filename
+# — entirely plausible once uploads come from a phone or camera, where
+# IMG_0001.jpg is the default — therefore overwrite each other silently: the
+# build succeeds, the page validates, and the wrong photograph ships. Catch it
+# here, where it is a one-line fix, rather than never.
+dupes="$(
+  for dir in "${SRC_DIRS[@]}"; do
+    [ -d "$dir" ] || continue
+    find "$dir" -maxdepth 1 -type f \
+      \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) -print0 \
+      | xargs -0 -n1 basename 2>/dev/null \
+      | sed 's/\.[^.]*$//'
+  done | sort | uniq -d
+)"
+if [ -n "$dupes" ]; then
+  echo "refusing to build: the same filename appears in more than one source folder," >&2
+  echo "and every derivative is written to a single flat namespace, so these would" >&2
+  echo "silently overwrite one another. Rename one of each pair:" >&2
+  printf '  %s\n' $dupes >&2
+  exit 1
+fi
+
+# Anything the pipeline cannot read is reported rather than passed over in
+# silence. HEIC is the one that matters: it is the iPhone default, it is
+# committed happily by the CMS, and the resulting build failure otherwise
+# points at build-images.sh, which cannot fix it.
+for dir in "${SRC_DIRS[@]}"; do
+  [ -d "$dir" ] || continue
+  while IFS= read -r -d '' odd; do
+    echo "skipping (unsupported format, convert to JPEG first): $odd" >&2
+  done < <(find "$dir" -maxdepth 1 -type f \
+             ! -iname '*.jpg' ! -iname '*.jpeg' ! -iname '*.png' \
+             ! -iname '.*' -print0)
+done
+
 stage="$(mktemp -d)"
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp" "$stage"' EXIT

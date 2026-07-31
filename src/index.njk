@@ -6,7 +6,7 @@ permalink: index.html
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Studio Rose Hallgren</title>
+    <title>{{ settings.site.title }}</title>
 
     <!-- Preloads before the stylesheet, deliberately. The preload scanner reads
          the head in order, so with the stylesheet first the LCP image was not
@@ -34,195 +34,106 @@ permalink: index.html
       media="all"
     />
     <link rel="icon" type="image/svg+xml" href="assets/favicon/favicon.svg" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="96x96"
+      href="assets/favicon/favicon-96x96.png" />
     <!-- PNG, not the generated WebP: cwebp dropped the alpha channel and
          flattened it to a blank black square, and iOS does not accept WebP
          for touch icons regardless. -->
     <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="assets/favicon/site.webmanifest" />
 
-    <meta
-      name="description"
-      content="Rose Hallgren - Multidisciplinary architect and designer based in Stockholm, Sweden. Specializing in weaving, ceramics, and contemporary architectural practice. Explore projects including Folkbastu, COUA, Drip Drop Non Stop, and architectural photography."
-    />
-    <meta
-      name="keywords"
-      content="Rose Hallgren, architect, designer, Stockholm, Sweden, weaving, ceramics, contemporary architecture, Folkbastu, COUA, Drip Drop Non Stop, architectural photography, multidisciplinary design, craft techniques, spatial design"
-    />
+    {#- Everything below that a person would ever want to change comes from
+        content/settings.json, so Rose can edit it in Pages CMS. What stays
+        hardcoded is structural: the canonical URL, the locale, the robots
+        directives and the geo tags. #}
+    {%- set shareTitle = settings.site.social_title or settings.site.title %}
+    {%- set shareImage = settings.site.social_image %}
+    {%- set shareSize = shareImage | imageSize %}
+    <meta name="description" content="{{ settings.site.description }}" />
     <meta name="author" content="Rose Hallgren" />
-    <meta
-      name="apple-mobile-web-app-title"
-      content="Rose Hallgren - Architect & Designer"
-    />
+    <meta name="apple-mobile-web-app-title" content="{{ settings.site.title }}" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://rosehallgren.se/" />
-    <meta
-      property="og:title"
-      content="Rose Hallgren - Multidisciplinary Architect & Designer | Stockholm"
-    />
-    <meta
-      property="og:description"
-      content="Explore the innovative architectural and design projects of Rose Hallgren. Specializing in weaving, ceramics, and contemporary spatial design. Discover Folkbastu, COUA, Drip Drop Non Stop, and more multidisciplinary works from Stockholm, Sweden."
-    />
-    <meta
-      property="og:image"
-      content="https://rosehallgren.se/assets/images/rose-hallgren.jpg"
-    />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta
-      property="og:image:alt"
-      content="Rose Hallgren - Multidisciplinary Architect and Designer Portfolio"
-    />
-    <meta property="og:site_name" content="Studio Rose Hallgren" />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="{{ settings.site.title }}" />
+    <meta property="og:title" content="{{ shareTitle }}" />
+    <meta property="og:description" content="{{ settings.site.description }}" />
+    <meta property="og:image" content="https://rosehallgren.se{{ shareImage }}" />
+    {#- Read from the file rather than asserted. These were declared 1200x630
+        against an image that is actually 1500x998, so every crawler that
+        trusted the declaration reserved the wrong shape. #}
+    <meta property="og:image:width" content="{{ shareSize.width }}" />
+    <meta property="og:image:height" content="{{ shareSize.height }}" />
+    <meta property="og:image:alt" content="{{ settings.site.social_image_alt or settings.site.heading }}" />
+    <meta property="og:locale" content="en_GB" />
     <meta property="og:locale:alternate" content="sv_SE" />
 
-    <meta property="article:author" content="Rose Hallgren" />
-    <meta property="article:section" content="Architecture & Design" />
-    <meta property="article:tag" content="Architecture" />
-    <meta property="article:tag" content="Design" />
-    <meta property="article:tag" content="Weaving" />
-    <meta property="article:tag" content="Ceramics" />
-    <meta property="article:tag" content="Stockholm" />
-    <meta property="article:tag" content="Multidisciplinary" />
-
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@rosehallgren" />
-    <meta name="twitter:creator" content="@rosehallgren" />
-    <meta name="twitter:url" content="https://rosehallgren.se/" />
-    <meta
-      name="twitter:title"
-      content="Rose Hallgren - Multidisciplinary Architect & Designer | Stockholm"
-    />
-    <meta
-      name="twitter:description"
-      content="Explore innovative architectural and design projects by Rose Hallgren. Specializing in weaving, ceramics, and contemporary spatial design. Discover Folkbastu, COUA, Drip Drop Non Stop, and more."
-    />
-    <meta
-      name="twitter:image"
-      content="https://rosehallgren.se/assets/images/rose-hallgren.jpg"
-    />
-    <meta
-      name="twitter:image:alt"
-      content="Rose Hallgren - Multidisciplinary Architect and Designer Portfolio"
-    />
-
-    <meta name="twitter:label1" content="Location" />
-    <meta name="twitter:data1" content="Stockholm, Sweden" />
-    <meta name="twitter:label2" content="Specialization" />
-    <meta
-      name="twitter:data2"
-      content="Architecture, Design, Weaving, Ceramics"
-    />
-
-    <meta property="linkedin:owner" content="Rose Hallgren" />
-
-    <meta name="pinterest-rich-pin" content="true" />
-    <meta
-      name="pinterest-description"
-      content="Rose Hallgren - Multidisciplinary Architect & Designer from Stockholm, Sweden. Explore innovative projects in architecture, weaving, ceramics, and contemporary spatial design."
-    />
-
-    <meta property="fb:app_id" content="" />
-    <meta name="instagram:site" content="@rosehallgren" />
+    <meta name="twitter:title" content="{{ shareTitle }}" />
+    <meta name="twitter:description" content="{{ settings.site.description }}" />
+    <meta name="twitter:image" content="https://rosehallgren.se{{ shareImage }}" />
+    <meta name="twitter:image:alt" content="{{ settings.site.social_image_alt or settings.site.heading }}" />
 
     <meta
       name="robots"
       content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
     />
-    <meta name="googlebot" content="index, follow" />
-    <meta name="bingbot" content="index, follow" />
-
     <link rel="canonical" href="https://rosehallgren.se/" />
 
-    <meta name="language" content="English" />
     <meta name="geo.region" content="SE" />
     <meta name="geo.placename" content="Stockholm" />
     <meta name="geo.position" content="59.3293;18.0686" />
-    <meta name="ICBM" content="59.3293, 18.0686" />
-
-    <meta property="og:updated_time" content="2024-12-20T00:00:00Z" />
-    <meta property="og:see_also" content="https://rosehallgren.se/#folkbastu" />
-    <meta property="og:see_also" content="https://rosehallgren.se/#coua" />
-    <meta
-      property="og:see_also"
-      content="https://rosehallgren.se/#drip-drop-non-stop"
-    />
 
     <meta name="theme-color" content="#ffffff" />
     <meta name="color-scheme" content="light" />
     <meta name="format-detection" content="telephone=no" />
 
+    {#- One Person, built from the same content as the page. The old markup also
+        carried a CreativeWork listing four projects by name with hand-written
+        descriptions; projects are reordered and renamed in the CMS and that
+        list was not, so it was structured data slowly drifting away from the
+        truth. sameAs is derived from the contact links. #}
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "Person",
         "name": "Rose Hallgren",
         "jobTitle": "Multidisciplinary Architect and Designer",
-        "description": "Multidisciplinary architect and designer based in Stockholm, Sweden. Specializing in weaving, ceramics, and contemporary architectural practice.",
+        "description": {{ settings.site.description | dump | safe }},
         "url": "https://rosehallgren.se",
-        "sameAs": [],
+        "image": "https://rosehallgren.se{{ settings.site.portrait }}",
         "address": {
           "@type": "PostalAddress",
+          "streetAddress": {{ (settings.site.studio_address | replace(", Stockholm", "")) | dump | safe }},
           "addressLocality": "Stockholm",
-          "addressCountry": "Sweden"
+          "addressCountry": "SE"
         },
         "knowsAbout": [
           "Architecture",
           "Design",
           "Weaving",
           "Ceramics",
-          "Contemporary Art",
           "Spatial Design",
           "Craft Techniques"
         ],
-        "hasOccupation": {
-          "@type": "Occupation",
-          "name": "Architect",
-          "description": "Multidisciplinary architect and designer"
-        }
-      }
-    </script>
-
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "CreativeWork",
-        "name": "Studio Rose Hallgren",
-        "description": "Portfolio of multidisciplinary architectural and design projects by Rose Hallgren",
-        "creator": {
-          "@type": "Person",
-          "name": "Rose Hallgren"
-        },
-        "url": "https://rosehallgren.se",
-        "workExample": [
-          {
-            "@type": "CreativeWork",
-            "name": "Folkbastu",
-            "description": "Architectural project exploring traditional craft techniques in contemporary practice"
-          },
-          {
-            "@type": "CreativeWork",
-            "name": "COUA",
-            "description": "Design project investigating spatial relationships and materiality"
-          },
-          {
-            "@type": "CreativeWork",
-            "name": "Drip Drop Non Stop",
-            "description": "Installation exploring water, sound, and meditative spaces"
-          },
-          {
-            "@type": "CreativeWork",
-            "name": "Drömmarens Malmö",
-            "description": "Public space intervention and film documentation project"
-          }
+        "sameAs": [
+{%- for u in settings.sameAs %}
+          {{ u | dump | safe }}{% if not loop.last %},{% endif %}
+{%- endfor %}
         ]
       }
     </script>
   </head>
   <body>
-    <a class="skip-link" href="#photography">Skip to the end of the work</a>
+    {#- The last project, whichever it is. This was hardcoded to #photography,
+        which only worked while Photography held the highest position — a value
+        Rose controls from the CMS. #}
+    <a class="skip-link" href="#{{ (projects | last).slug }}"
+      >Skip to the end of the work</a
+    >
     <main>
       <section class="about-section">
         <figure class="about-portrait">
@@ -289,15 +200,20 @@ permalink: index.html
                 </svg>
               </a>
             </p>
+{#- The page had no <h1> at all: it sat here, after the wordmark, and the
+            migration replaced this whole block with the paragraph loop and dropped
+            it. Restored, and driven by the "Heading" field, which until now wrote
+            to nothing. #}
+            <h1>{{ settings.site.heading }}</h1>
 {%- for para in settings.site.intro | paragraphs %}
             <p>{{ para | safe }}</p>
 {%- endfor %}
           </div>
           <div class="about-contact">
             <p>
-{%- for c in settings.contact %}
+{%- for c in settings.contact %}{% if not c.footer_only %}
               <a href="{{ c.url }}"{% if c.url.startsWith("http") %} target="_blank" rel="noopener noreferrer"{% endif %}{% if c.label == "CV" %} aria-label="Download CV"{% endif %}>{{ c.label }}</a>
-{%- endfor %}
+{%- endif %}{% endfor %}
             </p>
           </div>
         </div>
@@ -309,35 +225,23 @@ permalink: index.html
     <footer class="footer">
       <div class="footer-content">
         <div class="footer-contact">
+          {#- Same list as the intro, so an address changed in the CMS changes
+              everywhere. This block used to hardcode the email, both Instagram
+              accounts and the CV, which meant editing a contact link updated the
+              top of the page and quietly left the footer showing the old one. #}
           <p>
-            <a href="mailto:rose.hallgren@gmail.com"
-              ><span class="on-screen">Email</span
-              ><span class="in-print">rose.hallgren@gmail.com</span></a
-            >
+{%- for c in settings.contact %}
             <a
-              href="https://www.instagram.com/rose.hallgren/?hl=en"
+              href="{{ c.url }}"{% if c.url.startsWith("http") %}
               target="_blank"
-              rel="noopener noreferrer"
-              ><span class="on-screen">Instagram</span
-              ><span class="in-print">instagram.com/rose.hallgren</span></a
+              rel="noopener noreferrer"{% endif %}{% if c.label == "CV" %}
+              aria-label="Download CV"{% endif %}
+              ><span class="on-screen">{{ c.label }}</span
+              ><span class="in-print">{{ c.print or c.label }}</span></a
             >
-            <a
-              href="https://www.instagram.com/rosehallgren.studio/?hl=en"
-              target="_blank"
-              rel="noopener noreferrer"
-              ><span class="on-screen">Studio</span
-              ><span class="in-print"
-                >instagram.com/rosehallgren.studio</span
-              ></a
-            >
-            <a
-              href="https://docs.google.com/document/d/1V0-D5jLEW-bwGUzuvA-ol2tPF7I--yokMy78Ax4j1Vo/export?format=pdf"
-              aria-label="Download CV"
-              ><span class="on-screen">CV</span
-              ><span class="in-print">Curriculum vitae on request</span></a
-            >
+{%- endfor %}
           </p>
-          <p class="in-print studio-address">Åsögatan 122, Stockholm</p>
+          <p class="in-print studio-address">{{ settings.site.studio_address }}</p>
           <br />
           <p>
             <a

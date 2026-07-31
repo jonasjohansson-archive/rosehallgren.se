@@ -10,7 +10,7 @@
       list. Videos are hidden in print and never count toward the collage.
 #}
 {%- set SIZES = "(min-width: 1600px) 50vw, 100vw" %}
-{%- macro imageSlide(img, extraClass, projectName) %}
+{%- macro imageSlide(img, extraClass, projectName, eager) %}
         <div{% if projectName %} data-project="{{ projectName }}"{% endif %} class="slide{% if extraClass %} {{ extraClass }}{% endif %}">
           <div class="image-slide">
             <picture>
@@ -27,7 +27,12 @@
                 width="{{ img.file | intrinsicWidth }}"
                 height="{{ img.file | intrinsicHeight }}"
                 decoding="async"
-                loading="lazy" />
+                {#- The first project's hero is the LCP image and is preloaded with
+                    fetchpriority=high. Marking it lazy as well is the exact
+                    anti-pattern Lighthouse flags, and would reintroduce the load
+                    delay the preload exists to remove if the hero ever fell below
+                    the fold. #}
+                loading="{{ "eager" if eager else "lazy" }}" />
             </picture>
             <img
               class="print-only"
@@ -62,7 +67,7 @@
         <p class="project-meta">{{ p.year }}{% if p.year and p.location %} · {% endif %}{{ p.location }}</p>
 {%- endif %}
         <div class="project-carousel">
-{%- if p.hero %}{{ imageSlide(p.hero, "deck-hero", "") }}{% endif %}
+{%- if p.hero %}{{ imageSlide(p.hero, "deck-hero", "", loop.first) }}{% endif %}
 {%- for panel in p.panels %}
         <div class="slide">
           <div class="slide-content">

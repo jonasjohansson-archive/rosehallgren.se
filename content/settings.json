@@ -2,23 +2,39 @@
   "site": {
     "title": "Studio Rose Hallgren",
     "heading": "Studio Rose Hallgren",
-    "description": "Rose Hallgren - Multidisciplinary architect and designer based in Stockholm, Sweden. Specializing in weaving, ceramics, and contemporary architectural practice. Explore projects including Folkbastu, COUA, Drip Drop Non Stop, and architectural photography.",
+    "description": "Rose Hallgren is a multidisciplinary architect and designer in Stockholm, working between traditional craft and contemporary architecture.",
     "intro": "Multidisciplinary architect and designer based in Stockholm, Sweden. Her work explores the intersection of traditional craft techniques and contemporary architectural practice, with a particular focus on weaving and ceramics as mediums for spatial design.\n\nRose is co-founder of <a href=\"https://www.instagram.com/fanfaluca.collective/\" target=\"_blank\" rel=\"noopener noreferrer\">Fanfaluca Collective</a>, an architecture collective spanning Stockholm and Barcelona, and <a href=\"https://www.instagram.com/c.o.u.a/\" aria-label=\"C.O.U.A. Instagram profile\">C.O.U.A.</a> (The Collective of Unexpected Architecture), a studio for unexpected art and design. She is also part of <a href=\"https://www.svartljus.se\" target=\"_blank\" rel=\"noopener noreferrer\">Svartljus</a>, a Stockholm-based lighting collective creating bespoke light sculptures and immersive experiences for museums, events, and festivals.\n\nHer studio is at Åsögatan 122 in Stockholm, shared with <a href=\"https://www.smash.studio/\" target=\"_blank\" rel=\"noopener noreferrer\">SMASH</a> and collaborator <a href=\"https://jonasjohansson.se/\" target=\"_blank\" rel=\"noopener noreferrer\">Jonas Johansson</a>.",
     "portrait": "/assets/images/projects/rose-hallgren-portrait.jpg",
-    "portrait_alt": "Rose Hallgren outdoors at golden hour, eyes closed, with her dog Sigge against a cloudy sky"
+    "portrait_alt": "Rose Hallgren outdoors at golden hour, eyes closed, with her dog Sigge against a cloudy sky",
+    "social_title": "",
+    "social_image": "/assets/images/rose-hallgren.jpg",
+    "studio_address": "Åsögatan 122, Stockholm",
+    "social_image_alt": "Rose Hallgren, architect and designer, Stockholm"
   },
   "contact": [
     {
       "label": "Email",
-      "url": "mailto:rose.hallgren@gmail.com"
+      "url": "mailto:rose.hallgren@gmail.com",
+      "print": "rose.hallgren@gmail.com",
+      "footer_only": false
     },
     {
       "label": "Instagram",
-      "url": "https://www.instagram.com/rose.hallgren/?hl=en"
+      "url": "https://www.instagram.com/rose.hallgren/?hl=en",
+      "print": "instagram.com/rose.hallgren",
+      "footer_only": false
+    },
+    {
+      "label": "Studio",
+      "url": "https://www.instagram.com/rosehallgren.studio/?hl=en",
+      "print": "instagram.com/rosehallgren.studio",
+      "footer_only": true
     },
     {
       "label": "CV",
-      "url": "https://docs.google.com/document/d/1V0-D5jLEW-bwGUzuvA-ol2tPF7I--yokMy78Ax4j1Vo/export?format=pdf"
+      "url": "https://docs.google.com/document/d/1V0-D5jLEW-bwGUzuvA-ol2tPF7I--yokMy78Ax4j1Vo/export?format=pdf",
+      "print": "Curriculum vitae on request",
+      "footer_only": false
     }
   ]
 }

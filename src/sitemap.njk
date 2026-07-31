@@ -1,0 +1,29 @@
+---
+permalink: /sitemap.xml
+eleventyExcludeFromCollections: true
+---
+{#
+  One URL, generated.
+
+  The hand-maintained sitemap listed seven: the root plus six #anchors, out of
+  seventeen projects, all stamped 2024-12-20. It had drifted twice over —
+  missing eleven projects added since, and dated to a day the content no longer
+  matched.
+
+  It is not worth listing anchors at all. Search engines canonicalise a URL
+  fragment to the page it sits on, so seventeen #project entries index as one
+  page regardless; the only thing the extra entries could do is go stale, which
+  is exactly what they did. One accurate entry beats seventeen approximate ones.
+
+  lastmod comes from the build, so it is right by construction rather than by
+  someone remembering.
+#}
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://rosehallgren.se/</loc>
+    <lastmod>{{ page.date | isoDate }}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
