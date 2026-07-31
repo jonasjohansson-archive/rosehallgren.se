@@ -1,488 +1,320 @@
 /**
- * Optimized Portfolio JavaScript - Consolidated and Performance Optimized
- * All functionality consolidated into a single, efficient module
+ * Studio Rose Hallgren — portfolio behaviour.
+ *
+ * Projects appear in document order. The order is editorial, so it lives in
+ * index.html: to resequence the site, move the <section class="project">
+ * blocks. (This previously shuffled at runtime, which meant deep links landed
+ * at a different scroll depth every visit and the site's own preload hints
+ * pointed at whichever project had been randomised away from the top.)
  */
 
-class OptimizedPortfolio {
-  constructor() {
-    this.isTransitioning = false;
-    this.currentProjectIndex = 0;
-    this.lastScrollTime = 0;
-    this.scrollTimeout = null;
-    this.resizeTimeout = null;
-    this.projects = [];
-    this.carousels = [];
+const REDUCE_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-    this.init();
+/** Scroll behaviour honouring the user's motion preference. */
+const motion = () => (REDUCE_MOTION.matches ? "auto" : "smooth");
+
+/** WCAG relative luminance for an sRGB triple. */
+function luminance(r, g, b) {
+  const f = (c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  };
+  return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+}
+
+/**
+ * Pull a colour down until it clears 4.5:1 against white.
+ *
+ * The extracted colour is used as body-text colour on a white page, and
+ * measured across the shipped images 20 of 62 landed below AA — a light
+ * photograph would tint the bio to 2.6:1. Hue is preserved; only over-light
+ * values move.
+ */
+function clampOnWhite(r, g, b) {
+  // Contrast against white is 1.05 / (L + 0.05); 4.5:1 needs L <= 0.1833.
+  let scale = 1;
+  while (scale > 0.05 && luminance(r * scale, g * scale, b * scale) > 0.1833) {
+    scale -= 0.02;
   }
+  return [Math.round(r * scale), Math.round(g * scale), Math.round(b * scale)];
+}
 
-  init() {
-    this.cacheElements();
-    this.shuffleProjects();
-    this.setupEventListeners();
-    this.initializeCarousels();
-    this.setupColorExtraction();
-    this.setupNavigation();
-    this.optimizeImages();
-    this.setupSocialSharing();
-  }
+/**
+ * A tint of the backdrop's own colour that still clears 4.5:1 against it.
+ *
+ * Keeps the project's hue in the title instead of flat white, so no drop
+ * shadow is needed. Lightens by preference; over a bright photo a light tint
+ * can never reach 4.5:1, so it darkens the same hue instead.
+ */
+function legibleTint(r, g, b) {
+  const bgL = luminance(r, g, b);
+  const contrast = (a) => {
+    const L = luminance(a[0], a[1], a[2]);
+    return (Math.max(L, bgL) + 0.05) / (Math.min(L, bgL) + 0.05);
+  };
+  const toward = (target, t) => [r, g, b].map((c) => c + (target - c) * t);
 
-  cacheElements() {
-    this.projects = Array.from(document.querySelectorAll(".project"));
-    this.carousels = Array.from(document.querySelectorAll(".project-carousel"));
-  }
-
-  shuffleProjects() {
-    if (this.projects.length <= 1) return;
-
-    const aboutSection = document.querySelector(".about-section");
-    const photographyProject = document.querySelector("#photography");
-    const otherProjects = this.projects.filter((project) => project.id !== "photography");
-
-    if (otherProjects.length <= 1) return;
-
-    const shuffledProjects = [...otherProjects];
-    for (let i = shuffledProjects.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffledProjects[i], shuffledProjects[j]] = [shuffledProjects[j], shuffledProjects[i]];
+  for (const target of [255, 0]) {
+    for (let t = 0.45; t <= 1.0001; t += 0.05) {
+      const c = toward(target, t);
+      if (contrast(c) >= 4.5) return `rgb(${c.map(Math.round).join(", ")})`;
     }
+  }
+  return bgL > 0.18 ? "#000" : "#fff";
+}
 
-    otherProjects.forEach((project) => project.remove());
+class Portfolio {
+  constructor() {
+    this.currentProjectIndex = 0;
+    this.projects = Array.from(document.querySelectorAll(".project"));
+    this.navUpdaters = new Map();
 
-    shuffledProjects.forEach((project) => {
-      photographyProject.insertAdjacentElement("beforebegin", project);
+    this.initCarousels();
+    this.setupColorExtraction();
+    this.setupEventListeners();
+    this.setupPermalinkHandling();
+    this.updateCurrentProject();
+  }
+
+  // --- carousels -----------------------------------------------------------
+
+  initCarousels() {
+    document.querySelectorAll(".project-carousel").forEach((carousel) => {
+      const nav = this.createNavigation(carousel);
+      this.setupImageSlides(carousel);
+      this.setupNavigationUpdates(carousel, nav);
+
+      carousel.setAttribute("tabindex", "0");
+      carousel.setAttribute("role", "group");
+      carousel.setAttribute("aria-label", `${this.titleOf(carousel)} — images`);
+      // Bound to the carousel, not the document, so the arrow keys act on the
+      // carousel that actually has focus and page scrolling is left alone.
+      carousel.addEventListener("keydown", (e) => this.handleCarouselKeys(e, carousel));
+    });
+  }
+
+  titleOf(carousel) {
+    return carousel.parentElement.querySelector(".project-title")?.textContent.trim() || "Project";
+  }
+
+  createNavigation(carousel) {
+    const nav = document.createElement("div");
+    nav.className = "carousel-navigation";
+
+    const dots = document.createElement("div");
+    dots.className = "carousel-dots";
+    nav.appendChild(dots);
+
+    const title = this.titleOf(carousel);
+    const slides = carousel.querySelectorAll(".slide");
+    slides.forEach((_, index) => {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "carousel-dot";
+      dot.dataset.slide = index;
+      dot.setAttribute("aria-label", `${title}, slide ${index + 1} of ${slides.length}`);
+      dots.appendChild(dot);
     });
 
-    this.cacheElements();
+    dots.addEventListener("click", (e) => {
+      const dot = e.target.closest(".carousel-dot");
+      if (dot) this.goToSlide(carousel, Number(dot.dataset.slide));
+    });
 
-    this.currentProjectIndex = 0;
+    carousel.parentElement.appendChild(nav);
+    return nav;
+  }
 
-    window.scrollTo({ top: 0, behavior: "auto" });
+  setupImageSlides(carousel) {
+    carousel.querySelectorAll(".image-slide").forEach((slide) => {
+      const img = slide.querySelector("img");
+      if (!img) return;
+      const apply = () => slide.style.setProperty("--bg-image", `url(${img.currentSrc || img.src})`);
+      if (img.complete) apply();
+      else img.addEventListener("load", apply, { once: true });
+    });
+  }
 
-    console.log("Photography project:", photographyProject?.id);
-    console.log("Other projects count:", otherProjects.length);
-    console.log(
-      "Shuffled projects:",
-      shuffledProjects.map((p) => p.id || p.querySelector(".project-title")?.textContent)
-    );
+  /**
+   * Widest scroll offset the carousel can actually reach. Above 1200px two
+   * slides share the viewport, so the final slide can never scroll to the
+   * left edge — indexing straight off slide count left the last dot dead and
+   * made two-slide projects a trap for the arrow keys.
+   */
+  maxIndex(carousel) {
+    const width = this.slideWidth(carousel);
+    return Math.max(0, Math.round((carousel.scrollWidth - carousel.clientWidth) / width));
+  }
 
-    setTimeout(() => {
-      this.cacheElements();
-      console.log(
-        "Final order:",
-        this.projects.map((p) => p.id || p.querySelector(".project-title")?.textContent)
-      );
-    }, 10);
+  slideWidth(carousel) {
+    return carousel.clientWidth >= 1200 ? carousel.clientWidth / 2 : carousel.clientWidth;
+  }
+
+  currentSlide(carousel) {
+    return Math.round(carousel.scrollLeft / this.slideWidth(carousel));
+  }
+
+  setupNavigationUpdates(carousel, nav) {
+    const dots = nav.querySelectorAll(".carousel-dot");
+    const update = () => {
+      const current = this.currentSlide(carousel);
+      dots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === current);
+        if (index === current) dot.setAttribute("aria-current", "true");
+        else dot.removeAttribute("aria-current");
+      });
+    };
+    // Registered once. Re-registering per resize previously accumulated
+    // listeners without bound — a window drag added hundreds.
+    carousel.addEventListener("scroll", update, { passive: true });
+    this.navUpdaters.set(carousel, update);
+    update();
+  }
+
+  goToSlide(carousel, index) {
+    const target = Math.min(Math.max(index, 0), this.maxIndex(carousel));
+    carousel.scrollTo({ left: target * this.slideWidth(carousel), behavior: motion() });
+  }
+
+  advanceSlide(carousel) {
+    const current = this.currentSlide(carousel);
+    if (current < this.maxIndex(carousel)) this.goToSlide(carousel, current + 1);
+    else this.stepProject(1);
+  }
+
+  previousSlide(carousel) {
+    const current = this.currentSlide(carousel);
+    if (current > 0) this.goToSlide(carousel, current - 1);
+    else this.stepProject(-1);
+  }
+
+  // --- navigation ----------------------------------------------------------
+
+  handleCarouselKeys(e, carousel) {
+    if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+    if (e.target.closest("input, textarea, select, [contenteditable]")) return;
+
+    switch (e.key) {
+      case "ArrowLeft":
+        e.preventDefault();
+        this.previousSlide(carousel);
+        break;
+      case "ArrowRight":
+        e.preventDefault();
+        this.advanceSlide(carousel);
+        break;
+      default:
+        return;
+    }
+  }
+
+  /** Move by one project. Also reachable from the ends of a carousel. */
+  stepProject(delta) {
+    const next = this.currentProjectIndex + delta;
+    if (next < 0 || next >= this.projects.length) return;
+    this.currentProjectIndex = next;
+    this.projects[next].scrollIntoView({ behavior: motion(), block: "start" });
+  }
+
+  updateCurrentProject() {
+    const middle = window.innerHeight / 2;
+    this.projects.forEach((project, index) => {
+      const rect = project.getBoundingClientRect();
+      if (rect.top <= middle && rect.bottom >= middle) this.currentProjectIndex = index;
+    });
+  }
+
+  setupPermalinkHandling() {
+    const go = () => {
+      const target = document.getElementById(location.hash.slice(1));
+      if (!target) return;
+      const index = this.projects.indexOf(target);
+      if (index !== -1) this.currentProjectIndex = index;
+      target.scrollIntoView({ behavior: motion(), block: "start" });
+    };
+    window.addEventListener("hashchange", go);
+    if (location.hash) go();
   }
 
   setupEventListeners() {
     let scrollRAF = null;
-    window.addEventListener("scroll", () => {
-      if (scrollRAF) return;
-      scrollRAF = requestAnimationFrame(() => {
-        this.handleScroll();
-        scrollRAF = null;
-      });
-    });
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (scrollRAF) return;
+        scrollRAF = requestAnimationFrame(() => {
+          this.updateCurrentProject();
+          scrollRAF = null;
+        });
+      },
+      { passive: true }
+    );
 
-    document.addEventListener("keydown", (e) => this.handleKeyboard(e));
-
-    let resizeTimeout;
+    let resizeTimer = null;
     window.addEventListener("resize", () => {
-      if (resizeTimeout) return;
-      resizeTimeout = setTimeout(() => {
-        this.handleResize();
-        resizeTimeout = null;
-      }, 250);
-    });
-
-    window.addEventListener("beforeunload", () => {
-      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        this.navUpdaters.forEach((update) => update());
+      }, 150);
     });
   }
 
-  initializeCarousels() {
-    this.carousels.forEach((carousel) => {
-      this.setupCarousel(carousel);
-    });
-  }
-
-  setupCarousel(carousel) {
-    let navigationContainer = null;
-
-    navigationContainer = this.createNavigation(carousel);
-
-    this.setupImageSlides(carousel);
-
-    this.setupCarouselEvents(carousel, navigationContainer);
-
-    if (navigationContainer) {
-      this.setupNavigationUpdates(carousel, navigationContainer);
-    }
-  }
-
-  createNavigation(carousel) {
-    const navigationContainer = document.createElement("div");
-    navigationContainer.className = "carousel-navigation";
-    carousel.parentElement.appendChild(navigationContainer);
-
-    const dotsContainer = document.createElement("div");
-    dotsContainer.className = "carousel-dots";
-    navigationContainer.appendChild(dotsContainer);
-
-    const slides = carousel.querySelectorAll(".slide");
-    slides.forEach((_, index) => {
-      const dot = document.createElement("button");
-      dot.className = "carousel-dot";
-      dot.setAttribute("data-slide", index);
-      dot.setAttribute("aria-label", `Go to slide ${index + 1}`);
-      dotsContainer.appendChild(dot);
-    });
-
-    dotsContainer.addEventListener("click", (e) => {
-      if (e.target.classList.contains("carousel-dot")) {
-        e.preventDefault();
-        e.stopPropagation();
-        const slideIndex = parseInt(e.target.getAttribute("data-slide"));
-        this.goToSlide(carousel, slideIndex);
-      }
-    });
-
-    return navigationContainer;
-  }
-
-  setupImageSlides(carousel) {
-    const imageSlides = carousel.querySelectorAll(".image-slide");
-
-    imageSlides.forEach((slide) => {
-      const img = slide.querySelector("img");
-      if (img) {
-        if (img.complete) {
-          slide.style.setProperty("--bg-image", `url(${img.src})`);
-        } else {
-          img.addEventListener("load", () => {
-            slide.style.setProperty("--bg-image", `url(${img.src})`);
-          });
-        }
-      }
-    });
-  }
-
-  setupCarouselEvents(carousel, navigationContainer) {
-    carousel.setAttribute("tabindex", "0");
-  }
-
-  setupNavigationUpdates(carousel, navigationContainer) {
-    const updateNavigation = () => {
-      const slides = carousel.querySelectorAll(".slide");
-      const slideWidth = this.getSlideWidth();
-      const currentSlide = Math.round(carousel.scrollLeft / slideWidth);
-
-      const dots = navigationContainer.querySelectorAll(".carousel-dot");
-      dots.forEach((dot, index) => {
-        dot.classList.toggle("active", index === currentSlide);
-      });
-    };
-
-    carousel.addEventListener("scroll", updateNavigation);
-    updateNavigation();
-  }
-
-  getSlideWidth() {
-    if (window.innerWidth >= 1200) {
-      return window.innerWidth / 2;
-    }
-    return document.querySelector(".project-carousel")?.offsetWidth || window.innerWidth;
-  }
-
-  goToSlide(carousel, slideIndex) {
-    if (this.isTransitioning) return;
-
-    const slides = carousel.querySelectorAll(".slide");
-    const slideWidth = this.getSlideWidth();
-
-    if (slideIndex >= 0 && slideIndex < slides.length) {
-      carousel.scrollTo({
-        left: slideIndex * slideWidth,
-        behavior: "smooth",
-      });
-    }
-  }
+  // --- colour --------------------------------------------------------------
 
   setupColorExtraction() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            this.extractColorFromImage(entry.target);
-          }
+          if (entry.isIntersecting) this.extractColorFromImage(entry.target);
         });
       },
       { threshold: 0.1 }
     );
-
-    const images = document.querySelectorAll(".image-slide img");
-    images.forEach((img) => observer.observe(img));
+    document.querySelectorAll(".image-slide img").forEach((img) => observer.observe(img));
   }
 
   extractColorFromImage(img) {
-    if (!img.complete) return;
+    // The observer fires before the first images have decoded; without this
+    // retry the opening project never got its colour at all.
+    if (!img.complete || !img.naturalWidth) {
+      img.addEventListener("load", () => this.extractColorFromImage(img), { once: true });
+      return;
+    }
 
+    let r, g, b, topR, topG, topB;
     try {
       const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      canvas.width = 1;
-      canvas.height = 1;
+      canvas.width = canvas.height = 1;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
       ctx.drawImage(img, 0, 0, 1, 1);
-      const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+      [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
 
-      const color = `rgb(${r}, ${g}, ${b})`;
-      const lighterColor = `rgba(${r}, ${g}, ${b}, 0.3)`;
-
-      const project = img.closest(".project");
-      if (project) {
-        const firstImage = project.querySelector(".image-slide img");
-        if (img === firstImage) {
-          const darkerColor = `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 50)}, ${Math.max(0, b - 50)}, 0.8)`;
-          project.style.setProperty("--project-logo-color", color);
-          project.style.setProperty("--project-pagination-color", lighterColor);
-          project.style.setProperty("--project-text-bg", darkerColor);
-        }
-      }
-
-      document.documentElement.style.setProperty("--logo-color", color);
-      document.documentElement.style.setProperty("--pagination-color", lighterColor);
-    } catch (e) {
-      document.documentElement.style.setProperty("--logo-color", "#000");
-      document.documentElement.style.setProperty("--pagination-color", "rgba(0, 0, 0, 0.3)");
-    }
-  }
-
-  setupNavigation() {
-    this.updateCurrentProject();
-    this.setupPermalinkHandling();
-  }
-
-  handleScroll() {
-    if (this.isTransitioning) return;
-
-    const now = Date.now();
-    this.lastScrollTime = now;
-
-    if (this.scrollTimeout) {
-      clearTimeout(this.scrollTimeout);
+      // Sample only the top 15%, where the project title sits. Averaging the
+      // whole frame put white titles at ~2:1 over bright skies.
+      ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight * 0.15, 0, 0, 1, 1);
+      [topR, topG, topB] = ctx.getImageData(0, 0, 1, 1).data;
+    } catch {
+      // Tainted canvas (file:// or a cross-origin move). Keep the defaults.
+      return;
     }
 
-    this.scrollTimeout = setTimeout(() => {
-      if (this.isTransitioning || Date.now() - this.lastScrollTime > 100) return;
-      this.updateCurrentProject();
-    }, 50);
-  }
+    const project = img.closest(".project");
+    if (project && img === project.querySelector(".image-slide img")) {
+      // Set from the lead image, which is what the title sits over on arrival.
+      // Later slides keep this colour and lean on the text-shadow.
+      project.style.setProperty("--project-title-color", legibleTint(topR, topG, topB));
 
-  updateCurrentProject() {
-    const windowHeight = window.innerHeight;
-    let newProjectIndex = 0;
-
-    this.projects.forEach((project, index) => {
-      const rect = project.getBoundingClientRect();
-      if (rect.top <= windowHeight / 2 && rect.bottom >= windowHeight / 2) {
-        newProjectIndex = index;
-      }
-    });
-
-    newProjectIndex = Math.min(newProjectIndex, this.projects.length - 1);
-
-    if (newProjectIndex !== this.currentProjectIndex) {
-      this.currentProjectIndex = newProjectIndex;
-    }
-  }
-
-  handleKeyboard(e) {
-    if (this.isTransitioning) return;
-
-    const currentProject = this.projects[this.currentProjectIndex];
-    const currentCarousel = currentProject?.querySelector(".project-carousel");
-
-    switch (e.key) {
-      case "ArrowLeft":
-        e.preventDefault();
-        if (currentCarousel) this.previousSlide(currentCarousel);
-        break;
-      case "ArrowRight":
-        e.preventDefault();
-        if (currentCarousel) this.advanceSlide(currentCarousel);
-        break;
-      case "ArrowUp":
-        e.preventDefault();
-        this.previousProject();
-        break;
-      case "ArrowDown":
-        e.preventDefault();
-        this.nextProject();
-        break;
-    }
-  }
-
-  advanceSlide(carousel) {
-    if (this.isTransitioning) return;
-
-    const slides = carousel.querySelectorAll(".slide");
-    const slideWidth = this.getSlideWidth();
-    const currentSlide = Math.round(carousel.scrollLeft / slideWidth);
-
-    if (currentSlide < slides.length - 1) {
-      carousel.scrollTo({
-        left: (currentSlide + 1) * slideWidth,
-        behavior: "smooth",
-      });
-    } else {
-      this.nextProject();
-    }
-  }
-
-  previousSlide(carousel) {
-    if (this.isTransitioning) return;
-
-    const slideWidth = this.getSlideWidth();
-    const currentSlide = Math.round(carousel.scrollLeft / slideWidth);
-
-    if (currentSlide > 0) {
-      carousel.scrollTo({
-        left: (currentSlide - 1) * slideWidth,
-        behavior: "smooth",
-      });
-    } else {
-      this.previousProject();
-    }
-  }
-
-  nextProject() {
-    if (this.isTransitioning) return;
-    this.isTransitioning = true;
-
-    if (this.currentProjectIndex < this.projects.length - 1) {
-      this.currentProjectIndex++;
-      this.projects[this.currentProjectIndex].scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+      // Opaque, not rgba(…, 0.8): at 0.8 the white page showed through and
+      // cancelled most of the darkening, leaving white text at 4.2:1 on
+      // C.O.U.A. and 4.52:1 on Folkbastu.
+      const shade = (c) => Math.max(0, c - 50);
+      project.style.setProperty("--project-text-bg", `rgb(${shade(r)}, ${shade(g)}, ${shade(b)})`);
     }
 
-    setTimeout(() => {
-      this.isTransitioning = false;
-    }, 800);
-  }
-
-  previousProject() {
-    if (this.isTransitioning) return;
-    this.isTransitioning = true;
-
-    if (this.currentProjectIndex > 0) {
-      this.currentProjectIndex--;
-      this.projects[this.currentProjectIndex].scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-
-    setTimeout(() => {
-      this.isTransitioning = false;
-    }, 800);
-  }
-
-  setupPermalinkHandling() {
-    const handlePermalink = () => {
-      const hash = window.location.hash.substring(1);
-      if (hash) {
-        const targetProject = document.getElementById(hash);
-        if (targetProject) {
-          const projectIndex = this.projects.indexOf(targetProject);
-          if (projectIndex !== -1) {
-            this.currentProjectIndex = projectIndex;
-            targetProject.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }
-        }
-      }
-    };
-
-    window.addEventListener("hashchange", handlePermalink);
-    handlePermalink();
-  }
-
-  optimizeImages() {
-    const images = document.querySelectorAll("img:not([loading])");
-    images.forEach((img) => {
-      img.setAttribute("loading", "lazy");
-    });
-  }
-
-  getCurrentProject() {
-    // Get the currently visible project based on scroll position
-    const projects = this.projects;
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-    for (let i = 0; i < projects.length; i++) {
-      const project = projects[i];
-      const rect = project.getBoundingClientRect();
-      const projectTop = rect.top + scrollTop;
-      const projectBottom = projectTop + rect.height;
-
-      // Check if the project is in the viewport
-      if (scrollTop >= projectTop - window.innerHeight / 2 && scrollTop < projectBottom - window.innerHeight / 2) {
-        return project;
-      }
-    }
-
-    // Fallback to first project if none found
-    return projects[0] || null;
-  }
-
-  setupSocialSharing() {
-    this.updateSocialMetaTags();
-    this.addSocialSharingButtons();
-  }
-
-  updateSocialMetaTags() {
-    const currentProject = this.getCurrentProject();
-    if (currentProject) {
-      const projectName = currentProject.querySelector(".project-title")?.textContent || "Rose Hallgren";
-      const projectImage =
-        currentProject.querySelector("img")?.src || "https://rosehallgren.se/assets/images/rose-hallgren.jpg";
-
-      // Update Open Graph image dynamically
-      const ogImage = document.querySelector('meta[property="og:image"]');
-      if (ogImage) {
-        ogImage.setAttribute("content", projectImage);
-      }
-
-      const twitterImage = document.querySelector('meta[name="twitter:image"]');
-      if (twitterImage) {
-        twitterImage.setAttribute("content", projectImage);
-      }
-    }
-  }
-
-  addSocialSharingButtons() {
-    console.log("Social sharing optimization enabled");
-  }
-
-  handleResize() {
-    clearTimeout(this.resizeTimeout);
-    this.resizeTimeout = setTimeout(() => {
-      this.carousels.forEach((carousel) => {
-        const navigationContainer = carousel.parentElement.querySelector(".carousel-navigation");
-        if (navigationContainer) {
-          this.setupNavigationUpdates(carousel, navigationContainer);
-        }
-      });
-    }, 100);
+    const [cr, cg, cb] = clampOnWhite(r, g, b);
+    document.documentElement.style.setProperty("--logo-color", `rgb(${cr}, ${cg}, ${cb})`);
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  new OptimizedPortfolio();
-});
+document.addEventListener("DOMContentLoaded", () => new Portfolio());

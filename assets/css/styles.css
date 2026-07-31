@@ -1,56 +1,26 @@
+/* Studio Rose Hallgren */
+
 :root {
-  --font-size-base: 12px;
-  --font-size-mobile: 14px;
-  --font-size-small: 8px;
-  --line-height-base: 1.425;
-  --line-height-mobile: 1.4;
-  --line-height-small: 1.3;
+  /* rem so the page respects the reader's browser font-size setting.
+     Body copy sits at 14px; the chrome (titles, contact links) stays at 12px
+     via --font-size-chrome. */
+  --font-size-base: 0.875rem;
+  --font-size-chrome: 0.75rem;
+  --font-size-title: 1.0625rem;
+  --line-height-base: 1.5;
 
   --color-text: #000;
   --color-bg: #fff;
   --color-white: #fff;
-  --color-text-slide-bg: #1a1a1a;
   --color-dark-bg: #1a1a1a;
   --project-primary-color: #1a1a1a;
 
   --spacing-small: 8px;
   --spacing-medium: 16px;
   --spacing-large: 20px;
-  --spacing-xl: 24px;
 
-  --flex-center: flex;
-  --flex-center-props: center;
   --transition-fast: all 0.2s ease;
-  --transition-slow: all 1s ease;
   --z-index-high: 9999;
-  --z-index-medium: 100;
-  --z-index-low: 10;
-}
-
-.flex-center {
-  display: var(--flex-center);
-  align-items: var(--flex-center-props);
-  justify-content: var(--flex-center-props);
-}
-
-.transition-fast {
-  transition: var(--transition-fast);
-}
-
-.transition-slow {
-  transition: var(--transition-slow);
-}
-
-.z-high {
-  z-index: var(--z-index-high);
-}
-
-.z-medium {
-  z-index: var(--z-index-medium);
-}
-
-.z-low {
-  z-index: var(--z-index-low);
 }
 
 *,
@@ -78,9 +48,9 @@ body {
   line-height: var(--line-height-base);
   color: var(--color-text);
   background: var(--color-bg);
-  margin: 0;
-  padding: 0;
-  scroll-behavior: smooth;
+  /* Must stay on body, not html: overflow-x on html forces overflow-y to
+     `auto`, which makes <html> its own scroll container and stops the page
+     scrolling altogether. */
   overflow-x: hidden;
 }
 
@@ -92,12 +62,33 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  /* The JS passes behavior: "auto" to match; the CSS property alone is
+     ignored when a scroll call names its own behaviour. */
+  html,
+  .project-carousel {
+    scroll-behavior: auto !important;
+  }
 }
 
-a:focus,
-button:focus {
+/* Focus stays invisible for mouse users but is always shown to the keyboard.
+   currentColor resolves to black on the white slides and white on the dark
+   ones, so one rule covers both. */
+:focus:not(:focus-visible) {
   outline: none;
 }
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+*::selection {
+  background-color: #f4a6a6;
+  color: #000;
+}
+
+/* --- masthead ------------------------------------------------------------ */
 
 #logo-top,
 #logo-bottom {
@@ -130,49 +121,30 @@ button:focus {
 }
 
 .about-content h1 {
-  font-size: inherit;
   font-weight: 600;
-  color: var(--logo-color, inherit);
   margin-bottom: var(--spacing-medium);
-  transition: color 1s ease;
-}
-
-.about-text {
-  margin-bottom: 0;
 }
 
 .about-text p {
   margin-bottom: var(--spacing-medium);
-  font-size: inherit;
-  line-height: inherit;
-  color: var(--logo-color, inherit);
-  text-align: inherit;
-  max-width: 100%;
-  transition: color 1s ease;
 }
 
 .about-contact p {
   margin-bottom: var(--spacing-small);
-  font-size: inherit;
-  line-height: inherit;
-  color: var(--logo-color, inherit);
-  text-align: inherit;
-  transition: color 1s ease;
 }
 
-.about-contact a {
-  color: inherit;
-  text-decoration: underline;
-  min-height: 44px;
-  min-width: 44px;
-  display: inline-block;
-  padding: 4px 8px;
-  margin: -4px -8px;
-}
-
+.about-contact a,
 .about-text a {
   color: inherit;
   text-decoration: underline;
+}
+
+.about-contact a {
+  display: inline-block;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 4px 8px;
+  margin: -4px -8px;
 }
 
 .about-contact a:hover,
@@ -180,8 +152,10 @@ button:focus {
   text-decoration: none;
 }
 
+/* --- projects ------------------------------------------------------------ */
+
 .project {
-  min-height: 50vh;
+  min-height: 100vh;
   width: 100%;
   overflow: hidden;
   position: relative;
@@ -194,26 +168,34 @@ button:focus {
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
-  font-size: inherit;
+  font-size: var(--font-size-title);
   font-weight: normal;
-  color: var(--color-white);
-  text-align: inherit;
+  letter-spacing: 0.11em;
+  /* A tint of the lead image's own colour rather than flat white, lightened
+     (or darkened, over a bright photo) until it clears 4.5:1 against the band
+     it sits on. No shadow — the contrast is in the colour itself. */
+  color: var(--project-title-color, var(--color-white));
+  text-align: center;
   pointer-events: none;
   text-transform: uppercase;
+}
+
+/* Deck-only: shown when printing, never on the site. Keeps placeholder
+   copy out of the published page. */
+.project-meta {
+  display: none;
 }
 
 .project-carousel {
   display: flex;
   width: 100%;
-  height: 50vh;
+  height: 100vh;
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
-  scroll-snap-stop: always;
-  scroll-padding: 0;
   position: relative;
 }
 
@@ -223,24 +205,24 @@ button:focus {
 
 .slide {
   min-width: 100vw;
-  height: auto;
-  min-height: 50vh;
-  display: var(--flex-center);
-  align-items: var(--flex-center-props);
-  justify-content: var(--flex-center-props);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   scroll-snap-align: start;
-  scroll-snap-stop: always;
-  scroll-margin: 0;
   position: relative;
 }
 
-.slide:nth-child(odd) {
+/* Keyed off content, not DOM position. With :nth-child, inserting a single
+   image flipped a text slide to white-on-white. */
+.slide:has(.image-slide),
+.slide:has(.video-slide) {
   background: #fff;
   color: #000;
 }
 
-.slide:nth-child(even) {
-  background: var(--project-text-bg, color-mix(in srgb, var(--project-primary-color) 100%, black 20%));
+.slide:has(.slide-content) {
+  background: var(--project-text-bg, var(--project-primary-color));
   color: #fff;
 }
 
@@ -255,17 +237,6 @@ button:focus {
 
 .slide-content p {
   margin-bottom: var(--spacing-medium);
-  font-size: inherit;
-  line-height: inherit;
-  color: inherit;
-}
-
-.slide-content strong {
-  font-weight: 600;
-}
-
-.slide-content em {
-  font-style: italic;
 }
 
 .slide-content a {
@@ -277,44 +248,55 @@ button:focus {
   text-decoration: none;
 }
 
-.image-slide {
+.image-slide,
+.video-slide {
   position: relative;
   width: 100%;
   height: 100%;
-  display: var(--flex-center);
-  align-items: var(--flex-center-props);
-  justify-content: var(--flex-center-props);
-  background: var(--bg-image) center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
 }
 
+.video-slide {
+  background: var(--color-dark-bg);
+}
+
+/* Blurred enlargement of the photo, filling the letterbox left by
+   object-fit: contain. */
 .image-slide::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: var(--bg-image);
-  background-size: cover;
-  background-position: center;
-  filter: blur(55px);
-  transform: scale(1.95);
-  mix-blend-mode: normal;
+  inset: 0;
+  background: var(--bg-image) center / cover no-repeat;
+  filter: blur(40px);
+  transform: scale(1.4);
   z-index: 1;
-  background-repeat: no-repeat;
-  overflow: hidden;
 }
 
 .image-slide::after {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: rgba(26, 26, 26, 0.1);
   z-index: 1;
+}
+
+.image-slide img,
+.video-slide iframe {
+  z-index: 3;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+/* The print copy is JPEG: Chrome re-embeds WebP near-uncompressed when
+   printing (a 124KB WebP became 2.47MB in the PDF), and <picture> with
+   media="print" is ignored, so the swap has to be two <img> elements.
+   loading="lazy" keeps this one off the wire on screen — display:none gives
+   it no layout box, so it never intersects. */
+.image-slide img.print-only {
+  display: none;
 }
 
 .image-slide img {
@@ -323,32 +305,16 @@ button:focus {
   width: auto;
   height: auto;
   object-fit: contain;
-  object-position: center;
-  z-index: 3;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
-}
-
-.video-slide {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: var(--flex-center);
-  align-items: var(--flex-center-props);
-  justify-content: var(--flex-center-props);
-  background: var(--color-dark-bg);
-  overflow: hidden;
+  user-select: none;
 }
 
 .video-slide iframe {
   width: min(80vw, calc(80vh * 16 / 9));
   height: min(calc(80vw * 9 / 16), 80vh);
-  object-fit: contain;
-  object-position: center;
-  z-index: 3;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
+  border: 0;
 }
+
+/* --- carousel dots ------------------------------------------------------- */
 
 .carousel-navigation {
   position: absolute;
@@ -356,118 +322,57 @@ button:focus {
   left: 50%;
   transform: translateX(-50%);
   z-index: var(--z-index-high);
-  display: var(--flex-center);
-  align-items: var(--flex-center-props);
-  justify-content: var(--flex-center-props);
-  pointer-events: auto;
-  mix-blend-mode: difference;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .carousel-dots {
-  display: var(--flex-center);
+  display: flex;
   gap: var(--spacing-medium);
-  align-items: var(--flex-center-props);
+  align-items: center;
 }
 
+/* Plain white with a shadow rather than mix-blend-mode: difference, which
+   made the dots vanish against mid-toned photographs. */
 .carousel-dot {
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
+  border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
+  padding: 0;
+  background: rgba(255, 255, 255, 0.55);
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.7));
   cursor: pointer;
   transition: var(--transition-fast);
-  backdrop-filter: blur(10px);
-  border: none;
-  outline: none;
-  box-shadow: none;
-  mix-blend-mode: difference;
-  filter: brightness(4);
   position: relative;
 }
 
+/* Expands the hit area to 27px without changing the visual size. */
 .carousel-dot::before {
   content: "";
   position: absolute;
-  top: -8px;
-  left: -8px;
-  right: -8px;
-  bottom: -8px;
+  inset: -8px;
   border-radius: 50%;
-  background: transparent;
-  z-index: 1;
-}
-
-@media (max-width: 768px) {
-  .project-carousel {
-    scroll-snap-type: none;
-  }
-
-  .slide {
-    scroll-snap-align: none;
-  }
-
-  .carousel-dot {
-    width: 13px;
-    height: 13px;
-    mix-blend-mode: normal;
-    filter: none;
-    background: rgba(255, 255, 255, 0.6);
-  }
-
-  .carousel-dot::before {
-    top: -8px;
-    left: -8px;
-    right: -8px;
-    bottom: -8px;
-  }
-
-  .carousel-dot:hover {
-    background: rgba(255, 255, 255, 0.8);
-  }
-
-  .carousel-dot.active {
-    background: rgba(255, 255, 255, 1);
-  }
-
-.placeholder-slide {
-  height: 100%;
-  min-height: 60vh;
-  display: var(--flex-center);
-  align-items: var(--flex-center-props);
-  justify-content: var(--flex-center-props);
-  flex-direction: column;
-  gap: var(--spacing-medium);
-  text-align: center;
-  padding: var(--spacing-large);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.placeholder-slide p {
-  max-width: 420px;
-  margin: 0;
-}
 }
 
 .carousel-dot:hover {
-  background: rgba(255, 255, 255, 0.6);
-  border: none;
-  outline: none;
-  box-shadow: none;
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .carousel-dot.active {
-  background: rgba(255, 255, 255, 1);
-  border: none;
-  outline: none;
-  box-shadow: none;
+  background: #fff;
 }
+
+.carousel-dot:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+/* --- footer -------------------------------------------------------------- */
 
 .footer {
   background: var(--color-bg);
-  color: var(--color-text);
   padding: 2.5rem;
   scroll-snap-align: start;
   color: var(--logo-color, #000);
@@ -483,76 +388,32 @@ button:focus {
 
 .footer-contact p {
   margin-bottom: var(--spacing-medium);
-  font-size: inherit;
-  line-height: inherit;
-  color: inherit;
-  text-align: inherit;
 }
 
 .footer-contact a {
   color: inherit;
   text-decoration: underline;
-  margin-right: var(--spacing-medium);
+  display: inline-block;
   min-height: 44px;
   min-width: 44px;
-  display: inline-block;
   padding: 4px 8px;
-  margin: -4px -8px;
-  margin-right: calc(var(--spacing-medium) - 8px);
-}
-
-.footer-contact a:last-child {
-  margin-right: 0;
+  margin: -4px 8px -4px -8px;
 }
 
 .footer-contact a:hover {
   text-decoration: none;
 }
 
-*::selection {
-  background-color: #f4a6a6;
-  color: #000;
-}
-
-*::-moz-selection {
-  background-color: #f4a6a6;
-  color: #000;
-}
-
-.project-title,
-.image-slide,
-.image-slide img {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-@media (min-width: 720px) {
-  .project {
-    min-height: 100vh;
-  }
-
-  .project-carousel {
-    height: 100vh;
-  }
-
-  .slide {
-    height: 100vh;
-    min-height: 100vh;
-  }
-}
+/* --- wide screens: two slides at once ------------------------------------ */
 
 @media (min-width: 1200px) {
   .about-section {
-    min-height: 50vh;
     justify-content: flex-start;
     padding-left: 5vw;
     padding-right: 5vw;
   }
 
   .about-content {
-    max-width: 600px;
     text-align: left;
   }
 
@@ -561,87 +422,36 @@ button:focus {
   }
 
   .image-slide img {
-    max-width: calc(50vw - 10vw);
-    max-height: 80vh;
+    max-width: 40vw;
   }
 
   .video-slide iframe {
-    width: min(calc(50vw - 10vw), calc(80vh * 16 / 9));
-    height: min(calc((50vw - 10vw) * 9 / 16), 80vh);
+    width: min(40vw, calc(80vh * 16 / 9));
+    height: min(calc(40vw * 9 / 16), 80vh);
   }
 
   .footer {
     padding-left: 5vw;
     padding-right: 5vw;
   }
-
-  .footer-content {
-    max-width: 600px;
-    text-align: center;
-  }
 }
 
+/* --- small screens ------------------------------------------------------- */
+
 @media (max-width: 768px) {
-  :root {
-    --font-size-base: var(--font-size-mobile);
-    --line-height-base: var(--line-height-mobile);
-  }
-
-  body {
-    font-size: 14px;
-  }
-
   .about-section {
     min-height: auto;
-    padding: 2.5rem;
-  }
-
-  .project {
-    min-height: 100vh;
-  }
-
-  .project-carousel {
-    height: 100vh;
-  }
-
-  .slide {
-    height: 100vh;
-    min-height: 100vh;
-  }
-
-  .about-content,
-  .slide-content {
-    max-width: 100%;
-  }
-
-  .about-content {
-    text-align: center;
   }
 
   .about-text p,
   .slide-content p {
-    font-size: inherit;
-    line-height: inherit;
     margin-bottom: var(--spacing-large);
     text-align: left;
-  }
-
-  .about-contact p,
-  .footer-contact p {
-    font-size: inherit;
-    line-height: inherit;
-    text-align: center;
   }
 
   .slide-content {
     text-align: left;
     padding: 1.5rem;
-  }
-
-  .project-title {
-    text-align: center;
-    left: 50%;
-    transform: translateX(-50%);
   }
 
   #logo-top,
@@ -650,76 +460,295 @@ button:focus {
     margin: 0 auto;
   }
 
-  .image-slide {
+  /* Free-scrolling on touch; mandatory snap fights the gesture. */
+  .project-carousel {
+    scroll-snap-type: none;
+  }
+
+  /* The image covers the slide edge to edge here, so the blurred backdrop is
+     completely hidden — and it was the single most expensive thing on the
+     page, a ~3.8x-viewport surface blurred per slide. */
+  .image-slide::before {
+    display: none;
+  }
+
+  .image-slide img {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+@media (max-width: 480px) {
+  .slide-content {
+    padding: 1.25rem;
+  }
+}
+
+/* --- pitch deck (Cmd+P) --------------------------------------------------- */
+
+/*
+ * Cmd+P produces a 16:9 widescreen portfolio PDF, two slides per project:
+ *
+ *   slide 1 — title, body copy in a left column, hero image on the right
+ *   slide 2 — the project's remaining images as a full-width collage
+ *
+ * Page is 338.667 x 190.5mm = 13.333 x 7.5in = 1280 x 720 CSS px — the standard
+ * widescreen slide size used by Keynote, PowerPoint and Google Slides, so the
+ * PDF opens full-screen on any display without letterboxing.
+ *
+ * Rules of the road for this block:
+ *  - Millimetres only. Viewport units are unreliable in paged media.
+ *  - Page margins live on @page, not on the sections, so both slides of a
+ *    project get the same margins as the block flows across the break.
+ *  - Never depend on a CSS background for legibility. Chrome's "Background
+ *    graphics" checkbox is user-controlled and cannot be forced from CSS, so
+ *    all type here is black on white and every image is real <img> content.
+ *  - Images swap to JPEG (.print-only). Chrome re-embeds WebP almost
+ *    uncompressed when printing — 124KB of WebP became 2.47MB of PDF.
+ *  - The hero floats right and the copy floats left, so the copy sits first
+ *    visually even in projects whose DOM starts with an image.
+ *  - Chrome and Firefox honour `@page size`; Safari ignores it.
+ *
+ * Live area: 306.7mm wide x 162.5mm tall.
+ */
+@media print {
+  @page {
+    size: 338.667mm 190.5mm;
+    margin: 14mm 16mm;
+  }
+
+  html,
+  body {
+    overflow: visible;
+    scroll-snap-type: none;
+    background: #fff;
+    font-size: 10pt;
+  }
+
+  .carousel-navigation,
+  .video-slide,
+  .slide:has(.video-slide) {
+    display: none !important;
+  }
+
+  .project,
+  .about-section,
+  .footer {
+    box-sizing: border-box;
+    display: block;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
     position: relative;
+    break-after: page;
+    background: #fff !important;
+    color: #000 !important;
+    transition: none;
+  }
+
+  .about-section {
+    min-height: 158mm;
+    padding-top: 30mm;
+  }
+
+  .footer {
+    break-after: auto; /* no trailing blank slide */
+    min-height: 158mm;
+    padding-top: 55mm;
+    text-align: center;
+  }
+
+  .about-content {
+    max-width: 165mm;
+    text-align: left;
+    margin: 0;
+  }
+
+  .about-content h1 {
+    font-size: 24pt;
+    font-weight: 600;
+    margin-bottom: 6mm;
+  }
+
+  .about-text p {
+    font-size: 10.5pt;
+    line-height: 1.55;
+    margin-bottom: 4mm;
+    text-align: left;
+  }
+
+  #logo-top,
+  #logo-bottom {
+    height: 16mm;
+  }
+
+  #logo-top path,
+  #logo-bottom path {
+    fill: #000 !important;
+  }
+
+  .project-title {
+    position: static;
+    transform: none;
+    font-size: 12pt;
+    letter-spacing: 0.11em;
+    color: #000 !important;
+    text-align: left;
+    margin: 0 0 1.5mm;
+  }
+
+  .project-meta {
+    display: block;
+    font-size: 8pt;
+    letter-spacing: 0.04em;
+    color: #000 !important;
+    opacity: 0.55;
+    margin: 0 0 5mm;
+  }
+
+  .project-carousel {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    overflow: visible;
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+  }
+
+  .project-carousel::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+
+  /* --- slide 1: copy left, hero right --- */
+
+  .slide {
+    min-width: 0;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    display: block;
+    background: none !important;
+    scroll-snap-align: none;
+  }
+
+  .slide:has(.slide-content) {
+    float: left;
+    clear: left;
+    width: 88mm;
+    margin: 0 0 4mm 0;
+    color: #000 !important;
+  }
+
+  .slide-content {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    font-size: 9.5pt;
+    line-height: 1.5;
+  }
+
+  .slide-content p {
+    margin-bottom: 3mm;
+    text-align: left;
+  }
+
+  /* Floated right so it sits beside the copy regardless of DOM order — most
+     projects open with an image, not the text. */
+  .deck-hero {
+    float: right;
+    width: calc(100% - 96mm);
+    height: 128mm;
+  }
+
+  /* --- slide 2: the rest of the images, full width --- */
+
+  .deck-break {
+    break-before: page;
+    clear: both;
+  }
+
+  /* Tiles per row is set per project in the markup from its image count, so
+     the collage fills the slide instead of leaving a ragged part-row. Each
+     tile carries a 4mm right margin, so N per row needs N*4mm of slack. */
+  .deck-more {
+    float: left;
+    margin: 0 4mm 4mm 0;
+  }
+
+  .deck-tiles-2 .deck-more {
+    width: calc((100% - 8mm) / 2);
+    height: 120mm;
+  }
+
+  .deck-tiles-3 .deck-more {
+    width: calc((100% - 12mm) / 3);
+    height: 74mm;
+  }
+
+  .deck-tiles-4 .deck-more {
+    width: calc((100% - 16mm) / 4);
+    height: 47mm;
+  }
+
+  /* Photography has no copy, so it needs no hero slide — one collage. */
+  .project:not(:has(.slide-content)) .deck-break {
+    break-before: auto;
+  }
+
+  .project:not(:has(.slide-content)) .deck-hero {
+    float: left;
+    width: calc((100% - 16mm) / 4);
+    height: 47mm;
+    margin: 0 4mm 4mm 0;
+  }
+
+  .image-slide {
+    display: block;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
+  }
+
+  .image-slide::before,
+  .image-slide::after {
+    display: none !important;
+  }
+
+  .image-slide img.screen-only {
+    display: none;
+  }
+
+  .image-slide img.print-only {
+    display: block;
   }
 
   .image-slide img {
     width: 100%;
     height: 100%;
+    max-width: none;
+    max-height: none;
     object-fit: cover;
-    object-position: center center;
-    transition: transform 0.1s ease-out;
-    cursor: grab;
+    box-shadow: none;
+    border-radius: 0;
   }
 
-  .image-slide img:active {
-    cursor: grabbing;
-  }
-}
-
-@media (max-width: 480px) {
-  :root {
-    --font-size-base: var(--font-size-small);
-    --line-height-base: var(--line-height-small);
-  }
-
-  .about-section {
-    min-height: auto;
-    padding: 2.5rem;
-  }
-
-  .project {
-    min-height: 100vh;
-  }
-
-  .project-carousel {
-    height: 100vh;
-  }
-
-  .slide {
-    height: 100vh;
-    min-height: 100vh;
-  }
-
-  .about-content {
-    text-align: center;
-  }
-
-  .about-text p,
-  .slide-content p {
-    font-size: inherit;
-    line-height: inherit;
-    margin-bottom: 18px;
-    text-align: left;
-  }
-
-  .about-contact p,
-  .footer-contact p {
-    font-size: inherit;
-    line-height: inherit;
-    text-align: center;
-  }
-
-  .slide-content {
-    text-align: left;
-    padding: 1.25rem;
-  }
-
-  .project-title {
-    text-align: center;
-    left: 50%;
-    transform: translateX(-50%);
+  .footer-contact a,
+  .about-contact a {
+    color: #000 !important;
+    min-height: 0;
+    min-width: 0;
+    margin: 0 3mm;
+    padding: 0;
   }
 }

@@ -9,24 +9,25 @@
 
     <link
       rel="stylesheet"
-      href="assets/css/styles.css?v=20241220-5"
+      href="assets/css/styles.css?v=20260730"
       media="all" />
 
     <link
       rel="preload"
       as="image"
-      href="assets/images/optimized/rose-hallgren-folkbastu-01.webp" />
-    <link
-      rel="preload"
-      as="image"
-      href="assets/images/optimized/rose-hallgren-coua-01.webp" />
+      href="assets/images/w/rose-hallgren-cafx-1-2000.webp"
+      imagesrcset="assets/images/w/rose-hallgren-cafx-1-640.webp 640w, assets/images/w/rose-hallgren-cafx-1-1000.webp 1000w, assets/images/w/rose-hallgren-cafx-1-1500.webp 1500w, assets/images/w/rose-hallgren-cafx-1-2000.webp 2000w"
+      imagesizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw" />
     <link
       rel="icon"
       type="image/svg+xml"
       href="assets/favicon/favicon.svg" />
+    <!-- PNG, not the generated WebP: cwebp dropped the alpha channel and
+         flattened it to a blank black square, and iOS does not accept WebP
+         for touch icons regardless. -->
     <link
       rel="apple-touch-icon"
-      href="assets/images/optimized/apple-touch-icon.webp" />
+      href="assets/favicon/apple-touch-icon.png" />
     <link
       rel="manifest"
       href="assets/favicon/site.webmanifest" />
@@ -272,13 +273,18 @@
     </script>
   </head>
   <body>
+    <main>
     <section class="about-section">
       <div class="about-content">
         <div class="about-text">
           <p>
-            <a href="https://rosehallgren.se">
+            <a
+              href="https://rosehallgren.se"
+              aria-label="Studio Rose Hallgren, home">
               <svg
                 id="logo-top"
+                aria-hidden="true"
+                focusable="false"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 372"
                 width="512"
@@ -345,18 +351,35 @@
       </div>
     </section>
 
-    <section class="project" id="fluffy-encounters">
-      <div class="project-title">Fluffy Encounters</div>
+    <section
+      class="project deck-tiles-2"
+      id="fluffy-encounters"
+      aria-labelledby="title-fluffy-encounters">
+      <h2 class="project-title" id="title-fluffy-encounters">Fluffy Encounters</h2>
+      <p class="project-meta">2025 · Copenhagen Architecture Biennial · [role]</p>
       <div class="project-carousel">
-        <div class="slide">
+        <div class="slide deck-hero">
           <div class="image-slide">
             <img
-              src="assets/images/projects/rose-hallgren-cafx-1.jpg"
-              alt="Fluffy Encounters - Copenhagen Architecture Biennial 2025"
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-cafx-1-2000.webp"
+                srcset="assets/images/w/rose-hallgren-cafx-1-640.webp 640w, assets/images/w/rose-hallgren-cafx-1-1000.webp 1000w, assets/images/w/rose-hallgren-cafx-1-1500.webp 1500w, assets/images/w/rose-hallgren-cafx-1-2000.webp 2000w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Fluffy Encounters - Copenhagen Architecture Biennial 2025"
+                width="2000"
+                height="3000"
+                decoding="async"
+                loading="eager"
+                fetchpriority="high" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-cafx-1.jpg"
+              alt=""
+              aria-hidden="true"
               loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide">
           <div class="slide-content">
             <p>
               Fluffy Encounters joins the 2025 Copenhagen Architecture Biennial with a combined workshop and exhibition dedicated to the
@@ -369,15 +392,7 @@
             </p>
           </div>
         </div>
-        <div class="slide">
-          <div class="image-slide">
-            <img
-              src="assets/images/projects/rose-hallgren-cafx-2.jpg"
-              alt="Fluffy Encounters - Copenhagen Architecture Biennial 2025"
-              loading="lazy" />
-          </div>
-        </div>
-        <div class="slide">
+          <div class="slide">
           <div class="slide-content">
             <p>
               The workshop invites participants to sort, felt, shape, and engage directly with wool, while the exhibition contextualises these
@@ -389,46 +404,90 @@
             </p>
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more deck-break">
+          <div class="image-slide">
+            <img
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-cafx-2-2000.webp"
+                srcset="assets/images/w/rose-hallgren-cafx-2-640.webp 640w, assets/images/w/rose-hallgren-cafx-2-1000.webp 1000w, assets/images/w/rose-hallgren-cafx-2-1500.webp 1500w, assets/images/w/rose-hallgren-cafx-2-2000.webp 2000w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Fluffy Encounters - Copenhagen Architecture Biennial 2025"
+                width="2000"
+                height="1333"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-cafx-2.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
+          </div>
+        </div>
+          <div class="slide deck-more">
+          <div class="image-slide">
+            <img
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-cafx-3-2000.webp"
+                srcset="assets/images/w/rose-hallgren-cafx-3-640.webp 640w, assets/images/w/rose-hallgren-cafx-3-1000.webp 1000w, assets/images/w/rose-hallgren-cafx-3-1500.webp 1500w, assets/images/w/rose-hallgren-cafx-3-2000.webp 2000w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Fluffy Encounters - Copenhagen Architecture Biennial 2025"
+                width="2000"
+                height="3000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-cafx-3.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
+          </div>
+        </div>
+          <div class="slide">
           <div class="video-slide">
             <iframe
               src="https://www.youtube.com/embed/yn3Wk3m__r0"
               title="Fluffy Encounters"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
               allowfullscreen
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
-              sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>
-          </div>
-        </div>
-        <div class="slide">
-          <div class="image-slide">
-            <img
-              src="assets/images/projects/rose-hallgren-cafx-3.jpg"
-              alt="Fluffy Encounters - Copenhagen Architecture Biennial 2025"
-              loading="lazy" />
+              sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox"></iframe>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="project">
-      <div class="project-title">Folkbastu</div>
+    <section
+      class="project deck-tiles-3"
+      id="folkbastu"
+      aria-labelledby="title-folkbastu">
+      <h2 class="project-title" id="title-folkbastu">Folkbastu</h2>
+      <p class="project-meta">[year] · Dalénum/Larsberg, Lidingö · [role]</p>
       <div class="project-carousel">
-        <div class="slide">
+        <div class="slide deck-hero">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-folkbastu-01.webp"
-              alt="Rose Hallgren Folkbastu architectural project - traditional craft techniques in contemporary practice"
-              loading="eager"
-              fetchpriority="high"
-              width="800"
-              height="600" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-folkbastu-01-1500.webp"
+                srcset="assets/images/w/rose-hallgren-folkbastu-01-640.webp 640w, assets/images/w/rose-hallgren-folkbastu-01-1000.webp 1000w, assets/images/w/rose-hallgren-folkbastu-01-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Rose Hallgren Folkbastu architectural project - traditional craft techniques in contemporary practice"
+                width="1500"
+                height="998"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-folkbastu-01.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
-          <div class="slide-content">
+          <div class="slide">
+          <div class="slide-content" lang="sv">
             <p>
               Med inspiration från finsk bastukultur och kärlek för form, hantverk och hållbarhet, vill vi föreslå en bastubrygga i området
               kring Dalénum och Larsberg. En plats för Lidingöborna att få koppla av på och ta del av bastubadandets hälsofrämjande
@@ -440,49 +499,98 @@
             </p>
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more deck-break">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-folkbastu-02.webp"
-              alt="Plan view"
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-folkbastu-02-1500.webp"
+                srcset="assets/images/w/rose-hallgren-folkbastu-02-640.webp 640w, assets/images/w/rose-hallgren-folkbastu-02-1000.webp 1000w, assets/images/w/rose-hallgren-folkbastu-02-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Plan view"
+                width="1500"
+                height="998"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-folkbastu-02.jpg"
+              alt=""
+              aria-hidden="true"
               loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-folkbastu-03.webp"
-              alt="Construction detail" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-folkbastu-03-1500.webp"
+                srcset="assets/images/w/rose-hallgren-folkbastu-03-640.webp 640w, assets/images/w/rose-hallgren-folkbastu-03-1000.webp 1000w, assets/images/w/rose-hallgren-folkbastu-03-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Construction detail"
+                width="1500"
+                height="1000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-folkbastu-03.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-folkbastu-04.webp"
-              alt="Interior view" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-folkbastu-04-1500.webp"
+                srcset="assets/images/w/rose-hallgren-folkbastu-04-640.webp 640w, assets/images/w/rose-hallgren-folkbastu-04-1000.webp 1000w, assets/images/w/rose-hallgren-folkbastu-04-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Interior view"
+                width="1500"
+                height="1000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-folkbastu-04.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
       </div>
     </section>
 
     <section
-      class="project"
-      id="coua">
-      <div class="project-title">C.O.U.A.</div>
+      class="project deck-tiles-3"
+      id="coua"
+      aria-labelledby="title-coua">
+      <h2 class="project-title" id="title-coua">C.O.U.A.</h2>
+      <p class="project-meta">[year] · Alma Löv Museum of Unexpected Art · [role]</p>
       <div class="project-carousel">
-        <div class="slide">
+        <div class="slide deck-hero">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-coua-01.webp"
-              alt="COUA"
-              loading="eager"
-              fetchpriority="high"
-              width="800"
-              height="600" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-coua-01-1500.webp"
+                srcset="assets/images/w/rose-hallgren-coua-01-640.webp 640w, assets/images/w/rose-hallgren-coua-01-1000.webp 1000w, assets/images/w/rose-hallgren-coua-01-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="COUA"
+                width="1000"
+                height="1500"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-coua-01.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
-          <div class="slide-content">
+          <div class="slide">
+          <div class="slide-content" lang="sv">
             <p>Alma Löv Museum of Unexpected Art</p>
             <p>
               En början har skapats, på ängen, över den lilla bäcken. "A place to call home", en plats att kalla hem och med ett intresse
@@ -494,50 +602,117 @@
             </p>
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more deck-break">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-coua-02.webp"
-              alt="COUA detail" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-coua-02-1500.webp"
+                srcset="assets/images/w/rose-hallgren-coua-02-640.webp 640w, assets/images/w/rose-hallgren-coua-02-1000.webp 1000w, assets/images/w/rose-hallgren-coua-02-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="COUA detail"
+                width="1500"
+                height="1000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-coua-02.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-coua-03.webp"
-              alt="COUA construction" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-coua-03-1500.webp"
+                srcset="assets/images/w/rose-hallgren-coua-03-640.webp 640w, assets/images/w/rose-hallgren-coua-03-1000.webp 1000w, assets/images/w/rose-hallgren-coua-03-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="COUA construction"
+                width="1500"
+                height="1000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-coua-03.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-coua-04.webp"
-              alt="COUA process" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-coua-04-1500.webp"
+                srcset="assets/images/w/rose-hallgren-coua-04-640.webp 640w, assets/images/w/rose-hallgren-coua-04-1000.webp 1000w, assets/images/w/rose-hallgren-coua-04-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="COUA process"
+                width="1000"
+                height="1500"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-coua-04.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-coua-05.webp"
-              alt="COUA final" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-coua-05-1500.webp"
+                srcset="assets/images/w/rose-hallgren-coua-05-640.webp 640w, assets/images/w/rose-hallgren-coua-05-1000.webp 1000w, assets/images/w/rose-hallgren-coua-05-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="COUA final"
+                width="1000"
+                height="1500"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-coua-05.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
       </div>
     </section>
 
     <section
-      class="project"
-      id="tulip">
-      <div class="project-title">Tulip</div>
+      class="project deck-tiles-2"
+      id="tulip"
+      aria-labelledby="title-tulip">
+      <h2 class="project-title" id="title-tulip">Tulip</h2>
+      <p class="project-meta">[year] · [location] · [role]</p>
       <div class="project-carousel">
-        <div class="slide">
+        <div class="slide deck-hero">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-tulip-01.webp"
-              alt="Tulip" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-tulip-01-1500.webp"
+                srcset="assets/images/w/rose-hallgren-tulip-01-640.webp 640w, assets/images/w/rose-hallgren-tulip-01-1000.webp 1000w, assets/images/w/rose-hallgren-tulip-01-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Tulip"
+                width="1500"
+                height="2000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-tulip-01.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide">
           <div class="slide-content">
             <p>
               Tulips are the only flower that, after being harvested, continues to grow – a beautiful idea to include in the creation of a
@@ -554,18 +729,33 @@
     </section>
 
     <section
-      class="project"
-      id="drip-drop-non-stop">
-      <div class="project-title">Drip Drop Non Stop</div>
+      class="project deck-tiles-4"
+      id="drip-drop-non-stop"
+      aria-labelledby="title-drip-drop-non-stop">
+      <h2 class="project-title" id="title-drip-drop-non-stop">Drip Drop Non Stop</h2>
+      <p class="project-meta">[year] · [location] · [role]</p>
       <div class="project-carousel">
-        <div class="slide">
+        <div class="slide deck-hero">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-drip-drop-non-stop-01.webp"
-              alt="Drip Drop Non Stop" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-drip-drop-non-stop-01-1500.webp"
+                srcset="assets/images/w/rose-hallgren-drip-drop-non-stop-01-640.webp 640w, assets/images/w/rose-hallgren-drip-drop-non-stop-01-1000.webp 1000w, assets/images/w/rose-hallgren-drip-drop-non-stop-01-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Drip Drop Non Stop"
+                width="1500"
+                height="1000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-drip-drop-non-stop-01.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide">
           <div class="slide-content">
             <p>
               Like the transparent willow leaves that make up the eel in its first stage of life, the viewers, brought together by the
@@ -578,85 +768,217 @@
             </p>
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more deck-break">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-drip-drop-non-stop-02.webp"
-              alt="Water installation" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-drip-drop-non-stop-02-1500.webp"
+                srcset="assets/images/w/rose-hallgren-drip-drop-non-stop-02-640.webp 640w, assets/images/w/rose-hallgren-drip-drop-non-stop-02-1000.webp 1000w, assets/images/w/rose-hallgren-drip-drop-non-stop-02-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Water installation"
+                width="1500"
+                height="2250"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-drip-drop-non-stop-02.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-drip-drop-non-stop-03.webp"
-              alt="Detail view" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-drip-drop-non-stop-03-1500.webp"
+                srcset="assets/images/w/rose-hallgren-drip-drop-non-stop-03-640.webp 640w, assets/images/w/rose-hallgren-drip-drop-non-stop-03-1000.webp 1000w, assets/images/w/rose-hallgren-drip-drop-non-stop-03-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Detail view"
+                width="1500"
+                height="1000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-drip-drop-non-stop-03.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-drip-drop-non-stop-04.webp"
-              alt="Process view" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-drip-drop-non-stop-04-640.webp"
+                srcset="assets/images/w/rose-hallgren-drip-drop-non-stop-04-640.webp 640w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Process view"
+                width="640"
+                height="960"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-drip-drop-non-stop-04.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-drip-drop-non-stop-05.webp"
-              alt="Installation detail" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-drip-drop-non-stop-05-640.webp"
+                srcset="assets/images/w/rose-hallgren-drip-drop-non-stop-05-640.webp 640w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Installation detail"
+                width="640"
+                height="960"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-drip-drop-non-stop-05.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-drip-drop-non-stop-06.webp"
-              alt="Water flow" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-drip-drop-non-stop-06-1500.webp"
+                srcset="assets/images/w/rose-hallgren-drip-drop-non-stop-06-640.webp 640w, assets/images/w/rose-hallgren-drip-drop-non-stop-06-1000.webp 1000w, assets/images/w/rose-hallgren-drip-drop-non-stop-06-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Water flow"
+                width="1500"
+                height="2250"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-drip-drop-non-stop-06.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-drip-drop-non-stop-07.webp"
-              alt="Sound element" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-drip-drop-non-stop-07-1500.webp"
+                srcset="assets/images/w/rose-hallgren-drip-drop-non-stop-07-640.webp 640w, assets/images/w/rose-hallgren-drip-drop-non-stop-07-1000.webp 1000w, assets/images/w/rose-hallgren-drip-drop-non-stop-07-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Sound element"
+                width="1004"
+                height="1500"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-drip-drop-non-stop-07.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-drip-drop-non-stop-08.webp"
-              alt="Meditative space" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-drip-drop-non-stop-08-1500.webp"
+                srcset="assets/images/w/rose-hallgren-drip-drop-non-stop-08-640.webp 640w, assets/images/w/rose-hallgren-drip-drop-non-stop-08-1000.webp 1000w, assets/images/w/rose-hallgren-drip-drop-non-stop-08-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Meditative space"
+                width="1500"
+                height="1000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-drip-drop-non-stop-08.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-drip-drop-non-stop-09.webp"
-              alt="Final installation" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-drip-drop-non-stop-09-1500.webp"
+                srcset="assets/images/w/rose-hallgren-drip-drop-non-stop-09-640.webp 640w, assets/images/w/rose-hallgren-drip-drop-non-stop-09-1000.webp 1000w, assets/images/w/rose-hallgren-drip-drop-non-stop-09-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Final installation"
+                width="1500"
+                height="1000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-drip-drop-non-stop-09.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-drip-drop-non-stop-10.webp"
-              alt="Complete view" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-drip-drop-non-stop-10-1500.webp"
+                srcset="assets/images/w/rose-hallgren-drip-drop-non-stop-10-640.webp 640w, assets/images/w/rose-hallgren-drip-drop-non-stop-10-1000.webp 1000w, assets/images/w/rose-hallgren-drip-drop-non-stop-10-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Complete view"
+                width="1500"
+                height="1004"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-drip-drop-non-stop-10.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
       </div>
     </section>
 
     <section
-      class="project"
-      id="malmo-dreaming">
-      <div class="project-title">Drömmarens Malmö</div>
+      class="project deck-tiles-3"
+      id="malmo-dreaming"
+      aria-labelledby="title-malmo-dreaming">
+      <h2 class="project-title" id="title-malmo-dreaming" lang="sv">Drömmarens Malmö</h2>
+      <p class="project-meta">[year] · Malmö in the Making, Malmö · Fanfaluca Collective</p>
       <div class="project-carousel">
-        <div class="slide">
+        <div class="slide deck-hero">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-malmo-dreaming-01.webp"
-              alt="Drömmarens Malmö" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-malmo-dreaming-01-1500.webp"
+                srcset="assets/images/w/rose-hallgren-malmo-dreaming-01-640.webp 640w, assets/images/w/rose-hallgren-malmo-dreaming-01-1000.webp 1000w, assets/images/w/rose-hallgren-malmo-dreaming-01-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Drömmarens Malmö"
+                width="1500"
+                height="1096"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-malmo-dreaming-01.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide">
           <div class="slide-content">
             <p>
               Drömmarens Malmö (Malmö Dreaming) is Fanfaluca Collective's contribution to the architecture festival Malmö in the Making. The
@@ -674,134 +996,332 @@
             </p>
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more deck-break">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-malmo-dreaming-02.webp"
-              alt="Installation view" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-malmo-dreaming-02-1500.webp"
+                srcset="assets/images/w/rose-hallgren-malmo-dreaming-02-640.webp 640w, assets/images/w/rose-hallgren-malmo-dreaming-02-1000.webp 1000w, assets/images/w/rose-hallgren-malmo-dreaming-02-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Installation view"
+                width="1500"
+                height="1000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-malmo-dreaming-02.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-malmo-dreaming-03.webp"
-              alt="Film documentation" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-malmo-dreaming-03-1500.webp"
+                srcset="assets/images/w/rose-hallgren-malmo-dreaming-03-640.webp 640w, assets/images/w/rose-hallgren-malmo-dreaming-03-1000.webp 1000w, assets/images/w/rose-hallgren-malmo-dreaming-03-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Film documentation"
+                width="1500"
+                height="1029"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-malmo-dreaming-03.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-malmo-dreaming-04.webp"
-              alt="Public space interaction" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-malmo-dreaming-04-1500.webp"
+                srcset="assets/images/w/rose-hallgren-malmo-dreaming-04-640.webp 640w, assets/images/w/rose-hallgren-malmo-dreaming-04-1000.webp 1000w, assets/images/w/rose-hallgren-malmo-dreaming-04-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Public space interaction"
+                width="1500"
+                height="1000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-malmo-dreaming-04.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/rose-hallgren-malmo-dreaming-05.webp"
-              alt="City dreaming" />
+              class="screen-only"
+                src="assets/images/w/rose-hallgren-malmo-dreaming-05-1500.webp"
+                srcset="assets/images/w/rose-hallgren-malmo-dreaming-05-640.webp 640w, assets/images/w/rose-hallgren-malmo-dreaming-05-1000.webp 1000w, assets/images/w/rose-hallgren-malmo-dreaming-05-1500.webp 1500w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="City dreaming"
+                width="1500"
+                height="1000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/rose-hallgren-malmo-dreaming-05.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide">
           <div class="video-slide">
             <iframe
               src="https://www.youtube.com/embed/QohlJKgHG1E"
               title="Drömmarens Malmö - Film"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
               allowfullscreen
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
-              sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>
+              sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox"></iframe>
           </div>
         </div>
       </div>
     </section>
 
     <section
-      class="project"
-      id="photography">
-      <div class="project-title">Photography</div>
+      class="project deck-tiles-4"
+      id="photography"
+      aria-labelledby="title-photography">
+      <h2 class="project-title" id="title-photography">Photography</h2>
+      <p class="project-meta">[year] · [location] · [role]</p>
       <div class="project-carousel">
-        <div class="slide">
+        <div class="slide deck-hero">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/photography-01.webp"
-              alt="Photography Portfolio" />
+              class="screen-only"
+                src="assets/images/w/photography-01-2000.webp"
+                srcset="assets/images/w/photography-01-640.webp 640w, assets/images/w/photography-01-1000.webp 1000w, assets/images/w/photography-01-1500.webp 1500w, assets/images/w/photography-01-2000.webp 2000w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Photography Portfolio"
+                width="2000"
+                height="1333"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/photography-01.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more deck-break">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/photography-02.webp"
-              alt="Architectural Photography" />
+              class="screen-only"
+                src="assets/images/w/photography-02-2000.webp"
+                srcset="assets/images/w/photography-02-640.webp 640w, assets/images/w/photography-02-1000.webp 1000w, assets/images/w/photography-02-1500.webp 1500w, assets/images/w/photography-02-2000.webp 2000w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Architectural Photography"
+                width="2000"
+                height="3000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/photography-02.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/photography-03.webp"
-              alt="Light Installations" />
+              class="screen-only"
+                src="assets/images/w/photography-03-2000.webp"
+                srcset="assets/images/w/photography-03-640.webp 640w, assets/images/w/photography-03-1000.webp 1000w, assets/images/w/photography-03-1500.webp 1500w, assets/images/w/photography-03-2000.webp 2000w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Light Installations"
+                width="2000"
+                height="3555"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/photography-03.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/photography-04.webp"
-              alt="Visual Art Documentation" />
+              class="screen-only"
+                src="assets/images/w/photography-04-2000.webp"
+                srcset="assets/images/w/photography-04-640.webp 640w, assets/images/w/photography-04-1000.webp 1000w, assets/images/w/photography-04-1500.webp 1500w, assets/images/w/photography-04-2000.webp 2000w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Visual Art Documentation"
+                width="2000"
+                height="3020"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/photography-04.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/photography-05.webp"
-              alt="Architectural Details" />
+              class="screen-only"
+                src="assets/images/w/photography-05-2000.webp"
+                srcset="assets/images/w/photography-05-640.webp 640w, assets/images/w/photography-05-1000.webp 1000w, assets/images/w/photography-05-1500.webp 1500w, assets/images/w/photography-05-2000.webp 2000w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Architectural Details"
+                width="2000"
+                height="3020"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/photography-05.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/photography-06.webp"
-              alt="Spatial Documentation" />
+              class="screen-only"
+                src="assets/images/w/photography-06-2000.webp"
+                srcset="assets/images/w/photography-06-640.webp 640w, assets/images/w/photography-06-1000.webp 1000w, assets/images/w/photography-06-1500.webp 1500w, assets/images/w/photography-06-2000.webp 2000w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Spatial Documentation"
+                width="2000"
+                height="3000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/photography-06.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/photography-07.webp"
-              alt="Design Documentation" />
+              class="screen-only"
+                src="assets/images/w/photography-07-2000.webp"
+                srcset="assets/images/w/photography-07-640.webp 640w, assets/images/w/photography-07-1000.webp 1000w, assets/images/w/photography-07-1500.webp 1500w, assets/images/w/photography-07-2000.webp 2000w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Design Documentation"
+                width="2000"
+                height="2969"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/photography-07.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/photography-08.webp"
-              alt="Architectural Spaces" />
+              class="screen-only"
+                src="assets/images/w/photography-08-2000.webp"
+                srcset="assets/images/w/photography-08-640.webp 640w, assets/images/w/photography-08-1000.webp 1000w, assets/images/w/photography-08-1500.webp 1500w, assets/images/w/photography-08-2000.webp 2000w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Architectural Spaces"
+                width="2000"
+                height="1333"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/photography-08.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/photography-09.webp"
-              alt="Visual Art" />
+              class="screen-only"
+                src="assets/images/w/photography-09-2000.webp"
+                srcset="assets/images/w/photography-09-640.webp 640w, assets/images/w/photography-09-1000.webp 1000w, assets/images/w/photography-09-1500.webp 1500w, assets/images/w/photography-09-2000.webp 2000w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Visual Art"
+                width="2000"
+                height="1325"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/photography-09.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/photography-10.webp"
-              alt="Contemporary Design" />
+              class="screen-only"
+                src="assets/images/w/photography-10-2000.webp"
+                srcset="assets/images/w/photography-10-640.webp 640w, assets/images/w/photography-10-1000.webp 1000w, assets/images/w/photography-10-1500.webp 1500w, assets/images/w/photography-10-2000.webp 2000w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Contemporary Design"
+                width="2000"
+                height="3000"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/photography-10.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
-        <div class="slide">
+          <div class="slide deck-more">
           <div class="image-slide">
             <img
-              src="assets/images/optimized/photography-11.webp"
-              alt="Spatial Experiences" />
+              class="screen-only"
+                src="assets/images/w/photography-11-2000.webp"
+                srcset="assets/images/w/photography-11-640.webp 640w, assets/images/w/photography-11-1000.webp 1000w, assets/images/w/photography-11-1500.webp 1500w, assets/images/w/photography-11-2000.webp 2000w"
+                sizes="(min-width: 1200px) 40vw, (max-width: 768px) 100vw, 80vw"
+                alt="Spatial Experiences"
+                width="2000"
+                height="1325"
+                decoding="async"
+                loading="lazy" />
+            <img
+              class="print-only"
+              src="assets/images/print/photography-11.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
           </div>
         </div>
       </div>
     </section>
+
+    </main>
 
     <footer class="footer">
       <div class="footer-content">
@@ -821,16 +1341,20 @@
               >Studio</a
             >
             <a
-              href="#"
+              href="https://docs.google.com/document/d/1V0-D5jLEW-bwGUzuvA-ol2tPF7I--yokMy78Ax4j1Vo/export?format=pdf"
               aria-label="Download CV"
               >CV</a
             >
           </p>
           <br />
           <p>
-            <a href="https://rosehallgren.se">
+            <a
+              href="https://rosehallgren.se"
+              aria-label="Studio Rose Hallgren, home">
               <svg
                 id="logo-bottom"
+                aria-hidden="true"
+                focusable="false"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 372"
                 width="512"
@@ -851,6 +1375,6 @@
       </div>
     </footer>
 
-    <script src="assets/js/main.js"></script>
+    <script src="assets/js/main.js?v=20260731"></script>
   </body>
 </html>
