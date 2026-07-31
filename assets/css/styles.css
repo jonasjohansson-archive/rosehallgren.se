@@ -565,27 +565,43 @@ body {
   }
 
   .about-content {
-    max-width: 165mm;
+    max-width: 195mm;
     text-align: left;
     margin: 0;
   }
 
   .about-content h1 {
-    font-size: 24pt;
+    font-size: 30pt;
     font-weight: 600;
-    margin-bottom: 6mm;
+    margin-bottom: 7mm;
   }
 
   .about-text p {
-    font-size: 10.5pt;
-    line-height: 1.55;
-    margin-bottom: 4mm;
+    font-size: 13pt;
+    line-height: 1.42;
+    margin-bottom: 5mm;
     text-align: left;
   }
 
+  /* Flush left with the copy, not centred. */
   #logo-top,
   #logo-bottom {
-    height: 16mm;
+    display: block;
+    height: 18mm;
+    margin: 0 0 8mm 0;
+  }
+
+  /* Stacked, and flush left: the screen rule pulls these 8px left with a
+     negative margin to keep the tap target from shifting the layout. */
+  .about-contact p {
+    text-align: left;
+  }
+
+  .about-contact a {
+    display: block;
+    margin: 0 0 2.5mm 0;
+    padding: 0;
+    font-size: 12pt;
   }
 
   #logo-top path,
@@ -655,7 +671,7 @@ body {
     margin: 0;
     text-align: left;
     font-size: 9.5pt;
-    line-height: 1.5;
+    line-height: 1.38;
   }
 
   .slide-content p {
@@ -701,15 +717,19 @@ body {
     height: 47mm;
   }
 
-  /* Photography has no copy, so it needs no hero slide — one collage. */
+  /* Photography has no copy, so it needs no hero slide and no page break —
+     one collage, hero included, on a single slide. The clear would otherwise
+     strand the hero alone on the first row. */
   .project:not(:has(.slide-content)) .deck-break {
     break-before: auto;
+    clear: none;
   }
 
+  .project:not(:has(.slide-content)) .deck-more,
   .project:not(:has(.slide-content)) .deck-hero {
     float: left;
     width: calc((100% - 16mm) / 4);
-    height: 47mm;
+    height: 44mm;
     margin: 0 4mm 4mm 0;
   }
 
@@ -743,12 +763,17 @@ body {
     border-radius: 0;
   }
 
-  .footer-contact a,
-  .about-contact a {
+  .footer-contact a {
     color: #000 !important;
     min-height: 0;
     min-width: 0;
     margin: 0 3mm;
     padding: 0;
+  }
+
+  .about-contact a {
+    color: #000 !important;
+    min-height: 0;
+    min-width: 0;
   }
 }
