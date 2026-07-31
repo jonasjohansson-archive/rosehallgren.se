@@ -353,15 +353,16 @@ body {
 
 /* --- carousel dots ------------------------------------------------------- */
 
+/* Top right, opposite the title, so the two read as one header row rather
+   than the dots floating over the bottom of the photograph. */
 .carousel-navigation {
   position: absolute;
-  bottom: var(--spacing-large);
-  left: 50%;
-  transform: translateX(-50%);
+  top: var(--spacing-large);
+  right: var(--spacing-large);
   z-index: var(--z-index-high);
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .carousel-dots {
@@ -501,6 +502,18 @@ body {
     scroll-snap-type: none;
   }
 
+  /* Photography carries 15 dots. At the desktop gap that row is 389px wide and
+     would run under the title on a phone, so tighten it. The 27px hit area is
+     unaffected, since it comes from the ::before inset. */
+  .carousel-dots {
+    gap: 7px;
+  }
+
+  .carousel-dot {
+    width: 9px;
+    height: 9px;
+  }
+
   /* The image covers the slide edge to edge here, so the blurred backdrop is
      completely hidden — and it was the single most expensive thing on the
      page, a ~3.8x-viewport surface blurred per slide. */
@@ -514,6 +527,13 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  /* Tapping an image advances the carousel, so suppress the tap highlight
+     and the double-tap zoom delay that would otherwise make it feel slow. */
+  .image-slide {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 }
 

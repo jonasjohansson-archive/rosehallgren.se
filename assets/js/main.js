@@ -86,10 +86,43 @@ class Portfolio {
 
       carousel.setAttribute("tabindex", "0");
       carousel.setAttribute("role", "group");
-      carousel.setAttribute("aria-label", `${this.titleOf(carousel)} — images`);
+      carousel.setAttribute("aria-label", `${this.titleOf(carousel)} images`);
+      this.setupTapToAdvance(carousel);
       // Bound to the carousel, not the document, so the arrow keys act on the
       // carousel that actually has focus and page scrolling is left alone.
       carousel.addEventListener("keydown", (e) => this.handleCarouselKeys(e, carousel));
+    });
+  }
+
+  /**
+   * On touch, tapping an image advances the carousel.
+   *
+   * Guarded three ways: only for coarse pointers, never when the tap lands on
+   * a link or a dot, and only when the finger barely moved, so a swipe or a
+   * text selection is not mistaken for a tap. Wraps to the first slide at the
+   * end rather than jumping to the next project, which would be a surprising
+   * amount of travel for one tap.
+   */
+  setupTapToAdvance(carousel) {
+    if (!window.matchMedia("(pointer: coarse)").matches) return;
+    let x = 0;
+    let y = 0;
+    let t = 0;
+    carousel.addEventListener(
+      "pointerdown",
+      (e) => {
+        x = e.clientX;
+        y = e.clientY;
+        t = e.timeStamp;
+      },
+      { passive: true }
+    );
+    carousel.addEventListener("pointerup", (e) => {
+      if (e.target.closest("a, button, .slide-content")) return;
+      if (Math.hypot(e.clientX - x, e.clientY - y) > 10) return;
+      if (e.timeStamp - t > 500) return;
+      const current = this.currentSlide(carousel);
+      this.goToSlide(carousel, current >= this.maxIndex(carousel) ? 0 : current + 1);
     });
   }
 
