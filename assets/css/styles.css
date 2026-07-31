@@ -103,6 +103,24 @@ body {
   outline-offset: 3px;
 }
 
+/* Visible only when focused: 207 tab stops separate the top of the page from
+   the footer. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 10000;
+  background: #fff;
+  color: #000;
+  padding: 12px 16px;
+  text-decoration: underline;
+}
+
+.skip-link:focus {
+  left: var(--spacing-large);
+  top: var(--spacing-large);
+}
+
 *::selection {
   background-color: #f4a6a6;
   color: #000;
@@ -270,11 +288,13 @@ body {
   margin-bottom: var(--spacing-medium);
 }
 
+/* Full strength, not 0.7: at 0.7 these were 3.23:1 on Järva Stadspark and
+   3.72:1 on Torö, and the press lines contain links. */
 .slide-content .credit,
 .slide-content .press {
   margin-top: var(--spacing-large);
   font-size: var(--font-size-chrome);
-  opacity: 0.7;
+  opacity: 1;
 }
 
 .slide-content .press {
@@ -524,16 +544,22 @@ body {
     scroll-snap-type: none;
   }
 
-  /* Photography carries 15 dots. At the desktop gap that row is 389px wide and
-     would run under the title on a phone, so tighten it. The 27px hit area is
-     unaffected, since it comes from the ::before inset. */
-  .carousel-dots {
-    gap: 7px;
+  /* The dot row was painting straight through the project title: 80px of
+     overlap on Stockholm Shorelines, hiding half of "PHOTOGRAPHY". Put it on
+     its own line under the title instead of squeezing it beside one.
+     Keeping the 16px gap also keeps the ::before hit areas from overlapping,
+     which had cut the effective target to 15.5x23.5px. */
+  .carousel-navigation {
+    top: 3.4rem;
+    right: auto;
+    left: var(--spacing-large);
+    justify-content: flex-start;
   }
 
-  .carousel-dot {
-    width: 9px;
-    height: 9px;
+  .carousel-dots {
+    flex-wrap: wrap;
+    gap: 16px;
+    max-width: calc(100vw - 2 * var(--spacing-large));
   }
 
   /* The image covers the slide edge to edge here, so the blurred backdrop is

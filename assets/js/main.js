@@ -84,6 +84,16 @@ class Portfolio {
       this.setupImageSlides(carousel);
       this.setupNavigationUpdates(carousel, nav);
 
+      // Text slides scroll internally below 768px. Chrome only makes a
+      // scroller keyboard-focusable when it has no focusable children, and
+      // most of these contain links, so they need it explicitly or their tail
+      // is unreachable at large text sizes.
+      carousel.querySelectorAll(".slide:has(.slide-content)").forEach((slide) => {
+        slide.setAttribute("tabindex", "0");
+        slide.setAttribute("role", "group");
+        slide.setAttribute("aria-label", `${this.titleOf(carousel)} description`);
+      });
+
       carousel.setAttribute("tabindex", "0");
       carousel.setAttribute("role", "group");
       carousel.setAttribute("aria-label", `${this.titleOf(carousel)} images`);
@@ -126,6 +136,9 @@ class Portfolio {
     );
 
     carousel.addEventListener("pointerup", (e) => {
+      // Right, middle and the mouse back button were all advancing the slide,
+      // so "Save image as…" opened the menu and jumped the carousel at once.
+      if (e.button !== 0 || !e.isPrimary) return;
       if (e.target.closest("a, button, .slide-content")) return;
       if (Math.hypot(e.clientX - x, e.clientY - y) > 10) return;
       if (e.timeStamp - t > 500) return;
@@ -181,13 +194,16 @@ class Portfolio {
     nav.appendChild(dots);
 
     const title = this.titleOf(carousel);
-    const slides = carousel.querySelectorAll(".slide");
-    slides.forEach((_, index) => {
+    // Above 1200px two slides share the viewport, so the last slide can never
+    // scroll to the left edge. One dot per slide left a permanently dead
+    // control in the tab order on every project.
+    const count = this.maxIndex(carousel) + 1;
+    Array.from({ length: count }).forEach((_, index) => {
       const dot = document.createElement("button");
       dot.type = "button";
       dot.className = "carousel-dot";
       dot.dataset.slide = index;
-      dot.setAttribute("aria-label", `${title}, slide ${index + 1} of ${slides.length}`);
+      dot.setAttribute("aria-label", `${title}, slide ${index + 1} of ${count}`);
       dots.appendChild(dot);
     });
 
@@ -231,8 +247,22 @@ class Portfolio {
 
   setupNavigationUpdates(carousel, nav) {
     const dots = nav.querySelectorAll(".carousel-dot");
+    const project = carousel.closest(".project");
+    const slides = Array.from(carousel.querySelectorAll(".slide"));
     const update = () => {
       const current = this.currentSlide(carousel);
+
+      // .project-title is absolutely positioned over the project, so it also
+      // sits over the text slides as they scroll past. Colouring it once from
+      // the lead photo left it at 1.16:1 on some projects. Follow the slide
+      // actually underneath instead: the text slides are a dark shade of the
+      // photo, so white clears there.
+      const under = slides[Math.min(current, slides.length - 1)];
+      if (under && project) {
+        const tint = under.dataset.titleColor;
+        project.style.setProperty("--project-title-color", tint || "#fff");
+      }
+
       dots.forEach((dot, index) => {
         dot.classList.toggle("active", index === current);
         if (index === current) dot.setAttribute("aria-current", "true");
@@ -329,6 +359,17 @@ class Portfolio {
     window.addEventListener("resize", () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
+        // Crossing 1200px changes how many slides share the viewport, and so
+        // how many dots are reachable.
+        document.querySelectorAll(".project-carousel").forEach((carousel) => {
+          const nav = carousel.parentElement.querySelector(".carousel-navigation");
+          const want = this.maxIndex(carousel) + 1;
+          if (nav && nav.querySelectorAll(".carousel-dot").length !== want) {
+            nav.remove();
+            this.setupNavigationUpdates(carousel, this.createNavigation(carousel));
+            return;
+          }
+        });
         this.navUpdaters.forEach((update) => update());
       }, 150);
     });
@@ -373,6 +414,9 @@ class Portfolio {
       // Tainted canvas (file:// or a cross-origin move). Keep the defaults.
       return;
     }
+
+    const ownSlide = img.closest(".slide");
+    if (ownSlide) ownSlide.dataset.titleColor = legibleTint(topR, topG, topB);
 
     const project = img.closest(".project");
     if (project && img === project.querySelector(".image-slide img")) {
