@@ -90,6 +90,9 @@
      (100vw - 600px) / 2 — nowhere near the title at 20px. */
   --indent: 2.5rem;
 
+  /* Width of the portrait column beside the intro copy. */
+  --portrait-width: clamp(240px, 26vw, 420px);
+
   --transition-fast: all 0.2s ease;
   --z-index-high: 9999;
 }
@@ -200,6 +203,7 @@ body {
   /* flush left, not centred: the copy now starts on the same vertical as every
      project title below it */
   justify-content: flex-start;
+  gap: clamp(2rem, 5vw, 5rem);
   padding: 2.5rem var(--indent);
   background: var(--color-bg);
   color: var(--ink);
@@ -210,6 +214,35 @@ body {
   max-width: 600px;
   text-align: left;
   width: 100%;
+  /* Holds its width against the portrait rather than being squeezed by it. */
+  flex: 0 1 600px;
+}
+
+/* Portrait beside the copy, both vertically centred by the section's
+   align-items. margin: 0 because the reset does not cover <figure>.
+
+   It sits FIRST in the DOM and is reordered here, because in the deck it is a
+   right float and a float only affects content that follows it. As the last
+   child it simply stacked under the copy and took the cover from 36 pages
+   to 37. */
+.about-portrait {
+  order: 2;
+  flex: 0 0 auto;
+  width: var(--portrait-width);
+  margin: 0;
+  line-height: 0;
+}
+
+.about-portrait img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Same two-<img> swap the slides use: Chrome re-embeds WebP into the PDF
+   almost uncompressed, and <picture media="print"> is ignored. */
+.about-portrait img.print-only {
+  display: none;
 }
 
 .about-content h1 {
@@ -622,6 +655,14 @@ body {
 
   .about-section {
     min-height: auto;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Under the copy, and only two thirds of the width: at full width a 3:4
+     portrait is 520px tall on a 390px phone and buries the contact links. */
+  .about-portrait {
+    width: min(66%, 320px);
   }
 
   .about-text p,
@@ -817,6 +858,26 @@ body {
   .about-section {
     min-height: 0;
     padding-top: 8mm;
+  }
+
+  /* Floated rather than a flex column: as a block after the copy it added its
+     own height to a page that already fit exactly, and the deck went 36 pages
+     to 37. Floated, it sits in the 306.667mm live box beside the 195mm text
+     column and costs the cover nothing. */
+  .about-portrait {
+    float: right;
+    width: 62mm;
+    margin: 0 0 6mm 10mm;
+  }
+
+  .about-portrait img.screen-only {
+    display: none;
+  }
+
+  .about-portrait img.print-only {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
   .footer {
