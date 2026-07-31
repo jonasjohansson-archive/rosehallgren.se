@@ -23,23 +23,6 @@ function luminance(r, g, b) {
 }
 
 /**
- * Pull a colour down until it clears 4.5:1 against white.
- *
- * The extracted colour is used as body-text colour on a white page, and
- * measured across the shipped images 20 of 62 landed below AA — a light
- * photograph would tint the bio to 2.6:1. Hue is preserved; only over-light
- * values move.
- */
-function clampOnWhite(r, g, b) {
-  // Contrast against white is 1.05 / (L + 0.05); 4.5:1 needs L <= 0.1833.
-  let scale = 1;
-  while (scale > 0.05 && luminance(r * scale, g * scale, b * scale) > 0.1833) {
-    scale -= 0.02;
-  }
-  return [Math.round(r * scale), Math.round(g * scale), Math.round(b * scale)];
-}
-
-/**
  * A tint of the backdrop's own colour that still clears 4.5:1 against it.
  *
  * Keeps the project's hue in the title instead of flat white, so no drop
@@ -81,7 +64,6 @@ class Portfolio {
   initCarousels() {
     document.querySelectorAll(".project-carousel").forEach((carousel) => {
       const nav = this.createNavigation(carousel);
-      this.setupImageSlides(carousel);
       this.setupNavigationUpdates(carousel, nav);
 
       // Text slides scroll internally below 768px. Chrome only makes a
@@ -216,18 +198,8 @@ class Portfolio {
     return nav;
   }
 
-  setupImageSlides(carousel) {
-    carousel.querySelectorAll(".image-slide").forEach((slide) => {
-      const img = slide.querySelector("img");
-      if (!img) return;
-      const apply = () => slide.style.setProperty("--bg-image", `url(${img.currentSrc || img.src})`);
-      if (img.complete) apply();
-      else img.addEventListener("load", apply, { once: true });
-    });
-  }
-
   /**
-   * Widest scroll offset the carousel can actually reach. Above 1200px two
+   * Widest scroll offset the carousel can actually reach. Above 1600px two
    * slides share the viewport, so the final slide can never scroll to the
    * left edge — indexing straight off slide count left the last dot dead and
    * made two-slide projects a trap for the arrow keys.
@@ -238,7 +210,7 @@ class Portfolio {
   }
 
   slideWidth(carousel) {
-    return carousel.clientWidth >= 1200 ? carousel.clientWidth / 2 : carousel.clientWidth;
+    return carousel.clientWidth >= 1600 ? carousel.clientWidth / 2 : carousel.clientWidth;
   }
 
   currentSlide(carousel) {
@@ -257,10 +229,13 @@ class Portfolio {
       // the lead photo left it at 1.16:1 on some projects. Follow the slide
       // actually underneath instead: the text slides are a dark shade of the
       // photo, so white clears there.
+      // Surfaces are flat and known: paper under an image slide, the dark
+      // panel under a text slide. No sampling needed, and no way for the
+      // title to land on a backdrop it was not measured against.
       const under = slides[Math.min(current, slides.length - 1)];
       if (under && project) {
-        const tint = under.dataset.titleColor;
-        project.style.setProperty("--project-title-color", tint || "#fff");
+        const onPanel = !!under.querySelector(".slide-content");
+        project.style.setProperty("--project-title-color", onPanel ? "#fff" : "#141414");
       }
 
       dots.forEach((dot, index) => {
@@ -431,8 +406,6 @@ class Portfolio {
       project.style.setProperty("--project-text-bg", `rgb(${shade(r)}, ${shade(g)}, ${shade(b)})`);
     }
 
-    const [cr, cg, cb] = clampOnWhite(r, g, b);
-    document.documentElement.style.setProperty("--logo-color", `rgb(${cr}, ${cg}, ${cb})`);
   }
 }
 

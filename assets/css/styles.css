@@ -30,6 +30,9 @@
   --font-size-title: 1.0625rem;
   --line-height-base: 1.5;
 
+  --paper: #eeece8;
+  --ink: #141414;
+
   --color-text: #000;
   --color-bg: #fff;
   --color-white: #fff;
@@ -140,8 +143,7 @@ body {
 
 #logo-top path,
 #logo-bottom path {
-  fill: var(--logo-color, #000);
-  transition: fill 1s ease;
+  fill: var(--ink);
 }
 
 .about-section {
@@ -151,7 +153,7 @@ body {
   justify-content: center;
   padding: 2.5rem;
   background: var(--color-bg);
-  color: var(--logo-color, #000);
+  color: var(--ink);
   transition: color 1s ease;
 }
 
@@ -267,10 +269,14 @@ body {
 
 /* Keyed off content, not DOM position. With :nth-child, inserting a single
    image flipped a text slide to white-on-white. */
+/* Flat paper rather than a 40px blur of the photo scaled 1.4x. The blur was
+   the most expensive paint on the page, already disabled on mobile and in
+   print, and it turned whole viewports the colour of the photograph. Flat
+   surfaces also make the title's contrast deterministic instead of computed. */
 .slide:has(.image-slide),
 .slide:has(.video-slide) {
-  background: #fff;
-  color: #000;
+  background: var(--paper);
+  color: var(--ink);
 }
 
 .slide:has(.slide-content) {
@@ -334,31 +340,9 @@ body {
   background: var(--color-dark-bg);
 }
 
-/* Blurred enlargement of the photo, filling the letterbox left by
-   object-fit: contain. */
-.image-slide::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--bg-image) center / cover no-repeat;
-  filter: blur(40px);
-  transform: scale(1.4);
-  z-index: 1;
-}
-
-.image-slide::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(26, 26, 26, 0.1);
-  z-index: 1;
-}
-
 .image-slide img,
 .video-slide iframe {
   z-index: 3;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
 }
 
 /* The print copy is JPEG: Chrome re-embeds WebP near-uncompressed when
@@ -371,8 +355,8 @@ body {
 }
 
 .image-slide img {
-  max-width: 80vw;
-  max-height: 80vh;
+  max-width: calc(100vw - 5rem);
+  max-height: calc(100vh - 5rem);
   width: auto;
   height: auto;
   object-fit: contain;
@@ -446,8 +430,7 @@ body {
 .footer {
   background: var(--color-bg);
   padding: 2.5rem;
-  color: var(--logo-color, #000);
-  transition: color 1s ease;
+  color: var(--ink);
 }
 
 .footer-content {
@@ -488,22 +471,28 @@ body {
     text-align: left;
   }
 
+  .footer {
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+}
+
+/* Two slides at once only when half a viewport is still a generous plate. At
+   the old 1200px threshold every laptop (1440, 1512, 1728) fell on the wrong
+   side and showed the photograph at 40vw: 576px on a 1440 screen, about a
+   sixth of the display. */
+@media (min-width: 1600px) {
   .slide {
     min-width: 50vw;
   }
 
   .image-slide img {
-    max-width: 40vw;
+    max-width: calc(50vw - 5rem);
   }
 
   .video-slide iframe {
-    width: min(40vw, calc(80vh * 16 / 9));
-    height: min(calc(40vw * 9 / 16), 80vh);
-  }
-
-  .footer {
-    padding-left: 5vw;
-    padding-right: 5vw;
+    width: min(calc(50vw - 5rem), calc((100vh - 5rem) * 16 / 9));
+    height: min(calc((50vw - 5rem) * 9 / 16), calc(100vh - 5rem));
   }
 }
 
@@ -531,9 +520,11 @@ body {
     overscroll-behavior: contain;
   }
 
+  /* Clear the absolutely positioned title and the dot row beneath it, which
+     the copy was running underneath. */
   .slide-content {
     text-align: left;
-    padding: 1.5rem 1.5rem 3rem;
+    padding: 5.5rem 1.5rem 3rem;
     width: 100%;
   }
 
