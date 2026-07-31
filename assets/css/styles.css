@@ -22,8 +22,13 @@
   /* rem so the page respects the reader's browser font-size setting.
      Body copy sits at 14px; the chrome (titles, contact links) stays at 12px
      via --font-size-chrome. */
-  --font-display: "Instrument", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: "Instrument", -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Deliberately NOT -apple-system/BlinkMacSystemFont. SF Pro wraps the third
+     about-paragraph to five lines where Instrument takes four, so every fallback
+     -> Instrument swap shifted the page up 20px: the whole of the desktop CLS
+     (0.0382, one shift at t=500ms, exactly when document.fonts.ready fired).
+     Helvetica and Arial wrap identically to Instrument. Measured: 0.0001. */
+  --font-display: "Instrument", Helvetica, Arial, sans-serif;
+  --font-body: "Instrument", Helvetica, Arial, sans-serif;
 
   --font-size-base: 0.875rem;
   --font-size-chrome: 0.75rem;
@@ -204,6 +209,25 @@ body {
   width: 100%;
   overflow: hidden;
   position: relative;
+
+  /* 17 projects x 100vh puts roughly four of them inside Chrome's lazy-loading
+     threshold, and each one's horizontally-offscreen carousel slides count too:
+     16 images, 1746KB, all at Low priority down one HTTP/2 connection. The LCP
+     image got about a sixteenth of the pipe and took 5.2s to move 158KB.
+     Skipping the subtree means those images never intersect and are never
+     requested: 16 images -> 2, 1746KB -> 306KB, mobile LCP 6.2s -> 2.6s.
+     contain-intrinsic-size is mandatory; without it the skipped boxes collapse
+     and the page loses its scroll height. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100vh;
+}
+
+/* The first project holds the preloaded LCP image and is one short scroll from
+   the fold, so it is never worth skipping. Selected via the intro rather than
+   :first-of-type, which matches .about-section, not the first .project. */
+.about-section + .project,
+.about-section + .project > .project-carousel > .slide:first-child {
+  content-visibility: visible;
 }
 
 .project-title {
@@ -265,6 +289,13 @@ body {
   justify-content: center;
   scroll-snap-align: start;
   position: relative;
+
+  /* Same trick one level down, for the slides scrolled off to the right inside
+     project one. min-width and height are explicit, so containment changes no
+     geometry: carousel.scrollWidth is byte-identical with and without this,
+     which is what keeps maxIndex() and the dot count correct. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100vw auto 100vh;
 }
 
 /* Keyed off content, not DOM position. With :nth-child, inserting a single
@@ -630,6 +661,16 @@ body {
     scroll-snap-type: none;
     background: #fff;
     font-size: 10pt;
+  }
+
+  /* MANDATORY, not defensive. content-visibility: auto skips anything outside
+     the viewport, and the deck is 36 pages of exactly that. Without this the
+     print job renders one project and 35 blank pages. Both the skipping and the
+     size containment have to go, hence `visible` rather than a size override. */
+  .project,
+  .slide {
+    content-visibility: visible !important;
+    contain-intrinsic-size: none !important;
   }
 
   .carousel-navigation,

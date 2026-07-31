@@ -55,7 +55,12 @@ for dir in "${SRC_DIRS[@]}"; do
     # superseded by the hyphenated rose-hallgren-cafx-{1,2,3}.jpg.
     case "$base" in rose_hallgren_cafx_*) continue ;; esac
 
-    src_w="$(magick identify -format '%w' "${src}[0]" 2>/dev/null || echo 0)"
+    # -auto-orient BEFORE reading the width. `identify` reports the width as
+    # stored, ignoring the EXIF rotation the resize step will apply. Four
+    # orientation=6 sources stored 1500x1000 therefore got a 1500 rung, were
+    # rotated to 1000x1500, and `-resize 1500x>` then refused to shrink them:
+    # files advertising 1500w that are actually 1000px, so Chrome upscales them.
+    src_w="$(magick "${src}[0]" -auto-orient -format '%w' info: 2>/dev/null || echo 0)"
     [ "$src_w" -gt 0 ] || { echo "skip (unreadable): $src" >&2; continue; }
 
     total_src=$((total_src + $(stat -f%z "$src")))
