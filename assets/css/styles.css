@@ -15,7 +15,14 @@
   font-family: "Instrument";
   src: url("../fonts/Instrument.woff2") format("woff2");
   font-weight: 400 700;
-  font-display: swap;
+  /* optional, not swap. The face is preloaded at high priority, so it is
+     normally there for the first paint and gets used. When it is not, `swap`
+     re-wrapped the intro copy the moment it arrived: Helvetica and Instrument
+     wrap identically in the 600px desktop column but differ by one line at
+     372px, so the whole page jumped 21px on a phone. That single shift was the
+     entire mobile CLS. `optional` gives the font one shot at first paint and
+     never reflows afterwards. */
+  font-display: optional;
 }
 
 :root {
