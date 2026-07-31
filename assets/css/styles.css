@@ -280,6 +280,11 @@ body {
   text-decoration: none;
 }
 
+/* <picture> must not become the flex item, or the image stops centring. */
+.image-slide picture {
+  display: contents;
+}
+
 .image-slide,
 .video-slide {
   position: relative;
