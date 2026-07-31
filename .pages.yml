@@ -101,13 +101,6 @@ content:
           type: string,
           description: 'e.g. Stockholm. Shown only in the PDF, after the year.',
         }
-      - {
-          name: lang,
-          label: Title language,
-          type: select,
-          options: { values: [{ value: '', label: 'English' }, { value: 'sv', label: 'Swedish' }] },
-          description: "Set to Swedish for Swedish titles like Torö or Folkbastu, so screen readers pronounce them correctly.",
-        }
       - name: link
         label: Link out
         type: object
@@ -173,6 +166,13 @@ content:
           label: Text,
           type: text,
           description: 'The project description. Leave a blank line between paragraphs. A line containing only --- splits the text onto a second slide, for long descriptions.',
+        }
+      - {
+          name: lang,
+          label: Title language,
+          type: select,
+          options: { values: [{ value: '', label: 'English' }, { value: 'sv', label: 'Swedish' }] },
+          description: "Rarely needed. Set to Swedish only for a Swedish title — Torö, Folkbastu, Jag är Gud — so a screen reader reading the page in English still pronounces it as Swedish. Leave as English for everything else.",
         }
 
   - name: settings
