@@ -48,6 +48,12 @@
   --spacing-medium: 16px;
   --spacing-large: 20px;
 
+  /* One indent for the intro copy, every project title and the dot row, so the
+     three line up down the left edge instead of each carrying its own padding.
+     The intro used to be a centred 600px column, which put its text at
+     (100vw - 600px) / 2 — nowhere near the title at 20px. */
+  --indent: 2.5rem;
+
   --transition-fast: all 0.2s ease;
   --z-index-high: 9999;
 }
@@ -155,8 +161,10 @@ body {
   min-height: 50vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 2.5rem;
+  /* flush left, not centred: the copy now starts on the same vertical as every
+     project title below it */
+  justify-content: flex-start;
+  padding: 2.5rem var(--indent);
   background: var(--color-bg);
   color: var(--ink);
   transition: color 1s ease;
@@ -233,8 +241,13 @@ body {
 .project-title {
   position: absolute;
   top: var(--spacing-large);
-  left: var(--spacing-large);
+  left: var(--indent);
   z-index: 100;
+  /* Fixed line box so the dot row can be centred against it. */
+  line-height: 1.2;
+  height: calc(var(--font-size-title) * 1.2);
+  display: flex;
+  align-items: center;
   font-family: var(--font-display);
   font-size: var(--font-size-title);
   font-weight: 600;
@@ -298,6 +311,19 @@ body {
   contain-intrinsic-size: auto 100vw auto 100vh;
 }
 
+/* Skipped content is not hit-testable, and Chrome was still treating a text
+   panel as skipped while it sat in full view: elementFromPoint at the centre of
+   the copy returned .slide, never the paragraph, so every "See the project at…"
+   link inside a text panel was dead to the mouse. Verified by toggling this one
+   declaration back and forth on the live DOM.
+   Nothing is lost by exempting them. The entire point of the containment is to
+   stop offscreen IMAGES being fetched, and neither of these slide types holds
+   an image: the copy panels are text, the video slides a lazy iframe. */
+.slide:has(.slide-content),
+.slide:has(.video-slide) {
+  content-visibility: visible;
+}
+
 /* Keyed off content, not DOM position. With :nth-child, inserting a single
    image flipped a text slide to white-on-white. */
 /* Flat paper rather than a 40px blur of the photo scaled 1.4x. The blur was
@@ -340,6 +366,14 @@ body {
 
 .slide-content .press {
   margin-top: var(--spacing-small);
+}
+
+/* One credit per row. Run together on a single line, "Anders Berensson
+   Architects · Rose Hallgren, Architect · Photo: Linda Hutchins" wrapped
+   wherever the column happened to end, so a name could be split from the role
+   it belonged to. */
+.credit-line {
+  display: block;
 }
 
 .slide-content a {
@@ -387,7 +421,9 @@ body {
 
 .image-slide img {
   max-width: calc(100vw - 5rem);
-  max-height: calc(100vh - 5rem);
+  /* 9rem, not 5rem. At 5rem a tall image cleared the title row by nothing at
+     all and the two collided optically; this leaves ~72px top and bottom. */
+  max-height: calc(100vh - 9rem);
   width: auto;
   height: auto;
   object-fit: contain;
@@ -407,11 +443,14 @@ body {
 .carousel-navigation {
   position: absolute;
   top: var(--spacing-large);
-  right: var(--spacing-large);
+  right: var(--indent);
   z-index: var(--z-index-high);
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  /* Same top and the same line-box height as the title, so the dots sit on the
+     title's optical centre rather than on its cap line. */
+  height: calc(var(--font-size-title) * 1.2);
 }
 
 .carousel-dots {
@@ -420,16 +459,23 @@ body {
   align-items: center;
 }
 
-/* Plain white with a shadow rather than mix-blend-mode: difference, which
-   made the dots vanish against mid-toned photographs. */
+/* The dots take the title's treatment: ink on paper, white on the dark panel.
+   In the two-up layout the dots are top-right and the title top-left, so they
+   can be over different slides — main.js therefore tracks them separately
+   rather than reusing --project-title-color. Deterministic surfaces mean no
+   drop-shadow is needed to rescue contrast, the way it was when the dots were
+   always white over an arbitrary photograph. */
 .carousel-dot {
   width: 11px;
   height: 11px;
   border: none;
   border-radius: 50%;
   padding: 0;
-  background: rgba(255, 255, 255, 0.55);
-  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.7));
+  background: color-mix(
+    in srgb,
+    var(--project-dots-color, var(--color-white)) 45%,
+    transparent
+  );
   cursor: pointer;
   transition: var(--transition-fast);
   position: relative;
@@ -444,15 +490,19 @@ body {
 }
 
 .carousel-dot:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: color-mix(
+    in srgb,
+    var(--project-dots-color, var(--color-white)) 75%,
+    transparent
+  );
 }
 
 .carousel-dot.active {
-  background: #fff;
+  background: var(--project-dots-color, var(--color-white));
 }
 
 .carousel-dot:focus-visible {
-  outline: 2px solid #fff;
+  outline: 2px solid var(--project-dots-color, var(--color-white));
   outline-offset: 4px;
 }
 
@@ -460,7 +510,8 @@ body {
 
 .footer {
   background: var(--color-bg);
-  padding: 2.5rem;
+  /* same left edge as the intro and every project title */
+  padding: 2.5rem var(--indent);
   color: var(--ink);
 }
 
@@ -492,19 +543,11 @@ body {
 /* --- wide screens: two slides at once ------------------------------------ */
 
 @media (min-width: 1200px) {
-  .about-section {
-    justify-content: flex-start;
-    padding-left: 5vw;
-    padding-right: 5vw;
-  }
-
+  /* 5vw here was the reason the intro and the project titles never lined up:
+     at 1728px it resolved to 86.4px against the title's 40px, and it drifted
+     with the window. Everything on the left edge now shares --indent. */
   .about-content {
     text-align: left;
-  }
-
-  .footer {
-    padding-left: 5vw;
-    padding-right: 5vw;
   }
 }
 
@@ -530,6 +573,10 @@ body {
 /* --- small screens ------------------------------------------------------- */
 
 @media (max-width: 768px) {
+  :root {
+    --indent: 1.25rem;
+  }
+
   .about-section {
     min-height: auto;
   }
@@ -551,18 +598,21 @@ body {
     overscroll-behavior: contain;
   }
 
-  /* Clear the absolutely positioned title and the dot row beneath it, which
-     the copy was running underneath. */
+  /* Clear the absolutely positioned title above and the dot row below. The
+     title is z-index 100 against this block's 10, so on the longest copy the
+     text scrolls behind it rather than pushing it around. */
   .slide-content {
     text-align: left;
-    padding: 5.5rem 1.5rem 3rem;
+    padding: 4rem var(--indent) 4.5rem;
     width: 100%;
   }
 
+  /* Flush left with the copy beneath it, matching print and desktop. `margin:
+     0 auto` was centring the wordmark over left-aligned text. */
   #logo-top,
   #logo-bottom {
     display: block;
-    margin: 0 auto;
+    margin: 0 0 var(--spacing-medium);
   }
 
   /* Free-scrolling on touch; mandatory snap fights the gesture. */
@@ -570,22 +620,30 @@ body {
     scroll-snap-type: none;
   }
 
-  /* The dot row was painting straight through the project title: 80px of
-     overlap on Stockholm Shorelines, hiding half of "PHOTOGRAPHY". Put it on
-     its own line under the title instead of squeezing it beside one.
-     Keeping the 16px gap also keeps the ::before hit areas from overlapping,
-     which had cut the effective target to 15.5x23.5px. */
+  /* Off the top entirely and along the bottom edge, so the dots stop competing
+     with the title for the same 40px of a phone screen. Smaller too: 8px reads
+     as a marker rather than a button at this size. The 16px gap is not slack,
+     it is what keeps each ::before hit area a full 24px without the
+     neighbouring ones overlapping (WCAG 2.5.8). */
   .carousel-navigation {
-    top: 3.4rem;
-    right: auto;
-    left: var(--spacing-large);
-    justify-content: flex-start;
+    top: auto;
+    bottom: var(--spacing-large);
+    left: var(--indent);
+    right: var(--indent);
+    height: auto;
+    justify-content: center;
   }
 
   .carousel-dots {
     flex-wrap: wrap;
+    justify-content: center;
     gap: 16px;
-    max-width: calc(100vw - 2 * var(--spacing-large));
+    max-width: 100%;
+  }
+
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
   }
 
   /* The image covers the slide edge to edge here, so the blurred backdrop is
@@ -612,8 +670,11 @@ body {
 }
 
 @media (max-width: 480px) {
+  /* Shorthand, so it has to restate the top and bottom clearance: this rule
+     previously set padding-top to 1.25rem and undid the 768px rule above,
+     which is why the copy ran under the title on small phones. */
   .slide-content {
-    padding: 1.25rem 1.25rem 3rem;
+    padding: 3.75rem var(--indent) 4.25rem;
     font-size: 0.9375rem;
   }
 
@@ -807,6 +868,8 @@ body {
   .project-title {
     position: static;
     transform: none;
+    display: block;
+    height: auto;
     font-family: var(--font-display);
     font-size: 20pt;
     font-weight: 600;

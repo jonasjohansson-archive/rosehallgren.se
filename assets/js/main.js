@@ -13,39 +13,6 @@ const REDUCE_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)");
 /** Scroll behaviour honouring the user's motion preference. */
 const motion = () => (REDUCE_MOTION.matches ? "auto" : "smooth");
 
-/** WCAG relative luminance for an sRGB triple. */
-function luminance(r, g, b) {
-  const f = (c) => {
-    const s = c / 255;
-    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
-  };
-  return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
-}
-
-/**
- * A tint of the backdrop's own colour that still clears 4.5:1 against it.
- *
- * Keeps the project's hue in the title instead of flat white, so no drop
- * shadow is needed. Lightens by preference; over a bright photo a light tint
- * can never reach 4.5:1, so it darkens the same hue instead.
- */
-function legibleTint(r, g, b) {
-  const bgL = luminance(r, g, b);
-  const contrast = (a) => {
-    const L = luminance(a[0], a[1], a[2]);
-    return (Math.max(L, bgL) + 0.05) / (Math.min(L, bgL) + 0.05);
-  };
-  const toward = (target, t) => [r, g, b].map((c) => c + (target - c) * t);
-
-  for (const target of [255, 0]) {
-    for (let t = 0.45; t <= 1.0001; t += 0.05) {
-      const c = toward(target, t);
-      if (contrast(c) >= 4.5) return `rgb(${c.map(Math.round).join(", ")})`;
-    }
-  }
-  return bgL > 0.18 ? "#000" : "#fff";
-}
-
 class Portfolio {
   constructor() {
     this.currentProjectIndex = 0;
@@ -70,11 +37,16 @@ class Portfolio {
       // scroller keyboard-focusable when it has no focusable children, and
       // most of these contain links, so they need it explicitly or their tail
       // is unreachable at large text sizes.
-      carousel.querySelectorAll(".slide:has(.slide-content)").forEach((slide) => {
-        slide.setAttribute("tabindex", "0");
-        slide.setAttribute("role", "group");
-        slide.setAttribute("aria-label", `${this.titleOf(carousel)} description`);
-      });
+      carousel
+        .querySelectorAll(".slide:has(.slide-content)")
+        .forEach((slide) => {
+          slide.setAttribute("tabindex", "0");
+          slide.setAttribute("role", "group");
+          slide.setAttribute(
+            "aria-label",
+            `${this.titleOf(carousel)} description`,
+          );
+        });
 
       carousel.setAttribute("tabindex", "0");
       carousel.setAttribute("role", "group");
@@ -82,7 +54,9 @@ class Portfolio {
       this.setupPointerNavigation(carousel);
       // Bound to the carousel, not the document, so the arrow keys act on the
       // carousel that actually has focus and page scrolling is left alone.
-      carousel.addEventListener("keydown", (e) => this.handleCarouselKeys(e, carousel));
+      carousel.addEventListener("keydown", (e) =>
+        this.handleCarouselKeys(e, carousel),
+      );
     });
   }
 
@@ -114,14 +88,16 @@ class Portfolio {
         y = e.clientY;
         t = e.timeStamp;
       },
-      { passive: true }
+      { passive: true },
     );
 
     carousel.addEventListener("pointerup", (e) => {
       // Right, middle and the mouse back button were all advancing the slide,
       // so "Save image as…" opened the menu and jumped the carousel at once.
       if (e.button !== 0 || !e.isPrimary) return;
-      if (e.target.closest("a, button, .slide-content")) return;
+      // Links and buttons still win, but the text panel itself is now a target:
+      // it was the one slide you could not click your way out of.
+      if (e.target.closest("a, button")) return;
       if (Math.hypot(e.clientX - x, e.clientY - y) > 10) return;
       if (e.timeStamp - t > 500) return;
 
@@ -130,12 +106,21 @@ class Portfolio {
       const current = this.currentSlide(carousel);
       const max = this.maxIndex(carousel);
 
-      if (coarse) {
-        this.goToSlide(carousel, current >= max ? 0 : current + 1);
+      // A text panel advances from anywhere on it, not just from the outer
+      // fifth. The edge zones exist so a click on a photograph does not have to
+      // cover the photograph; copy has no such claim on the middle of the
+      // slide, and clicking the paragraph you have just finished reading is the
+      // obvious way to move on.
+      const onCopy = !!e.target.closest(".slide-content");
+
+      // No wrap. Reaching the last slide and being thrown back to the first
+      // reads as a glitch rather than as navigation, so both ends are walls.
+      if (coarse || (onCopy && frac >= EDGE)) {
+        if (current < max) this.goToSlide(carousel, current + 1);
       } else if (frac < EDGE) {
-        this.goToSlide(carousel, current <= 0 ? max : current - 1);
+        if (current > 0) this.goToSlide(carousel, current - 1);
       } else if (frac > 1 - EDGE) {
-        this.goToSlide(carousel, current >= max ? 0 : current + 1);
+        if (current < max) this.goToSlide(carousel, current + 1);
       }
     });
 
@@ -148,13 +133,17 @@ class Portfolio {
         (e) => {
           const rect = carousel.getBoundingClientRect();
           const frac = (e.clientX - rect.left) / rect.width;
-          const next = frac < EDGE ? "prev" : frac > 1 - EDGE ? "next" : "";
+          // Over copy the whole slide advances, so the cursor has to say so
+          // right across it rather than only in the outer fifth.
+          const onCopy = !!e.target.closest(".slide-content");
+          const next =
+            frac < EDGE ? "prev" : frac > 1 - EDGE || onCopy ? "next" : "";
           if (next === zone) return;
           zone = next;
           carousel.classList.toggle("zone-prev", next === "prev");
           carousel.classList.toggle("zone-next", next === "next");
         },
-        { passive: true }
+        { passive: true },
       );
       carousel.addEventListener("pointerleave", () => {
         zone = "";
@@ -164,7 +153,11 @@ class Portfolio {
   }
 
   titleOf(carousel) {
-    return carousel.parentElement.querySelector(".project-title")?.textContent.trim() || "Project";
+    return (
+      carousel.parentElement
+        .querySelector(".project-title")
+        ?.textContent.trim() || "Project"
+    );
   }
 
   createNavigation(carousel) {
@@ -185,7 +178,10 @@ class Portfolio {
       dot.type = "button";
       dot.className = "carousel-dot";
       dot.dataset.slide = index;
-      dot.setAttribute("aria-label", `${title}, slide ${index + 1} of ${count}`);
+      dot.setAttribute(
+        "aria-label",
+        `${title}, slide ${index + 1} of ${count}`,
+      );
       dots.appendChild(dot);
     });
 
@@ -206,11 +202,16 @@ class Portfolio {
    */
   maxIndex(carousel) {
     const width = this.slideWidth(carousel);
-    return Math.max(0, Math.round((carousel.scrollWidth - carousel.clientWidth) / width));
+    return Math.max(
+      0,
+      Math.round((carousel.scrollWidth - carousel.clientWidth) / width),
+    );
   }
 
   slideWidth(carousel) {
-    return carousel.clientWidth >= 1600 ? carousel.clientWidth / 2 : carousel.clientWidth;
+    return carousel.clientWidth >= 1600
+      ? carousel.clientWidth / 2
+      : carousel.clientWidth;
   }
 
   currentSlide(carousel) {
@@ -232,10 +233,21 @@ class Portfolio {
       // Surfaces are flat and known: paper under an image slide, the dark
       // panel under a text slide. No sampling needed, and no way for the
       // title to land on a backdrop it was not measured against.
+      const shade = (slide) =>
+        slide && slide.querySelector(".slide-content") ? "#fff" : "#141414";
+
       const under = slides[Math.min(current, slides.length - 1)];
       if (under && project) {
-        const onPanel = !!under.querySelector(".slide-content");
-        project.style.setProperty("--project-title-color", onPanel ? "#fff" : "#141414");
+        project.style.setProperty("--project-title-color", shade(under));
+
+        // The title sits top-left and the dots top-right. Above 1600px the
+        // carousel shows two slides at once, so the dots are over the NEXT
+        // slide and can need the opposite colour from the title.
+        const twoUp = carousel.clientWidth / this.slideWidth(carousel) > 1.5;
+        const underDots = twoUp
+          ? slides[Math.min(current + 1, slides.length - 1)]
+          : under;
+        project.style.setProperty("--project-dots-color", shade(underDots));
       }
 
       dots.forEach((dot, index) => {
@@ -253,12 +265,16 @@ class Portfolio {
 
   goToSlide(carousel, index) {
     const target = Math.min(Math.max(index, 0), this.maxIndex(carousel));
-    carousel.scrollTo({ left: target * this.slideWidth(carousel), behavior: motion() });
+    carousel.scrollTo({
+      left: target * this.slideWidth(carousel),
+      behavior: motion(),
+    });
   }
 
   advanceSlide(carousel) {
     const current = this.currentSlide(carousel);
-    if (current < this.maxIndex(carousel)) this.goToSlide(carousel, current + 1);
+    if (current < this.maxIndex(carousel))
+      this.goToSlide(carousel, current + 1);
     else this.stepProject(1);
   }
 
@@ -300,7 +316,8 @@ class Portfolio {
     const middle = window.innerHeight / 2;
     this.projects.forEach((project, index) => {
       const rect = project.getBoundingClientRect();
-      if (rect.top <= middle && rect.bottom >= middle) this.currentProjectIndex = index;
+      if (rect.top <= middle && rect.bottom >= middle)
+        this.currentProjectIndex = index;
     });
   }
 
@@ -327,7 +344,7 @@ class Portfolio {
           scrollRAF = null;
         });
       },
-      { passive: true }
+      { passive: true },
     );
 
     let resizeTimer = null;
@@ -337,11 +354,16 @@ class Portfolio {
         // Crossing 1200px changes how many slides share the viewport, and so
         // how many dots are reachable.
         document.querySelectorAll(".project-carousel").forEach((carousel) => {
-          const nav = carousel.parentElement.querySelector(".carousel-navigation");
+          const nav = carousel.parentElement.querySelector(
+            ".carousel-navigation",
+          );
           const want = this.maxIndex(carousel) + 1;
           if (nav && nav.querySelectorAll(".carousel-dot").length !== want) {
             nav.remove();
-            this.setupNavigationUpdates(carousel, this.createNavigation(carousel));
+            this.setupNavigationUpdates(
+              carousel,
+              this.createNavigation(carousel),
+            );
             return;
           }
         });
@@ -359,16 +381,20 @@ class Portfolio {
           if (entry.isIntersecting) this.extractColorFromImage(entry.target);
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
-    document.querySelectorAll(".image-slide img").forEach((img) => observer.observe(img));
+    document
+      .querySelectorAll(".image-slide img")
+      .forEach((img) => observer.observe(img));
   }
 
   extractColorFromImage(img) {
     // The observer fires before the first images have decoded; without this
     // retry the opening project never got its colour at all.
     if (!img.complete || !img.naturalWidth) {
-      img.addEventListener("load", () => this.extractColorFromImage(img), { once: true });
+      img.addEventListener("load", () => this.extractColorFromImage(img), {
+        once: true,
+      });
       return;
     }
 
@@ -383,29 +409,41 @@ class Portfolio {
 
       // Sample only the top 15%, where the project title sits. Averaging the
       // whole frame put white titles at ~2:1 over bright skies.
-      ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight * 0.15, 0, 0, 1, 1);
+      ctx.drawImage(
+        img,
+        0,
+        0,
+        img.naturalWidth,
+        img.naturalHeight * 0.15,
+        0,
+        0,
+        1,
+        1,
+      );
       [topR, topG, topB] = ctx.getImageData(0, 0, 1, 1).data;
     } catch {
       // Tainted canvas (file:// or a cross-origin move). Keep the defaults.
       return;
     }
 
-    const ownSlide = img.closest(".slide");
-    if (ownSlide) ownSlide.dataset.titleColor = legibleTint(topR, topG, topB);
-
     const project = img.closest(".project");
     if (project && img === project.querySelector(".image-slide img")) {
-      // Set from the lead image, which is what the title sits over on arrival.
-      // Later slides keep this colour and lean on the text-shadow.
-      project.style.setProperty("--project-title-color", legibleTint(topR, topG, topB));
+      // The title and dot colours are NOT set here any more. This sampled the
+      // top 15% of the lead photo back when the slide background was that photo
+      // blurred; the backdrop is now flat paper, so the surface under the title
+      // is known and setupNavigationUpdates picks ink or white outright. Left
+      // in place, this would put a photo-derived tint on #eeece8 — which is the
+      // 1.16:1 failure it was originally written to prevent.
 
       // Opaque, not rgba(…, 0.8): at 0.8 the white page showed through and
       // cancelled most of the darkening, leaving white text at 4.2:1 on
       // C.O.U.A. and 4.52:1 on Folkbastu.
       const shade = (c) => Math.max(0, c - 50);
-      project.style.setProperty("--project-text-bg", `rgb(${shade(r)}, ${shade(g)}, ${shade(b)})`);
+      project.style.setProperty(
+        "--project-text-bg",
+        `rgb(${shade(r)}, ${shade(g)}, ${shade(b)})`,
+      );
     }
-
   }
 }
 
