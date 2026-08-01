@@ -84,10 +84,6 @@
   text-underline-offset: 0.18em;
 }
 
-.project-page-body a:hover {
-  opacity: 0.78;
-}
-
 .project-page-body .credit,
 .project-page-body .press {
   font-size: var(--font-size-chrome);

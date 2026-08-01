@@ -2,7 +2,7 @@
 title: "Järva Stadspark"
 slug: "jarva-stadspark"
 order: 4
-color: "#737670"
+color: "#676a64"
 lang: "sv"
 year: "2022"
 location: "Stockholm"

@@ -417,27 +417,23 @@ body {
   margin-bottom: var(--spacing-small);
 }
 
-/* An intro link to a project takes that project's colour on its rule. Mixed
-   towards paper because these colours are grounds and would otherwise be too
-   dark to see on one. Falls back to currentColor for the outward links, which
-   have no project behind them. */
-.about-text a[href^="/"] {
-  text-decoration-color: color-mix(
-    in oklab,
-    var(--project-link, currentColor) 55%,
-    var(--paper)
-  );
-}
+/* An intro link to a project takes that project's own hue, text and rule alike.
 
-/* Hover brightens the rule rather than thickening it. A thickness change nudges
-   the line and reads as movement under the cursor; a colour shift is felt
-   without anything moving. */
-.about-text a[href^="/"]:hover {
-  text-decoration-color: color-mix(
-    in oklab,
-    var(--project-link, currentColor) 20%,
-    var(--paper)
-  );
+   Same hue and saturation, lightness raised to 93%. Not the colour itself and
+   not a mix towards paper: these are grounds, chosen to carry white type, so
+   used as ink on one they are illegible. Raising lightness keeps the hue and
+   buys the contrast back.
+
+   93% is the ceiling the palette allows. Paper on the lightest ground is only
+   4.65:1 to begin with, so any tint spends contrast that is not there; at 90%
+   the worst link falls to 4.31 and below AA. The colour is subtle by
+   arithmetic, not by preference.
+
+   No hover state: the underline is constant and the cursor already says it is a
+   link. */
+.about-text a[href^="/"] {
+  color: hsl(from var(--project-link, currentColor) h s 93%);
+  text-decoration-color: hsl(from var(--project-link, currentColor) h s 93%);
 }
 
 .about-contact a,
@@ -457,15 +453,10 @@ body {
   margin: -4px 8px -4px -8px;
 }
 
-/* Hover leaves the rule alone. It used to be removed, which withdrew the
-   affordance at the moment it was being used; thickening it instead moved the
-   line under the cursor. The underline is constant, and hover lifts the ink. */
-.about-contact a:hover,
-.about-text a:hover,
-.slide-content a:hover,
-.footer-contact a:hover {
-  opacity: 0.78;
-}
+/* No hover state on links anywhere. Removing the underline withdrew the
+   affordance as it was being used, thickening it moved the line under the
+   cursor, and dimming the ink read as disabled. The underline is constant and
+   the pointer already says it is a link. */
 
 /* --- projects ------------------------------------------------------------ */
 
