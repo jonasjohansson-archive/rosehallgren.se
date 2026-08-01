@@ -4,9 +4,9 @@ slug: "rock-stage"
 order: 1
 year: "2022"
 location: "Tibro"
-link:
-  label: "See the project at Anders Berensson Architects"
-  url: "https://andersberenssonarchitects.com/work/rock-stage/"
+links:
+  - label: "See the project at Anders Berensson Architects"
+    url: "https://andersberenssonarchitects.com/work/rock-stage/"
 credits:
   - "Anders Berensson Architects"
   - "Rose Hallgren, Architect"

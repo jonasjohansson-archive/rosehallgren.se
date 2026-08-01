@@ -4,9 +4,12 @@ slug: "danny-saucedo"
 order: 15
 year: "2024"
 location: "Melodifestivalen, Stockholm"
+links:
+  - label: "See the project at Jonas Johansson"
+    url: "https://jonasjohansson.se/danny-saucedo/"
 credits:
   - "Smash Studio, co-design, 3D modelling and animation"
-  - "Rose Hallgren, Architect and scenography"
+  - "Rose Hallgren, scenography"
   - "Jonas Johansson, Technical director"
 media:
   - file: "/assets/images/projects/danny-saucedo-01.png"

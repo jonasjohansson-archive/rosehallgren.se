@@ -85,16 +85,16 @@
         <div class="slide">
           <div class="slide-content">
 {%- for para in panel %}
-            <p>{{ para | safe }}</p>
+            <p>{{ para | autolink | safe }}</p>
 {%- endfor %}
 {%- if loop.last %}
-{%- if p.link %}
+{%- for l in p.links %}
             <p>
-              <a href="{{ p.link.url }}" target="_blank" rel="noopener noreferrer">{{ p.link.label }}</a>
+              <a href="{{ l.url }}" target="_blank" rel="noopener noreferrer">{{ l.label }}</a>
             </p>
-{%- endif %}
+{%- endfor %}
 {%- if p.credits | length %}
-            <p class="credit">{% for c in p.credits %}<span class="credit-line">{{ c }}</span>{% endfor %}</p>
+            <p class="credit">{% for c in p.credits %}<span class="credit-line">{{ c | autolink | safe }}</span>{% endfor %}</p>
 {%- endif %}
 {%- if p.press | length %}
             <p class="press">Press: {% for x in p.press %}<a href="{{ x.url }}" target="_blank" rel="noopener noreferrer">{{ x.label }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</p>

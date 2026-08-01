@@ -4,9 +4,9 @@ slug: "stockholm-shorelines"
 order: 7
 year: "2022"
 location: "Stockholm"
-link:
-  label: "See the project at Anders Berensson Architects"
-  url: "https://andersberenssonarchitects.com/work/stockholm-shorelines/"
+links:
+  - label: "See the project at Anders Berensson Architects"
+    url: "https://andersberenssonarchitects.com/work/stockholm-shorelines/"
 credits:
   - "Anders Berensson Architects"
   - "Rose Hallgren, Architect"

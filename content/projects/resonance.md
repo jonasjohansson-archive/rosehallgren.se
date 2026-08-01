@@ -4,9 +4,11 @@ slug: "resonance"
 order: 16
 year: "2024"
 location: "Allt Ljus på Uppsala, Stora torget"
-link:
-  label: "See the project at Allt Ljus på Uppsala"
-  url: "https://alltljuspauppsala.se/"
+links:
+  - label: "See the project at Allt Ljus på Uppsala"
+    url: "https://alltljuspauppsala.se/"
+  - label: "See the project at Jonas Johansson"
+    url: "https://jonasjohansson.se/resonance/"
 credits:
   - "With Smash Studio and Jonas Johansson"
   - "Rose Hallgren, touch pads"

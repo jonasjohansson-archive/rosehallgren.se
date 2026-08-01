@@ -195,11 +195,11 @@ for (const f of files) {
     if (p.label && !p.url) errors.push(`${where}: press entry "${p.label}" has no URL`);
     if (p.url && !p.label) errors.push(`${where}: a press URL has no publication name`);
   }
-  if (data.link?.url && !/^https?:\/\//.test(data.link.url)) {
-    errors.push(`${where}: link out "${data.link.url}" is not a URL`);
+  for (const l of data.links || []) {
+    if (l.url && !/^https?:\/\//.test(l.url)) errors.push(`${where}: link "${l.url}" is not a URL`);
+    if (l.label && !l.url) errors.push(`${where}: the link "${l.label}" has no URL`);
+    if (l.url && !l.label) errors.push(`${where}: a link has a URL but no text`);
   }
-  if (data.link?.label && !data.link?.url) errors.push(`${where}: "link out" has text but no URL`);
-  if (data.link?.url && !data.link?.label) errors.push(`${where}: "link out" has a URL but no text`);
   if (!content.trim()) warnings.push(`${where}: no description text`);
 }
 

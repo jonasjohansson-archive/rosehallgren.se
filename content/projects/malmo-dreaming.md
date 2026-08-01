@@ -5,9 +5,9 @@ order: 11
 lang: "sv"
 year: "2023"
 location: "Malmö in the Making, Malmö"
-link:
-  label: "Watch the film on YouTube"
-  url: "https://www.youtube.com/watch?v=QohlJKgHG1E"
+links:
+  - label: "Watch the film on YouTube"
+    url: "https://www.youtube.com/watch?v=QohlJKgHG1E"
 credits:
   - "Fanfaluca Collective"
 media:

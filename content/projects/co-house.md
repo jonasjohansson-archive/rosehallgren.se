@@ -4,9 +4,9 @@ slug: "co-house"
 order: 3
 year: "2023"
 location: "Sweden"
-link:
-  label: "See the project at Anders Berensson Architects"
-  url: "https://andersberenssonarchitects.com/work/c-o/"
+links:
+  - label: "See the project at Anders Berensson Architects"
+    url: "https://andersberenssonarchitects.com/work/c-o/"
 credits:
   - "Anders Berensson Architects"
   - "Rose Hallgren, Architect"

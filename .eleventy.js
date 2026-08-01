@@ -184,6 +184,35 @@ module.exports = function (eleventyConfig) {
 
   eleventyConfig.addFilter("isoDate", (d) => new Date(d).toISOString().slice(0, 10));
 
+  /**
+   * Collaborators who always carry a link, wherever their name appears.
+   *
+   * Rose writes plain names in the credits and in her descriptions; linking
+   * them by hand in every project is the kind of thing that gets done for a
+   * while and then stops. Longest name first, so "Smash Studio" is matched
+   * before "SMASH" could break it in half.
+   */
+  const PEOPLE = [
+    { name: "Jonas Johansson", url: "https://jonasjohansson.se/" },
+    { name: "Smash Studio", url: "https://www.smash.studio/" },
+    { name: "SMASH", url: "https://www.smash.studio/" },
+  ];
+
+  eleventyConfig.addFilter("autolink", (text) => {
+    let out = String(text ?? "");
+    for (const p of PEOPLE) {
+      // Skip anything already inside an anchor — the intro links these by hand.
+      const already = new RegExp(`<a[^>]*>[^<]*${p.name}`, "i");
+      if (already.test(out)) continue;
+      out = out
+        .split(p.name)
+        .join(
+          `<a href="${p.url}" target="_blank" rel="noopener noreferrer">${p.name}</a>`,
+        );
+    }
+    return out;
+  });
+
   eleventyConfig.addFilter("collageTiles", (n) => collage(n).tiles);
   eleventyConfig.addFilter("collageRows", (n) => collage(n).rows);
 

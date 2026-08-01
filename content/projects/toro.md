@@ -5,9 +5,9 @@ order: 4
 lang: "sv"
 year: "2021–2023"
 location: "Torö, Nynäshamn"
-link:
-  label: "See the project at AT–HH"
-  url: "https://projects.at-hh.com/toro"
+links:
+  - label: "See the project at AT–HH"
+    url: "https://projects.at-hh.com/toro"
 credits:
   - "AT–HH: James Hamilton, Malin Heyman and Rose Hallgren"
   - "Contractor: Lynn Bygg AB"

@@ -4,9 +4,9 @@ slug: "fluffy-encounters"
 order: 10
 year: "2025"
 location: "Copenhagen Architecture Biennial"
-link:
-  label: "Watch the film on YouTube"
-  url: "https://www.youtube.com/watch?v=yn3Wk3m__r0"
+links:
+  - label: "Watch the film on YouTube"
+    url: "https://www.youtube.com/watch?v=yn3Wk3m__r0"
 credits:
   - "Fanfaluca Collective"
   - "with Axfoundation, Dalarna Science Park and the Nordic Wool Initiative"

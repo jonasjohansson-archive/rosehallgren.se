@@ -411,6 +411,15 @@ body {
   filter: blur(40px);
   transform: scale(1.4);
   z-index: 1;
+  /* Faded in once main.js knows which file the browser actually picked, so the
+     wash arrives with the photograph instead of appearing under one already on
+     screen. */
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.image-slide[data-backdrop]::before {
+  opacity: 1;
 }
 
 .image-slide::after {
@@ -536,6 +545,8 @@ body {
   height: auto;
   object-fit: contain;
   user-select: none;
+  /* Just enough to take the mechanical edge off a hard crop. */
+  border-radius: 2px;
 }
 
 .video-slide iframe {

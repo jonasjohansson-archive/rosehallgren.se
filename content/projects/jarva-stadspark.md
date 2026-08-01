@@ -5,9 +5,9 @@ order: 2
 lang: "sv"
 year: "2022"
 location: "Stockholm"
-link:
-  label: "See the project at Anders Berensson Architects"
-  url: "https://andersberenssonarchitects.com/work/jarva-stadspark/"
+links:
+  - label: "See the project at Anders Berensson Architects"
+    url: "https://andersberenssonarchitects.com/work/jarva-stadspark/"
 credits:
   - "Anders Berensson Architects"
   - "Rose Hallgren, Architect"

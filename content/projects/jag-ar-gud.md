@@ -5,6 +5,9 @@ order: 14
 lang: "sv"
 year: "2024"
 location: "Kilen, Kulturhuset Stadsteatern, Stockholm"
+links:
+  - label: "See the project at Jonas Johansson"
+    url: "https://jonasjohansson.se/jag-ar-gud/"
 credits:
   - "Scenography: Rose Hallgren"
   - "Light and video: Jonas Johansson"

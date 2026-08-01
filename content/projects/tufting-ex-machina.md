@@ -4,6 +4,9 @@ slug: "tufting-ex-machina"
 order: 13
 year: "2024"
 location: "Aavistus Festival, Helsinki"
+links:
+  - label: "See the project at Jonas Johansson"
+    url: "https://jonasjohansson.se/tufting-ex-machina/"
 credits:
   - "With Jonas Johansson"
 media:

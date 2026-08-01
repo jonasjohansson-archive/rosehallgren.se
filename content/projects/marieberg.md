@@ -4,9 +4,9 @@ slug: "marieberg"
 order: 8
 year: "2022"
 location: "Stockholm"
-link:
-  label: "See the project at Anders Berensson Architects"
-  url: "https://andersberenssonarchitects.com/work/marieberg/"
+links:
+  - label: "See the project at Anders Berensson Architects"
+    url: "https://andersberenssonarchitects.com/work/marieberg/"
 credits:
   - "Anders Berensson Architects"
   - "Rose Hallgren, Architect"

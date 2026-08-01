@@ -20,6 +20,7 @@ class Portfolio {
     this.navUpdaters = new Map();
 
     this.initCarousels();
+    this.setupBackdrops();
     this.setupColorExtraction();
     this.setupEventListeners();
     this.setupPermalinkHandling();
@@ -173,6 +174,16 @@ class Portfolio {
     // scroll to the left edge. One dot per slide left a permanently dead
     // control in the tab order on every project.
     const count = this.maxIndex(carousel) + 1;
+
+    // Nothing to navigate to. Above 1600px two slides share the viewport, so a
+    // project with exactly two slides shows both at once and the dot row would
+    // be a single dot pointing at what you are already looking at.
+    if (count < 2) {
+      carousel.parentElement.appendChild(nav);
+      nav.hidden = true;
+      return nav;
+    }
+
     Array.from({ length: count }).forEach((_, index) => {
       const dot = document.createElement("button");
       dot.type = "button";
@@ -388,19 +399,36 @@ class Portfolio {
     if (!slide) return;
     const apply = () => {
       const src = img.currentSrc || img.src;
-      if (src) slide.style.setProperty("--bg-image", `url("${src}")`);
+      if (!src) return;
+      slide.style.setProperty("--bg-image", `url("${src}")`);
+      // Lets CSS fade it in rather than snap it on.
+      slide.dataset.backdrop = "";
     };
     if (img.complete && img.naturalWidth) apply();
     else img.addEventListener("load", apply, { once: true });
+  }
+
+  /**
+   * Arm every image slide's backdrop up front.
+   *
+   * This used to hang off the same IntersectionObserver as the colour
+   * extraction, which meant the wash appeared only once the slide was already
+   * on screen — you saw flat paper, then it popped. Hanging it off the image's
+   * own load event instead means the backdrop and the photograph arrive
+   * together, since content-visibility does not start the download until the
+   * slide is near the viewport anyway.
+   */
+  setupBackdrops() {
+    document
+      .querySelectorAll(".image-slide img.screen-only")
+      .forEach((img) => this.setBackdrop(img));
   }
 
   setupColorExtraction() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          this.setBackdrop(entry.target);
-          this.extractColorFromImage(entry.target);
+          if (entry.isIntersecting) this.extractColorFromImage(entry.target);
         });
       },
       { threshold: 0.1 },

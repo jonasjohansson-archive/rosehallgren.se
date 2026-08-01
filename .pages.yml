@@ -101,10 +101,12 @@ content:
           type: string,
           description: "e.g. Stockholm. Shown only in the PDF, after the year.",
         }
-      - name: link
-        label: Link out
+      - name: links
+        label: Links
         type: object
-        description: "Optional. A single link at the end of the text, e.g. to the practice that ran the project."
+        description: "Optional. Links shown at the end of the text — the practice that ran the project, the festival that hosted it, a collaborator's page. Drag to reorder."
+        list:
+          collapsible: { collapsed: true, summary: "{label}" }
         fields:
           - { name: label, label: Link text, type: string }
           - { name: url, label: URL, type: string, pattern: "^$|^https?://" }
