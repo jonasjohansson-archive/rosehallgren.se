@@ -474,7 +474,11 @@ body {
   position: absolute;
   inset: 0;
   background: var(--bg-image) center / cover no-repeat;
-  filter: blur(40px);
+  /* saturate compensates for the two things that wash this out: a 40px blur
+     averages neighbouring pixels toward grey, and the veil above lightens what
+     is left. It cannot break the contrast floor, which is computed against a
+     pure black photograph — saturation cannot make black darker. */
+  filter: blur(40px) saturate(1.6);
   transform: scale(1.4);
   z-index: 1;
   /* Faded in once main.js knows which file the browser actually picked, so the
@@ -592,6 +596,10 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  /* From the slide, so the blurred backdrop and its veil are cut to the same
+     corners. Without it they filled a square box inside a rounded one and
+     painted straight over the cut. */
+  border-radius: inherit;
 }
 
 .video-slide {
@@ -783,6 +791,9 @@ body {
 @media (max-width: 768px) {
   :root {
     --indent: 1.25rem;
+    /* 16px is a desktop measure. On a phone the column is a third as wide and
+       the same size reads oversized. */
+    --font-size-body: 0.9375rem;
   }
 
   .about-section {
@@ -883,9 +894,12 @@ body {
   /* Shorthand, so it has to restate the top and bottom clearance: this rule
      previously set padding-top to 1.25rem and undid the 768px rule above,
      which is why the copy ran under the title on small phones. */
+  :root {
+    --font-size-body: 0.875rem;
+  }
+
   .slide-content {
     padding: 3.75rem var(--indent) 4.25rem;
-    font-size: 0.9375rem;
   }
 
   .slide-content p {
