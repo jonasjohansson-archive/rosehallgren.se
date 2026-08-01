@@ -177,17 +177,96 @@
   }
 }
 
-/* Printing a single project is not the pitch deck. Cmd+P on the home page
-   still produces that; here it just prints the page, dark ground and all,
-   which would empty a cartridge for no reason. */
+/* Printing on screen: the print JPEG has no layout box and never loads. */
+.project-page-media img.print-only {
+  display: none;
+}
+
+/* Printing a single project is not the pitch deck.
+
+   Cmd+P on the home page produces the 16:9 landscape deck, and that @page rule
+   lives in styles.css, which this page also loads — so without overriding it a
+   project page printed onto slide-shaped paper. It is a document, so it prints
+   as one: A4 portrait, one column, dark ground dropped so it does not empty a
+   cartridge, and the pictures swapped to the same JPEGs the deck uses because
+   Chrome re-embeds WebP into a PDF at almost no compression. */
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 18mm 16mm;
+  }
+
   .project-page {
     background: #fff;
     color: #000;
   }
 
+  .project-page main {
+    padding: 0;
+  }
+
+  /* The wordmark and the next-project link are navigation, not content. */
+  .project-page-mark,
   .project-page-back,
   .project-page-nav {
+    display: none;
+  }
+
+  .project-page h1 {
+    margin: 0 0 6mm;
+  }
+
+  .project-page-body {
+    max-width: none;
+    padding-bottom: 8mm;
+  }
+
+  .project-page-body a {
+    text-decoration: none;
+  }
+
+  /* One column on a portrait page, and a figure never split across a break. */
+  .project-page-media {
+    display: block;
+  }
+
+  .project-page-media figure {
+    margin: 0 0 6mm;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .project-page-media picture {
+    display: none;
+  }
+
+  /* Height-capped rather than width-driven. At full width a portrait picture
+     is taller than the usable 261mm of an A4 page, so break-inside: avoid threw
+     each one onto a page of its own and left two thirds of it blank. Capped,
+     two fit comfortably and the run came down from 11 pages to 6. */
+  .project-page-media img.print-only {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: 115mm;
+    height: auto;
+    border-radius: 0;
+  }
+
+  /* A video is a link on paper; the embed prints as an empty box. */
+  .project-page-video {
+    display: none;
+  }
+
+  .project-page .footer {
+    padding: 6mm 0 0;
+    background: none;
+    color: #000;
+    border-top: 0.3mm solid #000;
+    break-inside: avoid;
+  }
+
+  .project-page .footer .wordmark {
     display: none;
   }
 }

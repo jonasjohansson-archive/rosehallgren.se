@@ -41,8 +41,8 @@ eleventyExcludeFromCollections: true
       href="/assets/fonts/Instrument.woff2"
       crossorigin />
 
-    <link rel="stylesheet" href="/assets/css/styles.css?v=20260802ac" media="all" />
-    <link rel="stylesheet" href="/assets/css/project.css?v=20260802ac" media="all" />
+    <link rel="stylesheet" href="/assets/css/styles.css?v=20260802ad" media="all" />
+    <link rel="stylesheet" href="/assets/css/project.css?v=20260802ad" media="all" />
     <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg" />
     <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon/favicon-96x96.png" />
     <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png" />
@@ -172,6 +172,16 @@ eleventyExcludeFromCollections: true
               decoding="async"
               loading="{{ "eager" if loop.first else "lazy" }}" />
           </picture>
+          {#- Cmd+P. Chrome re-embeds WebP into a PDF almost uncompressed, so the
+              deck carries a JPEG per picture and so does this page. display:none
+              on screen means it has no layout box and never loads until the
+              print stylesheet applies. #}
+          <img
+            class="print-only"
+            src="{{ m.file | printSrc | abs }}"
+            alt=""
+            aria-hidden="true"
+            loading="lazy" />
         </figure>
 {%- endif %}
 {%- endfor %}
