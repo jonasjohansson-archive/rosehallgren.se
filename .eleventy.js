@@ -17,6 +17,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { imageSize } = require("./scripts/lib/image-size");
 
 const AVIF_DIR = "assets/images/avif";
 const WEBP_DIR = "assets/images/w";
@@ -27,7 +28,7 @@ const WASH_DIR = "assets/images/wash";
  * The derivative base name for a CMS image path.
  *
  * Pages CMS stores what the user picked — "/assets/images/berensson/eways-01.jpg"
- * — while build-images.sh names its output after the stem alone
+ * — while scripts/build-images.py names its output after the stem alone
  * ("eways-01-1000.avif"). Everything downstream works from the stem, so the
  * conversion happens once, here.
  */
@@ -60,63 +61,10 @@ function rungs(dir, base, ext) {
  * These attributes are what hold layout stable while the image loads; getting
  * them from the file means they cannot drift out of sync with it.
  */
-function webpSize(file) {
-  const b = fs.readFileSync(file);
-  if (b.slice(0, 4).toString("ascii") !== "RIFF") return null;
-  const fmt = b.slice(12, 16).toString("ascii");
-  if (fmt === "VP8X") {
-    return {
-      width: 1 + (b[24] | (b[25] << 8) | (b[26] << 16)),
-      height: 1 + (b[27] | (b[28] << 8) | (b[29] << 16)),
-    };
-  }
-  if (fmt === "VP8 ") {
-    return { width: b.readUInt16LE(26) & 0x3fff, height: b.readUInt16LE(28) & 0x3fff };
-  }
-  if (fmt === "VP8L") {
-    const bits = b.readUInt32LE(21);
-    return { width: (bits & 0x3fff) + 1, height: ((bits >> 14) & 0x3fff) + 1 };
-  }
-  return null;
-}
-
-/**
- * Pixel size of any jpg/png/webp, read from its header.
- *
- * Used for og:image:width/height, which were declared 1200x630 against a file
- * that is actually 1500x998 — a number nobody rechecks once written. Reading
- * the file means the declaration cannot drift from the image.
- */
+/* The header reader lives in scripts/lib/image-size.js so validate-content.js
+   can ask the same question and get the same answer. */
 function fileSize(file) {
-  const abs = path.join(__dirname, String(file || "").replace(/^\//, ""));
-  let b;
-  try {
-    b = fs.readFileSync(abs);
-  } catch {
-    return null;
-  }
-  if (b.slice(0, 4).toString("ascii") === "RIFF") return webpSize(abs);
-  // PNG: IHDR width/height are big-endian at a fixed offset
-  if (b.length > 24 && b.readUInt32BE(0) === 0x89504e47) {
-    return { width: b.readUInt32BE(16), height: b.readUInt32BE(20) };
-  }
-  // JPEG: walk the segment chain to the start-of-frame marker
-  if (b[0] === 0xff && b[1] === 0xd8) {
-    let i = 2;
-    while (i < b.length - 9) {
-      if (b[i] !== 0xff) {
-        i++;
-        continue;
-      }
-      const marker = b[i + 1];
-      // SOF0-SOF15, excluding the non-frame markers DHT/JPG/DAC
-      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
-        return { height: b.readUInt16BE(i + 5), width: b.readUInt16BE(i + 7) };
-      }
-      i += 2 + b.readUInt16BE(i + 2);
-    }
-  }
-  return null;
+  return imageSize(path.join(__dirname, String(file || "").replace(/^\//, "")));
 }
 
 const sizeCache = new Map();
@@ -126,7 +74,7 @@ function intrinsic(base) {
   let out = null;
   if (ws.length) {
     try {
-      out = webpSize(path.join(WEBP_DIR, `${base}-${ws[ws.length - 1]}.webp`));
+      out = imageSize(path.join(__dirname, WEBP_DIR, `${base}-${ws[ws.length - 1]}.webp`));
     } catch {
       out = null;
     }
@@ -158,8 +106,6 @@ function collage(count) {
 }
 
 module.exports = function (eleventyConfig) {
-  eleventyConfig.addPassthroughCopy({ "src/static": "." });
-
   eleventyConfig.addFilter("srcset", (file, kind) => {
     const base = stem(file);
     const dir = kind === "avif" ? AVIF_DIR : WEBP_DIR;

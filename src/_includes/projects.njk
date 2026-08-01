@@ -73,7 +73,7 @@
 {#- ...but never when the project has more than one copy panel, or the two
     would open back to back and you would scroll past two screens of text
     before reaching a photograph. Fluffy Encounters is the only one today. #}
-{%- set copyFirst = ((loop.index % 2) == 0) and ((p.panels | length) < 2) %}
+{%- set copyFirst = ((loop.index % 2) == 0) and ((p.panels | length) == 1) %}
       <section
         class="project deck-tiles-{{ p.supportCount | collageTiles }} deck-rows-{{ p.supportCount | collageRows }}{% if copyFirst %} copy-first{% endif %}"
         id="{{ p.slug }}"

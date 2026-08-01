@@ -149,12 +149,12 @@ permalink: index.html
               <source
                 type="image/avif"
                 srcset="{{ portrait | srcset('avif') }}"
-                sizes="var(--portrait-width)" />
+                sizes="(min-width: 1200px) 400px, 30vw" />
               <img
                 class="screen-only"
                 src="{{ portrait | largest('webp') }}"
                 srcset="{{ portrait | srcset('webp') }}"
-                sizes="30vw"
+                sizes="(min-width: 1200px) 400px, 30vw"
                 alt="{{ settings.site.portrait_alt }}"
                 width="{{ portrait | intrinsicWidth }}"
                 height="{{ portrait | intrinsicHeight }}"

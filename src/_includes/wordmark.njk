@@ -1,10 +1,17 @@
-{#- The wordmark, shared by the footer and the project pages. id is passed
-    in because a page can carry it more than once and ids must be unique; the
-    class is what carries the size, because Nunjucks `set` leaks across
-    includes and a project page ended up with the same id on both copies. #}
+{#- The wordmark, shared by the footer and the project pages.
+
+    A macro, not an include, because `set` is not scoped to an include: setting
+    markId in a project page header left it set when the footer included this
+    file again further down, so both copies carried id="logo-project" and every
+    project page shipped a duplicate id. A macro has its own local scope, which
+    ends the whole class of leak rather than the one instance of it.
+
+    The size comes from the class. The id is only there so the two copies on a
+    page are distinguishable. #}
+{% macro wordmark(id="logo-bottom") %}
 <svg
                 class="wordmark"
-                id="{{ markId | default('logo-bottom') }}"
+                id="{{ id }}"
                 aria-hidden="true"
                 focusable="false"
                 xmlns="http://www.w3.org/2000/svg"
@@ -28,3 +35,4 @@
                   d="M105.03,310.63c23.03-2.77,38.93,10.48,36.46,34.23-2.27,21.76-26.87,34.08-45.81,22.99-23.41-13.71-19.67-53.73,9.35-57.22h0Z"
                 />
               </svg>
+{% endmacro %}

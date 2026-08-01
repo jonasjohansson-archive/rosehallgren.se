@@ -8,6 +8,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { imageSize } = require("./lib/image-size");
 const matter = require("gray-matter");
 
 const ROOT = path.join(__dirname, "..");
@@ -25,23 +26,41 @@ const stem = (f) =>
     .pop()
     .replace(/\.[^.]+$/, "");
 
+/* The ladder, and the widths a given source is entitled to. Must agree with
+   RUNGS in scripts/build-images.py; there is no way to share a constant across
+   the two languages, so this is the parity to keep. */
+const RUNGS = [640, 750, 1000, 1250, 1500, 2000];
+const widthsFor = (sourceWidth) =>
+  [...new Set(RUNGS.map((r) => Math.min(r, sourceWidth)))].sort((a, b) => a - b);
+
 /**
- * All three derivative sets, not just AVIF. build-images.py writes the three
- * output directories together so in practice they agree, but that is a
- * property of the script rather than a guarantee, and a page missing its print
- * JPEG only shows up as a blank tile in the PDF.
+ * All three derivative sets, not just AVIF, and the WHOLE ladder rather than
+ * any one rung of it.
+ *
+ * This used to ask only whether a stem had some avif and some webp. That is
+ * how 106 missing 2000px rungs sat in the repo unreported: every upscaled
+ * source still had its old narrower rungs, so the check passed while wide
+ * viewports were being served a 1500px image. Asking for each expected width
+ * is the only version of this check that means anything.
  */
-const hasDerivatives = (file) => {
+const hasDerivatives = (file) => missingDerivatives(file).length === 0;
+
+const missingDerivatives = (file) => {
   const base = stem(file);
-  const esc = base.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const has = (sub, ext) => {
-    const dir = path.join(ROOT, "assets", "images", sub);
-    if (!fs.existsSync(dir)) return false;
-    return fs.readdirSync(dir).some((f) => new RegExp(`^${esc}-\\d+\\.${ext}$`).test(f));
-  };
-  if (!has("avif", "avif")) return false;
-  if (!has("w", "webp")) return false;
-  return fs.existsSync(path.join(ROOT, "assets", "images", "print", `${base}.jpg`));
+  const src = path.join(ROOT, String(file).replace(/^\//, ""));
+  if (!fs.existsSync(src)) return ["source"];
+  const dims = imageSize(src);
+  if (!dims) return ["unreadable"];
+  const missing = [];
+  for (const w of widthsFor(dims.width)) {
+    if (!fs.existsSync(path.join(ROOT, "assets", "images", "avif", `${base}-${w}.avif`)))
+      missing.push(`${base}-${w}.avif`);
+    if (!fs.existsSync(path.join(ROOT, "assets", "images", "w", `${base}-${w}.webp`)))
+      missing.push(`${base}-${w}.webp`);
+  }
+  if (!fs.existsSync(path.join(ROOT, "assets", "images", "print", `${base}.jpg`)))
+    missing.push(`${base}.jpg (print)`);
+  return missing;
 };
 
 /**

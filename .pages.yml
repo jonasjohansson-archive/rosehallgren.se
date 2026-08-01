@@ -80,7 +80,7 @@ content:
           type: string,
           required: true,
           pattern: "^[a-z0-9-]+$",
-          description: "The bit after the # in the link to this project, e.g. rock-stage. Lowercase letters, numbers and hyphens. Changing it breaks any link anyone has already shared — usually best left alone.",
+          description: "This project's own web address, e.g. rosehallgren.se/rock-stage. Lowercase letters, numbers and hyphens. Changing it does not redirect: the old address stops working for anyone who has shared or bookmarked it, and search engines drop the page. Best left alone once a project is published.",
         }
       - {
           name: order,

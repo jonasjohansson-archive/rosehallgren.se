@@ -19,6 +19,7 @@ eleventyExcludeFromCollections: true
   It shares the stylesheet and adds project.css on top; nothing here re-declares
   a colour or a typeface.
 #}
+{% from "wordmark.njk" import wordmark %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -116,7 +117,7 @@ eleventyExcludeFromCollections: true
     <main>
       <header class="project-page-header">
         <a class="project-page-mark" href="/" aria-label="Studio Rose Hallgren, all work">
-          {% set markId = "logo-project" %}{% include "wordmark.njk" %}
+          {{ wordmark("logo-project") }}
         </a>
         {#- No year/location line: the copy underneath says where and when in a
             sentence, and the standalone metadata was repeating it. #}

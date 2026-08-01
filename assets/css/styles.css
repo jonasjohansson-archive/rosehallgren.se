@@ -149,7 +149,6 @@
      laptop's margin. */
   --indent: clamp(2.5rem, 5vw, 7.5rem);
 
-  --transition-fast: all 0.2s ease;
   --z-index-high: 9999;
 }
 

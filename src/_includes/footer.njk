@@ -1,3 +1,4 @@
+{% from "wordmark.njk" import wordmark %}
 {#- The same footer everywhere: contact links from the CMS and the wordmark.
     footerBg is the ground it sits on, passed in so the home page can take the
     last project's colour and a project page its own. #}
@@ -29,7 +30,7 @@
               href="https://rosehallgren.se"
               aria-label="Studio Rose Hallgren, home"
             >
-              {% include "wordmark.njk" %}
+              {{ wordmark("logo-footer") }}
             </a>
           </p>
         </div>
