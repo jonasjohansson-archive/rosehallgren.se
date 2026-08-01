@@ -899,6 +899,15 @@ body {
 /* --- small screens ------------------------------------------------------- */
 
 @media (max-width: 768px) {
+  /* Square corners on a phone. A slide fills the screen there, so a 4px radius
+     cuts the photograph against the page rather than reading as a rounded
+     picture, and the same goes for a project page's stacked images. */
+  .image-slide img,
+  .project-page-media img,
+  .project-page-video iframe {
+    border-radius: 0;
+  }
+
   :root {
     --indent: 1.25rem;
     /* 16px is a desktop measure. On a phone the column is a third as wide and

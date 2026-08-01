@@ -132,26 +132,44 @@ class Portfolio {
     // work on every frame: the class only changes when the zone changes.
     if (!coarse) {
       let zone = "";
+      // Where the pointer last was, kept so the cursor can be re-decided when
+      // the slide changes underneath a pointer that has not moved.
+      let frac = -1;
+      let onCopy = false;
+
+      // The wall check lives here rather than in the pointermove handler
+      // because the answer changes on scroll too: reaching the last slide with
+      // the pointer sitting still in the right-hand zone left an e-resize
+      // cursor promising a slide that no longer exists.
+      const applyZone = () => {
+        const current = this.currentSlide(carousel);
+        const max = this.maxIndex(carousel);
+        let next =
+          frac < 0 ? "" : frac < EDGE ? "prev" : frac > 1 - EDGE || onCopy ? "next" : "";
+        if (next === "prev" && current <= 0) next = "";
+        if (next === "next" && current >= max) next = "";
+        if (next === zone) return;
+        zone = next;
+        carousel.classList.toggle("zone-prev", next === "prev");
+        carousel.classList.toggle("zone-next", next === "next");
+      };
       carousel.addEventListener(
         "pointermove",
         (e) => {
           const rect = carousel.getBoundingClientRect();
-          const frac = (e.clientX - rect.left) / rect.width;
+          frac = (e.clientX - rect.left) / rect.width;
           // Over copy the whole slide advances, so the cursor has to say so
           // right across it rather than only in the outer fifth.
-          const onCopy = !!e.target.closest(".slide-content");
-          const next =
-            frac < EDGE ? "prev" : frac > 1 - EDGE || onCopy ? "next" : "";
-          if (next === zone) return;
-          zone = next;
-          carousel.classList.toggle("zone-prev", next === "prev");
-          carousel.classList.toggle("zone-next", next === "next");
+          onCopy = !!e.target.closest(".slide-content");
+          applyZone();
         },
         { passive: true },
       );
+      carousel.addEventListener("scroll", applyZone, { passive: true });
       carousel.addEventListener("pointerleave", () => {
-        zone = "";
-        carousel.classList.remove("zone-prev", "zone-next");
+        frac = -1;
+        onCopy = false;
+        applyZone();
       });
     }
   }
@@ -253,17 +271,38 @@ class Portfolio {
       const surface = (slide) =>
         slide && slide.querySelector(".slide-content") ? "panel" : "paper";
 
-      const under = slides[Math.min(current, slides.length - 1)];
-      if (under && project) {
+      // Which slide is actually beneath a given point, by geometry rather than
+      // by index. Indexing was wrong on the copy-first projects: those reorder
+      // with CSS `order: -1`, which moves a slide visually and leaves the DOM
+      // alone, so slides[0] was the photograph while the panel was the one on
+      // screen. Jag är Gud therefore ran ink-on-panel at about 1.4:1, and the
+      // title was close to invisible.
+      const slideAt = (clientX) =>
+        slides.find((slide) => {
+          const r = slide.getBoundingClientRect();
+          return clientX >= r.left && clientX < r.right;
+        });
+
+      const title = project && project.querySelector(".project-title");
+      if (project && title) {
+        const box = carousel.getBoundingClientRect();
+        const titleBox = title.getBoundingClientRect();
+        // Fall back to the indexed slide if the title has no box yet, which is
+        // the case while a project is still skipped by content-visibility.
+        const under =
+          slideAt(titleBox.left + titleBox.width / 2) ||
+          slides[Math.min(current, slides.length - 1)];
         project.dataset.titleOn = surface(under);
 
-        // The title sits top-left and the dots top-right. Above 1600px the
-        // carousel shows two slides at once, so the dots are over the NEXT
-        // slide and can need the opposite colour from the title.
-        const twoUp = carousel.clientWidth / this.slideWidth(carousel) > 1.5;
-        project.dataset.dotsOn = surface(
-          twoUp ? slides[Math.min(current + 1, slides.length - 1)] : under,
-        );
+        // The dots sit apart from the title, so they get their own reading.
+        // Above 1600px the carousel shows two slides at once and they can land
+        // on the opposite surface.
+        const dotRow = nav.getBoundingClientRect();
+        const underDots =
+          slideAt(dotRow.left + dotRow.width / 2) ||
+          slideAt(box.left + box.width / 2) ||
+          under;
+        project.dataset.dotsOn = surface(underDots);
       }
 
       dots.forEach((dot, index) => {
