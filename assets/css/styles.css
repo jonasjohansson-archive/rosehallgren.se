@@ -90,6 +90,20 @@
   /* The reading measure the intro and a project description share. */
   --measure: 600px;
 
+  /* A tooth on the coloured grounds, so a flat fill reads as a surface.
+     Tested against every project colour from #282123 to #737670; 3% is
+     invisible, 11% lightens the ground into haze. 5% is the point where it is
+     felt rather than seen.
+
+     A 160px tile that repeats, NOT one viewport-sized feTurbulence: a tile is
+     rasterised once and reused, where a full-bleed filter is re-rasterised on
+     every resize and is expensive to paint over nineteen sections.
+
+     overlay rather than a flat alpha, so it lifts and drops the ground around
+     its own value instead of washing it towards white. */
+  --grain-opacity: 0.05;
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
+
   /* The portrait column beside the intro. Shown only from 1200px, where there
      is room for it without squeezing the copy below its measure. */
   --portrait-width: clamp(240px, 24vw, 400px);
@@ -293,6 +307,39 @@ body {
   margin: var(--heading-gap) 0;
 }
 
+/* The grain, on the coloured grounds only.
+
+   z-index -1 puts it behind everything in the section, so it never lies over a
+   photograph: an image slide paints its own paper background, so the grain
+   shows exactly where the project colour shows and nowhere else.
+
+   pointer-events: none because these sections carry the carousel click zones. */
+.about-section::after,
+.project::after,
+.footer::after,
+.project-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--grain);
+  background-repeat: repeat;
+  background-size: 160px 160px;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: overlay;
+}
+
+/* Each needs a stacking context of its own, or z-index -1 escapes the section
+   and lands behind the page. */
+.about-section,
+.project,
+.footer,
+.project-page {
+  position: relative;
+  isolation: isolate;
+}
+
 /* Rose and Sigge, beside the intro.
 
    Hidden below 1200px rather than stacked: on a phone the portrait ran 520px
@@ -372,6 +419,7 @@ body {
 
 .about-contact a,
 .about-text a {
+  text-underline-offset: 0.18em;
   color: inherit;
   text-decoration: underline;
 }
@@ -386,9 +434,14 @@ body {
   margin: -4px 8px -4px -8px;
 }
 
+/* Hover thickens the rule rather than removing it. Taking the underline away on
+   hover withdraws the affordance at the moment it is being used, and on these
+   coloured grounds the underline is most of what marks a link at all. */
 .about-contact a:hover,
-.about-text a:hover {
-  text-decoration: none;
+.about-text a:hover,
+.slide-content a:hover,
+.footer-contact a:hover {
+  text-decoration-thickness: 2px;
 }
 
 /* --- projects ------------------------------------------------------------ */
@@ -697,10 +750,6 @@ body {
   text-decoration: underline;
 }
 
-.slide-content a:hover {
-  text-decoration: none;
-}
-
 /* <picture> must not become the flex item, or the image stops centring. */
 .image-slide picture {
   display: contents;
@@ -866,10 +915,6 @@ body {
   min-width: 44px;
   padding: 4px 8px;
   margin: -4px 8px -4px -8px;
-}
-
-.footer-contact a:hover {
-  text-decoration: none;
 }
 
 /* --- wide screens: two slides at once ------------------------------------ */

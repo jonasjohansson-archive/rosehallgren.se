@@ -481,13 +481,23 @@ class Portfolio {
     window.addEventListener("resize", () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
-        // Crossing 1200px changes how many slides share the viewport, and so
+        // Crossing 1600px changes how many slides share the viewport, and so
         // how many dots are reachable.
         document.querySelectorAll(".project-carousel").forEach((carousel) => {
           const nav = carousel.parentElement.querySelector(
             ".carousel-navigation",
           );
-          const want = this.maxIndex(carousel) + 1;
+          // How many dot elements SHOULD exist, which is not the same as how
+          // many stops there are: createNavigation builds none at all for a
+          // single-stop carousel and hides the row instead. Comparing against
+          // the stop count meant a two-slide project at the two-up breakpoint
+          // reported 0 !== 1 on every resize, rebuilt its navigation, and
+          // registered another scroll listener each time — with no matching
+          // removeEventListener anywhere. A window drag added one per settle,
+          // without bound, which is the leak the comment on the listener says
+          // was already fixed once.
+          const stops = this.maxIndex(carousel) + 1;
+          const want = stops < 2 ? 0 : stops;
           if (nav && nav.querySelectorAll(".carousel-dot").length !== want) {
             nav.remove();
             this.setupNavigationUpdates(

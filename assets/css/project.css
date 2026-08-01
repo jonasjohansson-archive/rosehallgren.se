@@ -81,10 +81,11 @@
 .project-page-body a {
   color: inherit;
   text-decoration: underline;
+  text-underline-offset: 0.18em;
 }
 
 .project-page-body a:hover {
-  text-decoration: none;
+  text-decoration-thickness: 2px;
 }
 
 .project-page-body .credit,
