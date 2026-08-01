@@ -2,6 +2,7 @@
 title: "Marieberg"
 slug: "marieberg"
 order: 8
+color: "#3a6c8f"
 year: "2022"
 location: "Stockholm"
 links:

@@ -21,7 +21,6 @@ class Portfolio {
 
     this.initCarousels();
     this.setupBackdrops();
-    this.setupColorExtraction();
     this.setupEventListeners();
     this.setupPermalinkHandling();
     this.updateCurrentProject();
@@ -424,77 +423,6 @@ class Portfolio {
       .forEach((img) => this.setBackdrop(img));
   }
 
-  setupColorExtraction() {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) this.extractColorFromImage(entry.target);
-        });
-      },
-      { threshold: 0.1 },
-    );
-    document
-      .querySelectorAll(".image-slide img")
-      .forEach((img) => observer.observe(img));
-  }
-
-  extractColorFromImage(img) {
-    // The observer fires before the first images have decoded; without this
-    // retry the opening project never got its colour at all.
-    if (!img.complete || !img.naturalWidth) {
-      img.addEventListener("load", () => this.extractColorFromImage(img), {
-        once: true,
-      });
-      return;
-    }
-
-    let r, g, b, topR, topG, topB;
-    try {
-      const canvas = document.createElement("canvas");
-      canvas.width = canvas.height = 1;
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
-
-      ctx.drawImage(img, 0, 0, 1, 1);
-      [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
-
-      // Sample only the top 15%, where the project title sits. Averaging the
-      // whole frame put white titles at ~2:1 over bright skies.
-      ctx.drawImage(
-        img,
-        0,
-        0,
-        img.naturalWidth,
-        img.naturalHeight * 0.15,
-        0,
-        0,
-        1,
-        1,
-      );
-      [topR, topG, topB] = ctx.getImageData(0, 0, 1, 1).data;
-    } catch {
-      // Tainted canvas (file:// or a cross-origin move). Keep the defaults.
-      return;
-    }
-
-    const project = img.closest(".project");
-    if (project && img === project.querySelector(".image-slide img")) {
-      // The title and dot colours are NOT set here any more. This sampled the
-      // top 15% of the lead photo back when the slide background was that photo
-      // blurred; the backdrop is now flat paper, so the surface under the title
-      // is known and setupNavigationUpdates picks ink or white outright. Left
-      // in place, this would put a photo-derived tint on #eeece8 — which is the
-      // 1.16:1 failure it was originally written to prevent.
-
-      // Opaque, not rgba(…, 0.8): at 0.8 the white page showed through and
-      // cancelled most of the darkening, leaving white text at 4.2:1 on
-      // C.O.U.A. and 4.52:1 on Folkbastu.
-      const shade = (c) => Math.max(0, c - 50);
-      project.style.setProperty(
-        "--project-text-bg",
-        `rgb(${shade(r)}, ${shade(g)}, ${shade(b)})`,
-      );
-    }
-  }
 }
 
 document.addEventListener("DOMContentLoaded", () => new Portfolio());

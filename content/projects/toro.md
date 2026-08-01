@@ -2,6 +2,7 @@
 title: "Torö"
 slug: "toro"
 order: 4
+color: "#737352"
 lang: "sv"
 year: "2021–2023"
 location: "Torö, Nynäshamn"

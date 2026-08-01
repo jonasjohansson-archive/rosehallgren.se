@@ -2,6 +2,7 @@
 title: "Folkbastu"
 slug: "folkbastu"
 order: 6
+color: "#5b514b"
 lang: "sv"
 year: "2024"
 location: "Dalénum–Kappsta, Lidingö"

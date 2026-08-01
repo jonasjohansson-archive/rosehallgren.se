@@ -61,6 +61,7 @@
       <section
         class="project deck-tiles-{{ p.supportCount | collageTiles }} deck-rows-{{ p.supportCount | collageRows }}"
         id="{{ p.slug }}"
+        {%- if p.color %} style="--project-text-bg: {{ p.color }}"{% endif %}
         aria-labelledby="title-{{ p.slug }}">
         <h2 class="project-title" id="title-{{ p.slug }}"{% if p.lang %} lang="{{ p.lang }}"{% endif %}>{{ p.title }}</h2>
 {%- if p.year or p.location %}

@@ -2,6 +2,7 @@
 title: "Resonance"
 slug: "resonance"
 order: 16
+color: "#312b37"
 year: "2024"
 location: "Allt Ljus på Uppsala, Stora torget"
 links:

@@ -2,6 +2,7 @@
 title: "Fluffy Encounters"
 slug: "fluffy-encounters"
 order: 10
+color: "#53372a"
 year: "2025"
 location: "Copenhagen Architecture Biennial"
 links:

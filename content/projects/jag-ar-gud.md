@@ -2,6 +2,7 @@
 title: "Jag är Gud"
 slug: "jag-ar-gud"
 order: 14
+color: "#343237"
 lang: "sv"
 year: "2024"
 location: "Kilen, Kulturhuset Stadsteatern, Stockholm"

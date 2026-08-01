@@ -2,6 +2,7 @@
 title: "Tufting Ex Machina"
 slug: "tufting-ex-machina"
 order: 13
+color: "#715240"
 year: "2024"
 location: "Aavistus Festival, Helsinki"
 links:

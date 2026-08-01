@@ -2,6 +2,7 @@
 title: "C.O.U.A."
 slug: "coua"
 order: 5
+color: "#6d5740"
 year: "2024"
 location: "Alma Löv Museum of Unexpected Art, Värmland"
 credits:

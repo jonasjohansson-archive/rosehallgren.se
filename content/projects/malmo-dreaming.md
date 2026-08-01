@@ -2,6 +2,7 @@
 title: "Drömmarens Malmö"
 slug: "malmo-dreaming"
 order: 11
+color: "#2b3237"
 lang: "sv"
 year: "2023"
 location: "Malmö in the Making, Malmö"

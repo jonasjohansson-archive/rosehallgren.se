@@ -2,6 +2,7 @@
 title: "Tulip"
 slug: "tulip"
 order: 17
+color: "#372724"
 year: "2021"
 location: "Blomsterfrämjandet, Klong and Straight Design Studio"
 credits:

@@ -2,6 +2,7 @@
 title: "Eways"
 slug: "eways"
 order: 9
+color: "#37352d"
 year: "2021"
 location: "Täby Centrum and Mall of Scandinavia"
 links:

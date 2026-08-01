@@ -76,24 +76,25 @@
   --paper: #eeece8;
   --ink: #141414;
 
-  /* How much paper sits over the blurred backdrop.
-     At 0.72 the wash barely resembled the photograph it came from, so the
-     contained image sat ON a surface rather than IN one. 0.55 lets 45% of the
-     photograph through — nearly double — and is as far as it can go: against a
-     pure black photograph the veiled surface still reaches value 130, which
-     holds --ink at 4.79:1. At 0.52 it is 4.34:1 and fails AA. This is a floor,
-     not a preference. */
-  --backdrop-veil: 0.55;
+  /* Two layers, because contrast is only needed where text is.
+     The flat veil is what the whole slide gets: at 0.40, 60% of the photograph
+     comes through and the contained image sits IN its own colour rather than on
+     a tint of it. Nothing but the photograph sits on that part of the slide, so
+     it needs no contrast floor at all.
+     The band is the part that does: the title and the dots live in the top
+     ~150px, so paper is added back there until the surface holds --ink. Combined
+     they cover 1 - (1 - 0.30)(1 - 0.40) = 0.58, which against a pure black
+     photograph is value 138 and 5.26:1 — the same guarantee as before, now paid
+     for over a sixth of the slide instead of all of it. */
+  --backdrop-veil: 0.4;
+  --backdrop-band: 0.3;
+  --backdrop-band-height: 150px;
 
   /* Where two slides meet, the corners are cut away and the page shows
      through. Cycled over five slides so the seams do not repeat on any one
      project, and set to 0 below 769px, where a slide fills the screen and
      there is no visible seam to shape. */
-  --seam-xs: 0px;
-  --seam-s: 0px;
-  --seam-m: 0px;
-  --seam-l: 0px;
-  --seam-xl: 0px;
+  --seam: 0px;
   --ink-on-paper: var(--ink);
   --ink-on-panel: var(--color-white);
 
@@ -393,38 +394,37 @@ body {
 }
 
 /* The seam shapes.
-   Seven steps, not five, and every step a different combination drawn from
-   five radii rather than two — 7 is prime, so the cycle never lines up with a
-   project's slide count and no two projects cut the same silhouette. Corners
-   are left square as often as they are rounded; that irregularity is what
-   stops it reading as "rounded boxes" and starts it reading like the wordmark,
-   where a bowl swings hard round on one side and stops flat on the other. */
+   One radius, always — what varies is WHICH corners take it. Mixing sizes read
+   as a set of differently rounded boxes; a single radius appearing on different
+   corners reads as one shape being cut in different places, which is closer to
+   how the wordmark works. Seven steps, prime, so the cycle never lines up with
+   a project's slide count. */
 .slide:nth-child(7n + 1) {
-  border-radius: 0 var(--seam-xl) var(--seam-xs) 0;
+  border-radius: 0 var(--seam) 0 0;
 }
 
 .slide:nth-child(7n + 2) {
-  border-radius: var(--seam-m) 0 0 var(--seam-l);
+  border-radius: var(--seam) 0 0 var(--seam);
 }
 
 .slide:nth-child(7n + 3) {
-  border-radius: 0 var(--seam-s) var(--seam-xl) 0;
+  border-radius: 0 0 var(--seam) 0;
 }
 
 .slide:nth-child(7n + 4) {
-  border-radius: var(--seam-l) 0 var(--seam-s) var(--seam-xs);
+  border-radius: var(--seam) 0 var(--seam) 0;
 }
 
 .slide:nth-child(7n + 5) {
-  border-radius: 0 var(--seam-m) 0 var(--seam-xl);
+  border-radius: 0 var(--seam) 0 var(--seam);
 }
 
 .slide:nth-child(7n + 6) {
-  border-radius: var(--seam-xs) 0 var(--seam-l) var(--seam-s);
+  border-radius: 0 0 0 var(--seam);
 }
 
 .slide:nth-child(7n + 7) {
-  border-radius: var(--seam-xl) var(--seam-xs) 0 0;
+  border-radius: var(--seam) var(--seam) 0 0;
 }
 
 .slide {
@@ -492,8 +492,18 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: var(--paper);
-  opacity: var(--backdrop-veil);
+  /* Fallback first. rgb(from …) is recent syntax; a browser that does not know
+     it drops the whole declaration, and without a veil the title would be over
+     bare photograph. The flat 0.58 is the combined coverage the layered version
+     reaches behind the header — safe everywhere, just less merged. */
+  background: rgba(238, 236, 232, 0.58);
+  background:
+    linear-gradient(
+      to bottom,
+      rgb(from var(--paper) r g b / var(--backdrop-band)) 0,
+      rgb(from var(--paper) r g b / 0) var(--backdrop-band-height)
+    ),
+    rgb(from var(--paper) r g b / var(--backdrop-veil));
   z-index: 2;
 }
 
@@ -734,11 +744,7 @@ body {
    sixth of the display. */
 @media (min-width: 769px) {
   :root {
-    --seam-xs: 12px;
-    --seam-s: 34px;
-    --seam-m: 76px;
-    --seam-l: 128px;
-    --seam-xl: 190px;
+    --seam: 120px;
   }
 }
 

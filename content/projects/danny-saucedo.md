@@ -2,6 +2,7 @@
 title: "Danny Saucedo"
 slug: "danny-saucedo"
 order: 15
+color: "#37160b"
 year: "2024"
 location: "Melodifestivalen, Stockholm"
 links:

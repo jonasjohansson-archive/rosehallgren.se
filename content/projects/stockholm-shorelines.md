@@ -2,6 +2,7 @@
 title: "Stockholm Shorelines"
 slug: "stockholm-shorelines"
 order: 7
+color: "#282123"
 year: "2022"
 location: "Stockholm"
 links:

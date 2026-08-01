@@ -2,6 +2,7 @@
 title: "c/o"
 slug: "co-house"
 order: 3
+color: "#5c4b3d"
 year: "2023"
 location: "Sweden"
 links:

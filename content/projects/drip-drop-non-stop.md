@@ -2,6 +2,7 @@
 title: "Drip Drop Non Stop"
 slug: "drip-drop-non-stop"
 order: 12
+color: "#2e2125"
 year: "2023"
 location: "PLX Tjärö, Blekinge"
 credits:

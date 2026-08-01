@@ -2,6 +2,7 @@
 title: "Photography"
 slug: "photography"
 order: 19
+color: "#62510d"
 year: ""
 location: ""
 credits:

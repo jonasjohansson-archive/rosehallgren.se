@@ -2,6 +2,7 @@
 title: "3, 2, 1, Barneval!"
 slug: "barneval"
 order: 18
+color: "#4a3d2f"
 year: "2018–2020"
 location: "Stockholm"
 credits:
