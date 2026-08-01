@@ -530,11 +530,15 @@ body {
 
    --seam is 0 below 1600px, so this is a two-up device only: at narrower widths
    a slide fills the screen and its corners are the screen's corners. */
-.about-section + .project .slide {
+.about-section + .project .slide:first-child {
   border-radius: 0 var(--seam) 0 0;
 }
 
-.project:last-of-type .slide {
+/* First slide only, not every slide in the project. The cut belongs to the seam
+   between the work and the page around it, and that seam is only at the start;
+   applied to all of them the curve came back on each slide of Photography as
+   you scrolled, which read as a rounded picture rather than as an edge. */
+.project:last-of-type .slide:first-child {
   border-radius: 0 0 var(--seam) 0;
 }
 
