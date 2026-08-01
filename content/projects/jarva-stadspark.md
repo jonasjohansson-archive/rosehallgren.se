@@ -1,7 +1,7 @@
 ---
 title: "Järva Stadspark"
 slug: "jarva-stadspark"
-order: 2
+order: 4
 color: "#737670"
 lang: "sv"
 year: "2022"

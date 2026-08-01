@@ -16,13 +16,13 @@ credits:
 media:
   - file: "/assets/images/projects/resonance-01.jpg"
     alt: "Uppsala Town Hall at night, its whole facade washed in pink and blue projection, people standing on lit pads in the square below"
-  - file: "/assets/images/projects/resonance-03.png"
+  - file: "/assets/images/projects/resonance-03.jpg"
     alt: "The four touch pads seen from above, glowing green, blue, amber and teal on the wet cobbles with people gathered around them"
-  - file: "/assets/images/projects/resonance-04.png"
+  - file: "/assets/images/projects/resonance-04.jpg"
     alt: "Close-up of a pair of boots standing on one pad, its edge lit white and amber"
   - file: "/assets/images/projects/resonance-02.jpg"
     alt: "The facade from across the square in warmer colours, the row of four pads leading towards it"
-  - file: "/assets/images/projects/resonance-05.png"
+  - file: "/assets/images/projects/resonance-05.jpg"
     alt: "A visitor in a blue jacket watching the projection, two lit pads in front of her"
 ---
 

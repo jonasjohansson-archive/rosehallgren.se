@@ -1,7 +1,7 @@
 ---
 title: "c/o"
 slug: "co-house"
-order: 3
+order: 2
 color: "#5c4b3d"
 year: "2023"
 location: "Sweden"

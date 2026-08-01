@@ -8,13 +8,7 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://rosehallgren.se/rock-stage/</loc>
-    <lastmod>2026-08-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://rosehallgren.se/jarva-stadspark/</loc>
+    <loc>https://rosehallgren.se/toro/</loc>
     <lastmod>2026-08-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -26,7 +20,13 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://rosehallgren.se/toro/</loc>
+    <loc>https://rosehallgren.se/rock-stage/</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rosehallgren.se/jarva-stadspark/</loc>
     <lastmod>2026-08-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
