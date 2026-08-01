@@ -81,6 +81,13 @@
      roughly L=0.41, which keeps --ink above 8:1 on every slide. Lower it and
      the guarantee goes with it. */
   --backdrop-veil: 0.72;
+
+  /* Where two slides meet, the corners are cut away and the page shows
+     through. Cycled over five slides so the seams do not repeat on any one
+     project, and set to 0 below 769px, where a slide fills the screen and
+     there is no visible seam to shape. */
+  --seam: 0px;
+  --seam-large: 0px;
   --ink-on-paper: var(--ink);
   --ink-on-panel: var(--color-white);
 
@@ -359,6 +366,28 @@ body {
 
 .project-carousel.zone-next {
   cursor: e-resize;
+}
+
+/* The seam shapes. Radii sit on the corners that face a neighbour, so the
+   rounding reads as a cut in the join rather than as a rounded box. */
+.slide:nth-child(5n + 1) {
+  border-radius: 0 var(--seam-large) 0 0;
+}
+
+.slide:nth-child(5n + 2) {
+  border-radius: 0 0 var(--seam) var(--seam-large);
+}
+
+.slide:nth-child(5n + 3) {
+  border-radius: var(--seam-large) 0 0 var(--seam);
+}
+
+.slide:nth-child(5n + 4) {
+  border-radius: 0 var(--seam) var(--seam-large) 0;
+}
+
+.slide:nth-child(5n + 5) {
+  border-radius: var(--seam) 0 0 var(--seam-large);
 }
 
 .slide {
@@ -666,6 +695,13 @@ body {
    the old 1200px threshold every laptop (1440, 1512, 1728) fell on the wrong
    side and showed the photograph at 40vw: 576px on a 1440 screen, about a
    sixth of the display. */
+@media (min-width: 769px) {
+  :root {
+    --seam: 28px;
+    --seam-large: 72px;
+  }
+}
+
 @media (min-width: 1600px) {
   .slide {
     min-width: 50vw;
@@ -852,6 +888,9 @@ body {
   .slide {
     content-visibility: visible !important;
     contain-intrinsic-size: none !important;
+    /* The seam shapes are a screen device: on the sheet there are no seams,
+       only page edges, and a rounded corner there reads as a printing fault. */
+    border-radius: 0 !important;
   }
 
   .carousel-navigation,
