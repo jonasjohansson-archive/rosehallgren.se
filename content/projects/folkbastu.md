@@ -13,13 +13,13 @@ press:
   - label: "Mitt i Lidingö"
     url: "https://www.mitti.se/nyheter/26-forslag-pa-bastubryggor-pa-lidingo-6.3.255526.556ec1a0a3"
 media:
-  - file: "/assets/images/projects/rose-hallgren-folkbastu-01.jpg"
+  - file: "/assets/images/projects/folkbastu-01.jpg"
     alt: "Rose Hallgren Folkbastu architectural project - traditional craft techniques in contemporary practice"
-  - file: "/assets/images/projects/rose-hallgren-folkbastu-02.jpg"
+  - file: "/assets/images/projects/folkbastu-02.jpg"
     alt: "Plan view"
-  - file: "/assets/images/projects/rose-hallgren-folkbastu-03.jpg"
+  - file: "/assets/images/projects/folkbastu-03.jpg"
     alt: "Construction detail"
-  - file: "/assets/images/projects/rose-hallgren-folkbastu-04.jpg"
+  - file: "/assets/images/projects/folkbastu-04.jpg"
     alt: "Interior view"
 ---
 

@@ -8,7 +8,7 @@ location: "Blomsterfrämjandet, Klong and Straight Design Studio"
 credits:
   - "Winning entry in the Tulip competition, run by Blomsterfrämjandet with Klong and Straight Design Studio"
 media:
-  - file: "/assets/images/projects/rose-hallgren-tulip-01.jpg"
+  - file: "/assets/images/projects/tulip-01.jpg"
     alt: "Tulip"
 ---
 

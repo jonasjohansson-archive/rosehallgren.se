@@ -12,15 +12,15 @@ press:
   - label: "Alma Löv Museum"
     url: "https://www.almalov.se/a-place-to-call-home/"
 media:
-  - file: "/assets/images/projects/rose-hallgren-coua-01.jpeg"
+  - file: "/assets/images/projects/coua-01.jpg"
     alt: "COUA"
-  - file: "/assets/images/projects/rose-hallgren-coua-02.jpeg"
+  - file: "/assets/images/projects/coua-02.jpg"
     alt: "COUA detail"
-  - file: "/assets/images/projects/rose-hallgren-coua-03.jpeg"
+  - file: "/assets/images/projects/coua-03.jpg"
     alt: "COUA construction"
-  - file: "/assets/images/projects/rose-hallgren-coua-04.jpeg"
+  - file: "/assets/images/projects/coua-04.jpg"
     alt: "COUA process"
-  - file: "/assets/images/projects/rose-hallgren-coua-05.jpeg"
+  - file: "/assets/images/projects/coua-05.jpg"
     alt: "COUA final"
 ---
 

@@ -32,9 +32,9 @@ media:
     alt: "Close-up of the hand-painted red faux marble"
   - file: "/assets/images/berensson/rock-stage-06.jpg"
     alt: "The painted soffit seen from below"
-  - file: "/assets/images/berensson/rock-stage-08.jpg"
+  - file: "/assets/images/berensson/rock-stage-07.jpg"
     alt: "The build team on site during construction"
-  - file: "/assets/images/berensson/rock-stage-09.jpg"
+  - file: "/assets/images/berensson/rock-stage-08.jpg"
     alt: "Students painting the roof sheets as faux marble"
 ---
 

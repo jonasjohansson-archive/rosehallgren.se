@@ -13,9 +13,9 @@ credits:
   - "Rose Hallgren, scenography"
   - "Jonas Johansson, Technical director"
 media:
-  - file: "/assets/images/projects/danny-saucedo-01.png"
+  - file: "/assets/images/projects/danny-saucedo-01.jpg"
     alt: "The darkened stage, a lone figure in silhouette at the top of a staircase inside a tall arch of deep red light, reflected in the floor"
-  - file: "/assets/images/projects/danny-saucedo-02.png"
+  - file: "/assets/images/projects/danny-saucedo-02.jpg"
     alt: "Danny Saucedo singing in front of the gate, its arch overgrown with projected ivy and purple flowers in warm gold light"
   - file: "/assets/images/projects/danny-saucedo-03.jpg"
     alt: "Danny Saucedo mid-performance, arms wide, against concentric pink and violet neon arches on the LED walls"

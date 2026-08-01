@@ -30,13 +30,13 @@ media:
     alt: "Contemporary Design"
   - file: "/assets/images/photography/photography-11.jpg"
     alt: "Spatial Experiences"
-  - file: "/assets/images/codesign/noa-01.jpg"
+  - file: "/assets/images/codesign/photography-12.jpg"
     alt: "Shared workspace at the NoA offices, photographed for Codesign"
-  - file: "/assets/images/codesign/noa-02.jpg"
+  - file: "/assets/images/codesign/photography-13.jpg"
     alt: "Meeting space at NoA"
-  - file: "/assets/images/codesign/noa-03.jpg"
+  - file: "/assets/images/codesign/photography-14.jpg"
     alt: "Interior of the shared agency offices"
-  - file: "/assets/images/codesign/noa-04.jpg"
+  - file: "/assets/images/codesign/photography-15.jpg"
     alt: "Material detail at NoA"
 ---
 
