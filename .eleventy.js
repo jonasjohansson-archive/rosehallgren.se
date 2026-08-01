@@ -171,6 +171,53 @@ module.exports = function (eleventyConfig) {
      "2022" or a span like "2021–2023"; both need to reach a crawler as a
      single four-digit year. Returns "" if there is no year to find, so the
      template can leave the tag out rather than emit a broken date. */
+  /**
+   * The ink a link to a project is set in.
+   *
+   * Not the project colour, and not a mix of it with paper. These are grounds,
+   * chosen to carry white type: used as ink they are illegible, and diluting
+   * them towards paper only desaturates an already earthy palette into mud.
+   * Keeping the hue, tripling the saturation and lifting the lightness to 78%
+   * gives a colour that reads as colour — and, measured against the intro
+   * ground, it is also better contrast than the dilution was: 2.92:1 at worst
+   * against 1.24:1.
+   *
+   * Still short of the 4.5:1 AA asks for body text. That is a deliberate choice
+   * about six links in one paragraph, not an oversight; everything else on the
+   * site is set in paper and clears it.
+   */
+  eleventyConfig.addFilter("linkInk", (hex) => {
+    const m = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(String(hex || ""));
+    if (!m) return "";
+    const [r, g, b] = m.slice(1).map((v) => parseInt(v, 16) / 255);
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const l = (max + min) / 2;
+    let h = 0;
+    let s = 0;
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+      else if (max === g) h = ((b - r) / d + 2) / 6;
+      else h = ((r - g) / d + 4) / 6;
+    }
+    const S = Math.min(1, s * 3);
+    const L = 0.78;
+    const hue = (p, q, t) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+    const q = L < 0.5 ? L * (1 + S) : L + S - L * S;
+    const pp = 2 * L - q;
+    const out = [hue(pp, q, h + 1 / 3), hue(pp, q, h), hue(pp, q, h - 1 / 3)];
+    return "#" + out.map((v) => Math.round(v * 255).toString(16).padStart(2, "0")).join("");
+  });
+
   eleventyConfig.addFilter("first4", (value) => {
     const match = String(value || "").match(/\d{4}/);
     return match ? match[0] : "";

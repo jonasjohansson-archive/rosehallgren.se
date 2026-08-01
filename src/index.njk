@@ -30,7 +30,7 @@ permalink: index.html
 
     <link
       rel="stylesheet"
-      href="assets/css/styles.css?v=20260802as"
+      href="assets/css/styles.css?v=20260802at"
       media="all"
     />
     {#- Any link to a project carries that project's colour, wherever it is on
@@ -39,8 +39,8 @@ permalink: index.html
     <style>
 {%- for p in projects %}{% if p.color %}
       a[href="/{{ p.slug }}/"] {
-        color: color-mix(in oklab, {{ p.color }} 60%, var(--paper));
-        text-decoration-color: color-mix(in oklab, {{ p.color }} 60%, var(--paper));
+        color: {{ p.color | linkInk }};
+        text-decoration-color: {{ p.color | linkInk }};
       }
 {%- endif %}{% endfor %}
     </style>
