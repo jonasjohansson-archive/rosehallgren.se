@@ -30,19 +30,18 @@ permalink: index.html
 
     <link
       rel="stylesheet"
-      href="assets/css/styles.css?v=20260802aq"
+      href="assets/css/styles.css?v=20260802as"
       media="all"
     />
-    {#- Each self-link in the intro carries its own project's colour on the
-        underline. Generated from the project data rather than written into the
-        stylesheet, so a colour changed in the CMS changes the rule with it.
-
-        The underline and not the text: these colours are grounds, picked to
-        carry white type, so as link text on the intro's own dark ground they
-        would sit near-invisible and Torö's would match the background exactly. #}
+    {#- Any link to a project carries that project's colour, wherever it is on
+        the page. Generated from the project data rather than written into the
+        stylesheet, so a colour changed in the CMS changes every link to it. #}
     <style>
 {%- for p in projects %}{% if p.color %}
-      .about-text a[href="/{{ p.slug }}/"] { --project-link: {{ p.color }}; }
+      a[href="/{{ p.slug }}/"] {
+        color: color-mix(in oklab, {{ p.color }} 60%, var(--paper));
+        text-decoration-color: color-mix(in oklab, {{ p.color }} 60%, var(--paper));
+      }
 {%- endif %}{% endfor %}
     </style>
 

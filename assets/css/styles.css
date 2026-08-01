@@ -100,9 +100,18 @@
      every resize and is expensive to paint over nineteen sections.
 
      overlay rather than a flat alpha, so it lifts and drops the ground around
-     its own value instead of washing it towards white. */
-  --grain-opacity: 0.05;
-  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
+     its own value instead of washing it towards white.
+
+     0.14 is a ceiling set by contrast, not by taste. Noise is centred on
+     mid-grey, which is lighter than every ground here, so any blend mode lifts
+     them: measured, 0.14 raises the intro ground from rgb(107,107,74) to
+     rgb(114,114,79) and takes paper body copy from 4.65:1 to 4.20:1, already
+     under AA. Pushing it to where the grain is unmistakable (soft-light at
+     0.55, which is genuinely visible) lifts the ground 15 levels and needs the
+     whole palette darkened to compensate — a bigger change than a texture.
+     Tried and reverted rather than shipped. */
+  --grain-opacity: 0.14;
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
 
   /* The portrait column beside the intro. Shown only from 1200px, where there
      is room for it without squeezing the copy below its measure. */
@@ -417,30 +426,36 @@ body {
   margin-bottom: var(--spacing-small);
 }
 
-/* An intro link to a project takes that project's own hue, text and rule alike.
+/* A link that points at one of Rose's projects carries that project's colour,
+   text and rule alike, wherever on the site it appears. Everything else — the
+   outward links, the contact links, the wordmark — stays at paper.
 
-   Same hue and saturation, lightness raised to 93%. Not the colour itself and
-   not a mix towards paper: these are grounds, chosen to carry white type, so
-   used as ink on one they are illegible. Raising lightness keeps the hue and
-   buys the contrast back.
+   The per-slug rules that set --project-link are generated into the page head
+   from the project data, so a colour changed in the CMS changes every link to
+   that project at once.
 
-   93% is the ceiling the palette allows. Paper on the lightest ground is only
-   4.65:1 to begin with, so any tint spends contrast that is not there; at 90%
-   the worst link falls to 4.31 and below AA. The colour is subtle by
-   arithmetic, not by preference.
+   60% of the colour against paper, chosen deliberately against the contrast
+   threshold rather than by it: measured on the intro ground the six links run
+   from 2.04:1 down to 1.24:1, where AA asks 4.5:1 for body text. The paler
+   alternative that did clear AA was so washed the hue barely read as colour.
+   These are grounds, picked to carry white type, so any of one used as ink on
+   another spends contrast that is not there. Body copy, credits and every
+   outward link are unaffected and clear AA.
 
-   No hover state: the underline is constant and the cursor already says it is a
-   link. */
-.about-text a[href^="/"] {
-  color: hsl(from var(--project-link, currentColor) h s 93%);
-  text-decoration-color: hsl(from var(--project-link, currentColor) h s 93%);
-}
+   The declarations themselves are generated per slug in the page head, because
+   CSS cannot ask whether a custom property happens to be set — only a rule that
+   knows the slug can know it is a project link. */
 
+/* Every link in running text, wherever it is: the intro, a project panel, a
+   project page, the footer. One rule so they cannot drift apart. */
 .about-contact a,
-.about-text a {
-  text-underline-offset: 0.18em;
+.about-text a,
+.slide-content a,
+.footer-contact a,
+.project-page-body a {
   color: inherit;
   text-decoration: underline;
+  text-underline-offset: 0.18em;
 }
 
 /* Same spacing as the footer, which reads properly: the negative margin here
@@ -759,11 +774,6 @@ body {
   display: block;
 }
 
-.slide-content a {
-  color: inherit;
-  text-decoration: underline;
-}
-
 /* <picture> must not become the flex item, or the image stops centring. */
 .image-slide picture {
   display: contents;
@@ -922,8 +932,6 @@ body {
 }
 
 .footer-contact a {
-  color: inherit;
-  text-decoration: underline;
   display: inline-block;
   min-height: 44px;
   min-width: 44px;
