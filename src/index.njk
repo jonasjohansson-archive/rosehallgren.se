@@ -30,7 +30,7 @@ permalink: index.html
 
     <link
       rel="stylesheet"
-      href="assets/css/styles.css?v=20260802af"
+      href="assets/css/styles.css?v=20260802ah"
       media="all"
     />
     <link rel="icon" type="image/svg+xml" href="assets/favicon/favicon.svg" />
@@ -49,6 +49,7 @@ permalink: index.html
         content/settings.json, so Rose can edit it in Pages CMS. What stays
         hardcoded is structural: the canonical URL, the locale, the robots
         directives and the geo tags. #}
+    {%- set portrait = "/assets/images/projects/rose-hallgren-portrait.jpg" %}
     {%- set shareTitle = settings.site.social_title or settings.site.title %}
     {%- set shareImage = settings.site.social_image %}
     {%- set shareSize = shareImage | imageSize %}
@@ -138,6 +139,34 @@ permalink: index.html
       <section
         class="about-section"
         {%- if projects[0].color %} style="--intro-bg: {{ projects[0].color }}"{% endif %}>
+                  {#- Rose and Sigge. First in the DOM and moved to the right with
+              `order`, because in the deck it is a right float and a float only
+              affects what follows it; as the last child it stacked under the
+              copy and took the cover from 36 pages to 37. #}
+          <figure class="about-portrait">
+            <picture>
+              <source
+                type="image/avif"
+                srcset="{{ portrait | srcset('avif') }}"
+                sizes="var(--portrait-width)" />
+              <img
+                class="screen-only"
+                src="{{ portrait | largest('webp') }}"
+                srcset="{{ portrait | srcset('webp') }}"
+                sizes="30vw"
+                alt="Rose Hallgren outdoors at golden hour, eyes closed, with her dog Sigge against a cloudy sky"
+                width="{{ portrait | intrinsicWidth }}"
+                height="{{ portrait | intrinsicHeight }}"
+                decoding="async"
+                loading="lazy" />
+            </picture>
+            <img
+              class="print-only"
+              src="{{ portrait | printSrc }}"
+              alt=""
+              aria-hidden="true"
+              loading="lazy" />
+          </figure>
         <div class="about-content">
           <div class="about-text">
             <p>

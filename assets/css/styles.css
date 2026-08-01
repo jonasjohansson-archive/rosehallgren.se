@@ -90,6 +90,10 @@
   /* The reading measure the intro and a project description share. */
   --measure: 600px;
 
+  /* The portrait column beside the intro. Shown only from 1200px, where there
+     is room for it without squeezing the copy below its measure. */
+  --portrait-width: clamp(240px, 24vw, 400px);
+
   /* The air above and below a page heading. The project pages set it; the home
      page was running at a third of it, which is why the two opened at visibly
      different rhythms. */
@@ -288,6 +292,46 @@ body {
   line-height: var(--heading-line-height);
   letter-spacing: var(--heading-tracking);
   margin: var(--heading-gap) 0;
+}
+
+/* Rose and Sigge, beside the intro.
+
+   Hidden below 1200px rather than stacked: on a phone the portrait ran 520px
+   tall and buried the contact links under a scroll. It stays in the DOM for the
+   deck, where print floats it onto the cover.
+
+   Tilted, and deliberately not by a round number. The wordmark has a hand-drawn
+   looseness to it and a portrait squared to the grid beside it looked stuck on.
+   The rotation is small enough to read as a photograph laid down rather than as
+   a broken layout. */
+.about-portrait {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .about-portrait {
+    display: block;
+    order: 2;
+    flex: 0 0 auto;
+    width: var(--portrait-width);
+    margin: 0;
+    /* No line box under the image; the figure is exactly the picture. */
+    line-height: 0;
+    transform: rotate(2.4deg);
+    /* Nudged down so the tilt does not lift its top edge above the wordmark. */
+    margin-top: var(--heading-gap);
+  }
+}
+
+.about-portrait img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+}
+
+.about-portrait img.print-only {
+  display: none;
 }
 
 /* The wordmark's own paragraph. It is a <p>, so it was picking up the paragraph
