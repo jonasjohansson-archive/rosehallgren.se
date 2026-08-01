@@ -542,6 +542,14 @@ body {
   border-radius: 0 0 var(--seam) 0;
 }
 
+/* And once more on the third, cut the other way. At the two-up breakpoint the
+   first slide's curve has scrolled off by the time you are here, so this brings
+   the shape back at the far corner rather than letting it happen once and never
+   again. */
+.project:last-of-type .slide:nth-child(3) {
+  border-radius: 0 0 0 var(--seam);
+}
+
 .slide {
   min-width: 100vw;
   height: 100vh;
