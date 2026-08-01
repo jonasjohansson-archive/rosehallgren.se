@@ -801,6 +801,13 @@ body {
     margin: 14mm 16mm;
   }
 
+  /* ONE gutter for the whole deck. The collage used 4mm between tiles while the
+     hero page used 8mm between the text column and the photograph, which read
+     as two different grids in the same document. */
+  :root {
+    --deck-gap: 4mm;
+  }
+
   html,
   body {
     overflow: visible;
@@ -1015,7 +1022,7 @@ body {
     float: left;
     clear: left;
     width: 96.889mm;
-    margin: 0 0 4mm 0;
+    margin: 0 0 var(--deck-gap) 0;
     color: #000 !important;
   }
 
@@ -1083,7 +1090,8 @@ body {
      One fix, both symptoms. */
   .deck-hero {
     float: right;
-    width: calc(100% - 104.889mm);
+    /* text column + one gutter, so this lines up with the collage below it */
+    width: calc(100% - 96.889mm - var(--deck-gap));
     height: 142.5mm;
   }
 
@@ -1099,7 +1107,7 @@ body {
      tile carries a 4mm right margin, so N per row needs N*4mm of slack. */
   .deck-more {
     float: left;
-    margin: 0 4mm 4mm 0;
+    margin: 0 var(--deck-gap) var(--deck-gap) 0;
   }
 
   /* Width comes from the column count, height from the ROW count, so a
@@ -1108,19 +1116,19 @@ body {
      last tile in each row loses its right margin, so the collage right edge
      lands on the margin instead of 4mm short of it. */
   .deck-tiles-2 .deck-more {
-    width: calc((100% - 4mm) / 2);
+    width: calc((100% - var(--deck-gap)) / 2);
   }
 
   .deck-tiles-3 .deck-more {
-    width: calc((100% - 8mm) / 3);
+    width: calc((100% - 2 * var(--deck-gap)) / 3);
   }
 
   .deck-tiles-4 .deck-more {
-    width: calc((100% - 12mm) / 4);
+    width: calc((100% - 3 * var(--deck-gap)) / 4);
   }
 
   .deck-tiles-5 .deck-more {
-    width: calc((100% - 16mm) / 5);
+    width: calc((100% - 4 * var(--deck-gap)) / 5);
   }
 
   .deck-tiles-2 .deck-more:nth-of-type(2n + 2),
@@ -1156,13 +1164,17 @@ body {
   /* Plans, sections and maps are white-ground line work. object-fit: cover
      slices them through their own drawing, and against a white sheet they read
      as holes rather than images. Contain them and give them a ground. */
+  /* The ground was #f4f2ef, all but invisible against the white sheet, and the
+     drawing sat 3mm inside it — so a drawing tile read as a hole with roughly
+     7mm around it while its neighbours had 4mm. Paper gives the tile the same
+     visible extent as a photograph, and without the padding the gutter is the
+     only gap. object-fit stays contain: cropping a plan slices the linework. */
   .deck-drawing {
-    background: #f4f2ef;
+    background: var(--paper);
   }
 
   .deck-drawing img {
     object-fit: contain;
-    padding: 3mm;
   }
 
   .deck-break {
@@ -1179,9 +1191,9 @@ body {
 
   .project:not(:has(.slide-content)) .deck-hero {
     float: left;
-    width: calc((100% - 16mm) / 5);
+    width: calc((100% - 4 * var(--deck-gap)) / 5);
     height: 50.166mm;
-    margin: 0 4mm 4mm 0;
+    margin: 0 var(--deck-gap) var(--deck-gap) 0;
   }
 
   .image-slide {

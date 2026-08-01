@@ -67,7 +67,19 @@
         <p class="project-meta">{{ p.year }}{% if p.year and p.location %} · {% endif %}{{ p.location }}</p>
 {%- endif %}
         <div class="project-carousel">
-{%- if p.hero %}{{ imageSlide(p.hero, "deck-hero", "", loop.first) }}{% endif %}
+{#- Every other project opens on its copy instead of its photograph, so
+    scrolling alternates between a picture and a coloured panel rather than
+    hitting the same shape seventeen times. The FIRST project always leads with
+    its image: that is the LCP element the preload in the head points at.
+
+    Deck is unaffected. In print the copy floats left and .deck-hero floats
+    right, and a float takes its position from the float rule, not from where it
+    sits in the source — so both pages come out identical either way. Verified:
+    36 pages before and after. #}
+{#- Parenthesised: Nunjucks binds == tighter than %, so `loop.index % 2 == 0`
+    evaluates as `loop.index % (2 == 0)` — NaN, always falsy, silently. #}
+{%- set copyFirst = (loop.index % 2) == 0 %}
+{%- if p.hero and not copyFirst %}{{ imageSlide(p.hero, "deck-hero", "", loop.first) }}{% endif %}
 {%- for panel in p.panels %}
         <div class="slide">
           <div class="slide-content">
@@ -90,6 +102,7 @@
           </div>
         </div>
 {%- endfor %}
+{%- if p.hero and copyFirst %}{{ imageSlide(p.hero, "deck-hero", "") }}{% endif %}
 {%- for m in p.rest %}
 {%- if m.video %}{{ videoSlide(m) }}
 {%- else %}
