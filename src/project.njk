@@ -41,8 +41,8 @@ eleventyExcludeFromCollections: true
       href="/assets/fonts/Instrument.woff2"
       crossorigin />
 
-    <link rel="stylesheet" href="/assets/css/styles.css?v=20260802w" media="all" />
-    <link rel="stylesheet" href="/assets/css/project.css?v=20260802w" media="all" />
+    <link rel="stylesheet" href="/assets/css/styles.css?v=20260802x" media="all" />
+    <link rel="stylesheet" href="/assets/css/project.css?v=20260802x" media="all" />
     <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg" />
     <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon/favicon-96x96.png" />
     <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png" />
@@ -65,7 +65,9 @@ eleventyExcludeFromCollections: true
   <body class="project-page" style="--project-text-bg: {{ p.color }}">
     <main>
       <header class="project-page-header">
-        <a class="project-page-back" href="/#{{ p.slug }}">All work</a>
+        <a class="project-page-mark" href="/" aria-label="Studio Rose Hallgren, all work">
+          {% set markId = "logo-project" %}{% include "wordmark.njk" %}
+        </a>
         <h1{% if p.lang %} lang="{{ p.lang }}"{% endif %}>{{ p.title }}</h1>
         {%- if p.year or p.location %}
         <p class="project-page-meta">
@@ -128,9 +130,17 @@ eleventyExcludeFromCollections: true
 {%- endfor %}
       </div>
 
+      {#- The next project by position, wrapping round at the end, so a page
+          someone landed on from a link leads somewhere rather than stopping. #}
+      {%- set idx = projects.indexOf(p) %}
+      {%- set next = projects[(idx + 1) % (projects | length)] %}
       <nav class="project-page-nav">
-        <a href="/#{{ p.slug }}">All work</a>
+        <a class="project-page-next" href="/{{ next.slug }}/">
+          <span class="project-page-next-label">Next</span>
+          <span class="project-page-next-title"{% if next.lang %} lang="{{ next.lang }}"{% endif %}>{{ next.title }}</span>
+        </a>
       </nav>
     </main>
+    {% include "footer.njk" %}
   </body>
 </html>

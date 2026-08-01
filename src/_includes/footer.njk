@@ -1,0 +1,40 @@
+{#- The same footer everywhere: contact links from the CMS, the wordmark,
+    and the arrow credit. footerBg is the ground it sits on, passed in so the
+    home page can take the last project's colour and a project page its own. #}
+    <footer
+      class="footer"
+      {%- if footerBg %} style="--footer-bg: {{ footerBg }}"{% endif %}>
+      <div class="footer-content">
+        <div class="footer-contact">
+          {#- Same list as the intro, so an address changed in the CMS changes
+              everywhere. This block used to hardcode the email, both Instagram
+              accounts and the CV, which meant editing a contact link updated the
+              top of the page and quietly left the footer showing the old one. #}
+          <p>
+{%- for c in settings.contact %}
+            <a
+              href="{{ c.url }}"{% if c.url.startsWith("http") %}
+              target="_blank"
+              rel="noopener noreferrer"{% endif %}{% if c.label == "CV" %}
+              aria-label="Download CV"{% endif %}
+              ><span class="on-screen">{{ c.label }}</span
+              ><span class="in-print">{{ c.print or c.label }}</span></a
+            >
+{%- endfor %}
+          </p>
+          <p class="in-print studio-address">{{ settings.site.studio_address }}</p>
+          <p class="colophon">
+            Arrows by David Alexander Slaager from the Noun Project
+          </p>
+          <br />
+          <p>
+            <a
+              href="https://rosehallgren.se"
+              aria-label="Studio Rose Hallgren, home"
+            >
+              {% include "wordmark.njk" %}
+            </a>
+          </p>
+        </div>
+      </div>
+    </footer>

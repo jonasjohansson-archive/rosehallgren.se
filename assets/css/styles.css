@@ -223,8 +223,6 @@ body {
   fill: var(--paper);
 }
 
-
-
 .about-section {
   min-height: 50vh;
   display: flex;

@@ -187,6 +187,12 @@ module.exports = function (eleventyConfig) {
    * it arrived late and had to be faded in to hide the fact. Its own file is
    * known at build time, is small enough to land immediately, and is blurred
    * 40px and scaled 1.4x anyway, so 40px is all the detail that could survive.
+   *
+   * Root-relative, and that leading slash is load-bearing. The value is set as
+   * a custom property in the markup but CONSUMED by a url() inside
+   * assets/css/styles.css, and a relative url() in a custom property resolves
+   * against the stylesheet rather than the document — so "assets/images/wash/x"
+   * was being fetched from /assets/css/assets/images/wash/x, and 404ing.
    */
   /**
    * Root-relative asset paths.
@@ -200,7 +206,7 @@ module.exports = function (eleventyConfig) {
     String(value || "").replace(/(^|, )assets\//g, "$1/assets/"),
   );
 
-  eleventyConfig.addFilter("washSrc", (file) => `${WASH_DIR}/${stem(file)}.jpg`);
+  eleventyConfig.addFilter("washSrc", (file) => `/${WASH_DIR}/${stem(file)}.jpg`);
   eleventyConfig.addFilter("intrinsicWidth", (file) => intrinsic(stem(file))?.width || "");
   eleventyConfig.addFilter("intrinsicHeight", (file) => intrinsic(stem(file))?.height || "");
 

@@ -349,6 +349,81 @@ class Portfolio {
     if (location.hash) go();
   }
 
+  /**
+   * Get the print JPEGs onto the wire before someone prints.
+   *
+   * They are display: none with loading="lazy", which is what keeps 26MB off
+   * the page — no layout box, so they never intersect and never load. The cost
+   * is that Cmd+P is the first moment they are asked for, and Chrome will
+   * happily rasterise the preview before 125 of them have arrived, which is why
+   * images come out blank.
+   *
+   * Setting loading="eager" on an already-parsed lazy image starts the fetch
+   * immediately, so Cmd/Ctrl+P warms them while the dialog is opening,
+   * beforeprint warms them for a menu-triggered print, and after two idle
+   * minutes they trickle in anyway. Skipped when the browser reports Save Data.
+   */
+  setupPrintImages() {
+    const imgs = () => Array.from(document.querySelectorAll("img.print-only"));
+    let warmed = false;
+    const warmAll = () => {
+      if (warmed) return;
+      warmed = true;
+      imgs().forEach((img) => {
+        img.loading = "eager";
+      });
+    };
+
+    addEventListener(
+      "keydown",
+      (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "p") warmAll();
+      },
+      { capture: true },
+    );
+    addEventListener("beforeprint", warmAll);
+
+    if (navigator.connection?.saveData) return;
+
+    setTimeout(() => {
+      const queue = imgs();
+      const pump = () => {
+        if (warmed || !queue.length) return;
+        queue.splice(0, 4).forEach((img) => {
+          img.loading = "eager";
+        });
+        (window.requestIdleCallback || setTimeout)(pump, { timeout: 2000 });
+      };
+      pump();
+    }, 120000);
+  }
+
+  /**
+   * Wind a project's carousel back once it is fully off screen.
+   *
+   * Scroll positions otherwise persist for the life of the page: a project you
+   * paged four slides into is still on slide four when you come back to it,
+   * opening on a detail with no idea what the project is. Reset on exit rather
+   * than on entry so it is never seen happening, and instantly for the same
+   * reason.
+   */
+  setupCarouselReset() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) return;
+          const carousel = entry.target.querySelector(".project-carousel");
+          if (!carousel || carousel.scrollLeft === 0) return;
+          carousel.scrollTo({ left: 0, behavior: "instant" });
+          const update = this.navUpdaters.get(carousel);
+          if (update) update();
+        });
+      },
+      { threshold: 0 },
+    );
+    this.projects.forEach((project) => observer.observe(project));
+  }
+
   setupEventListeners() {
     let scrollRAF = null;
     window.addEventListener(
@@ -389,8 +464,6 @@ class Portfolio {
   }
 
   // --- colour --------------------------------------------------------------
-
-
 }
 
 document.addEventListener("DOMContentLoaded", () => new Portfolio());
