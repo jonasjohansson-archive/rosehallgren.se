@@ -1,0 +1,136 @@
+---
+pagination:
+  data: projects
+  size: 1
+  alias: p
+permalink: "/{{ p.slug }}/index.html"
+eleventyExcludeFromCollections: true
+---
+{#
+  One page per project, at /rock-stage/ and so on, so a project can be sent to
+  someone on its own.
+
+  Deliberately a different reading of the same content rather than the same
+  layout in a narrower frame: everything is stacked vertically and scrolled,
+  because a link someone has been sent should show its whole hand at once. The
+  home page keeps the horizontal carousel, where the point is to move through
+  the work rather than to study one piece of it.
+
+  It shares the stylesheet and adds project.css on top; nothing here re-declares
+  a colour or a typeface.
+#}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ p.title }} · {{ settings.site.title }}</title>
+
+    <link
+      rel="preload"
+      as="image"
+      type="image/avif"
+      href="{{ p.hero.file | largest('avif') | abs }}"
+      imagesrcset="{{ p.hero.file | srcset('avif') | abs }}"
+      imagesizes="(min-width: 1000px) 900px, 100vw"
+      fetchpriority="high" />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/assets/fonts/Instrument.woff2"
+      crossorigin />
+
+    <link rel="stylesheet" href="/assets/css/styles.css?v=20260802w" media="all" />
+    <link rel="stylesheet" href="/assets/css/project.css?v=20260802w" media="all" />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon/favicon-96x96.png" />
+    <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png" />
+
+    {%- set desc = p.panels[0][0] | striptags %}
+    <meta name="description" content="{{ desc | truncate(180) }}" />
+    <link rel="canonical" href="https://rosehallgren.se/{{ p.slug }}/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://rosehallgren.se/{{ p.slug }}/" />
+    <meta property="og:site_name" content="{{ settings.site.title }}" />
+    <meta property="og:title" content="{{ p.title }}" />
+    <meta property="og:description" content="{{ desc | truncate(180) }}" />
+    <meta property="og:image" content="https://rosehallgren.se{{ p.hero.file | largest('webp') | abs }}" />
+    <meta property="og:image:width" content="{{ p.hero.file | intrinsicWidth }}" />
+    <meta property="og:image:height" content="{{ p.hero.file | intrinsicHeight }}" />
+    <meta property="og:image:alt" content="{{ p.hero.alt }}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="{{ p.color }}" />
+  </head>
+  <body class="project-page" style="--project-text-bg: {{ p.color }}">
+    <main>
+      <header class="project-page-header">
+        <a class="project-page-back" href="/#{{ p.slug }}">All work</a>
+        <h1{% if p.lang %} lang="{{ p.lang }}"{% endif %}>{{ p.title }}</h1>
+        {%- if p.year or p.location %}
+        <p class="project-page-meta">
+          {{ p.year }}{% if p.year and p.location %} · {% endif %}{{ p.location }}
+        </p>
+        {%- endif %}
+      </header>
+
+      <div class="project-page-body">
+{%- for panel in p.panels %}
+{%- for para in panel %}
+        <p>{{ para | autolink | safe }}</p>
+{%- endfor %}
+{%- endfor %}
+{%- for l in p.links %}
+        <p>
+          <a href="{{ l.url }}" target="_blank" rel="noopener noreferrer">{{ l.label }}</a>
+        </p>
+{%- endfor %}
+{%- if p.credits | length %}
+        <p class="credit">{% for c in p.credits %}<span class="credit-line">{{ c | autolink | safe }}</span>{% endfor %}</p>
+{%- endif %}
+{%- if p.press | length %}
+        <p class="press">Press: {% for x in p.press %}<a href="{{ x.url }}" target="_blank" rel="noopener noreferrer">{{ x.label }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</p>
+{%- endif %}
+      </div>
+
+      <div class="project-page-media">
+{%- for m in p.media %}
+{%- if m.video %}
+        <div class="project-page-video">
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/{{ m.video }}"
+            title="{{ m.title }}"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen;"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox"></iframe>
+        </div>
+{%- else %}
+        <figure>
+          <picture>
+            <source
+              type="image/avif"
+              srcset="{{ m.file | srcset('avif') | abs }}"
+              sizes="(min-width: 1000px) 900px, 100vw" />
+            <img
+              src="{{ m.file | largest('webp') | abs }}"
+              srcset="{{ m.file | srcset('webp') | abs }}"
+              sizes="(min-width: 1000px) 900px, 100vw"
+              alt="{{ m.alt }}"
+              width="{{ m.file | intrinsicWidth }}"
+              height="{{ m.file | intrinsicHeight }}"
+              decoding="async"
+              loading="{{ "eager" if loop.first else "lazy" }}" />
+          </picture>
+        </figure>
+{%- endif %}
+{%- endfor %}
+      </div>
+
+      <nav class="project-page-nav">
+        <a href="/#{{ p.slug }}">All work</a>
+      </nav>
+    </main>
+  </body>
+</html>

@@ -338,6 +338,20 @@ body {
   content-visibility: visible;
 }
 
+/* The title is the way into a project's own page. pointer-events is off on the
+   heading so the click zones still work across the slide; the anchor turns them
+   back on for itself alone. */
+.project-title a {
+  color: inherit;
+  text-decoration: none;
+  pointer-events: auto;
+}
+
+.project-title a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 .project-title {
   position: absolute;
   top: var(--spacing-large);

@@ -188,6 +188,18 @@ module.exports = function (eleventyConfig) {
    * known at build time, is small enough to land immediately, and is blurred
    * 40px and scaled 1.4x anyway, so 40px is all the detail that could survive.
    */
+  /**
+   * Root-relative asset paths.
+   *
+   * The filters emit "assets/images/..." because the home page sits at the
+   * root. A project page lives one directory down, where that resolves to
+   * /rock-stage/assets/... and 404s. Applied to single paths and to whole
+   * srcset strings alike.
+   */
+  eleventyConfig.addFilter("abs", (value) =>
+    String(value || "").replace(/(^|, )assets\//g, "$1/assets/"),
+  );
+
   eleventyConfig.addFilter("washSrc", (file) => `${WASH_DIR}/${stem(file)}.jpg`);
   eleventyConfig.addFilter("intrinsicWidth", (file) => intrinsic(stem(file))?.width || "");
   eleventyConfig.addFilter("intrinsicHeight", (file) => intrinsic(stem(file))?.height || "");

@@ -1,0 +1,156 @@
+/*
+ * One project, on its own page, read vertically.
+ *
+ * Loaded on top of styles.css, which supplies the typeface, the palette and
+ * --indent. Nothing here restates a colour or a size that already has a token.
+ *
+ * The home page scrolls sideways because the point there is to move through
+ * nineteen projects. A link someone has been sent has the opposite job: show
+ * this one thing whole. So it stacks, and the images run at a single generous
+ * width rather than being fitted to a viewport.
+ */
+
+.project-page {
+  background: var(--project-text-bg, var(--paper));
+  color: var(--paper);
+}
+
+.project-page main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--indent) var(--indent) 0;
+}
+
+/* --- header --------------------------------------------------------------- */
+
+.project-page-header {
+  padding: 4rem 0 2.5rem;
+}
+
+.project-page-back,
+.project-page-nav a {
+  display: inline-block;
+  font-size: var(--font-size-chrome);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+  opacity: 0.75;
+}
+
+.project-page-back:hover,
+.project-page-nav a:hover {
+  opacity: 1;
+}
+
+.project-page h1 {
+  margin: 2.5rem 0 0;
+  font-family: var(--font-display);
+  /* Larger than anywhere else on the site: this page has one subject and the
+     title is not competing with a photograph behind it. */
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.project-page-meta {
+  margin-top: var(--spacing-medium);
+  font-size: var(--font-size-chrome);
+  opacity: 0.7;
+}
+
+/* --- copy ----------------------------------------------------------------- */
+
+.project-page-body {
+  max-width: 34em;
+  padding-bottom: 3.5rem;
+  font-size: var(--font-size-body);
+}
+
+.project-page-body p {
+  margin-bottom: var(--spacing-large);
+}
+
+/* The lead paragraph carries the project, as it does in the deck. */
+.project-page-body p:first-child {
+  font-size: 1.25em;
+  line-height: 1.45;
+}
+
+.project-page-body a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.project-page-body a:hover {
+  text-decoration: none;
+}
+
+.project-page-body .credit,
+.project-page-body .press {
+  font-size: var(--font-size-chrome);
+  opacity: 0.75;
+}
+
+.project-page-body .credit {
+  margin-top: 2.5rem;
+  padding-top: var(--spacing-medium);
+  border-top: 1px solid currentColor;
+}
+
+/* --- the work ------------------------------------------------------------- */
+
+.project-page-media figure {
+  margin: 0 0 var(--indent);
+}
+
+.project-page-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.project-page-video {
+  margin: 0 0 var(--indent);
+  aspect-ratio: 16 / 9;
+}
+
+.project-page-video iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 4px;
+}
+
+.project-page-nav {
+  padding: 1.5rem 0 5rem;
+}
+
+@media (max-width: 768px) {
+  .project-page-header {
+    padding: 2.5rem 0 2rem;
+  }
+
+  .project-page h1 {
+    margin-top: 1.5rem;
+  }
+}
+
+/* Printing a single project is not the pitch deck. Cmd+P on the home page
+   still produces that; here it just prints the page, dark ground and all,
+   which would empty a cartridge for no reason. */
+@media print {
+  .project-page {
+    background: #fff;
+    color: #000;
+  }
+
+  .project-page-back,
+  .project-page-nav {
+    display: none;
+  }
+}

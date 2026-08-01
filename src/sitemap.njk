@@ -10,6 +10,9 @@ eleventyExcludeFromCollections: true
   missing eleven projects added since, and dated to a day the content no longer
   matched.
 
+  The project pages ARE worth listing: each is a real URL with its own title,
+  description and share image, unlike the #anchors this file used to carry.
+
   It is not worth listing anchors at all. Search engines canonicalise a URL
   fragment to the page it sits on, so seventeen #project entries index as one
   page regardless; the only thing the extra entries could do is go stale, which
@@ -26,4 +29,12 @@ eleventyExcludeFromCollections: true
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
+{%- for p in projects %}
+  <url>
+    <loc>https://rosehallgren.se/{{ p.slug }}/</loc>
+    <lastmod>{{ page.date | isoDate }}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+{%- endfor %}
 </urlset>

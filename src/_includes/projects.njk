@@ -79,7 +79,7 @@
         id="{{ p.slug }}"
         {%- if p.color %} style="--project-text-bg: {{ p.color }}"{% endif %}
         aria-labelledby="title-{{ p.slug }}">
-        <h2 class="project-title" id="title-{{ p.slug }}"{% if p.lang %} lang="{{ p.lang }}"{% endif %}>{{ p.title }}</h2>
+        <h2 class="project-title" id="title-{{ p.slug }}"{% if p.lang %} lang="{{ p.lang }}"{% endif %}><a href="/{{ p.slug }}/">{{ p.title }}</a></h2>
 {%- if p.year or p.location %}
         <p class="project-meta">{{ p.year }}{% if p.year and p.location %} · {% endif %}{{ p.location }}</p>
 {%- endif %}
