@@ -58,7 +58,7 @@ content:
     label: Projects
     type: collection
     path: content/projects
-    filename: '{fields.slug}.md'
+    filename: "{fields.slug}.md"
     view:
       fields: [title, order, year, location]
       primary: title
@@ -72,14 +72,14 @@ content:
           label: Title,
           type: string,
           required: true,
-          description: 'Shown over the images, in capitals',
+          description: "Shown over the images, in capitals",
         }
       - {
           name: slug,
           label: Web address,
           type: string,
           required: true,
-          pattern: '^[a-z0-9-]+$',
+          pattern: "^[a-z0-9-]+$",
           description: "The bit after the # in the link to this project, e.g. rock-stage. Lowercase letters, numbers and hyphens. Changing it breaks any link anyone has already shared — usually best left alone.",
         }
       - {
@@ -87,47 +87,47 @@ content:
           label: Position,
           type: number,
           required: true,
-          description: 'Lower numbers come first. The projects list is sorted by this — change it to move a project up or down the page.',
+          description: "Lower numbers come first. The projects list is sorted by this — change it to move a project up or down the page.",
         }
       - {
           name: year,
           label: Year,
           type: string,
-          description: 'e.g. 2022, or 2021–22. Shown only in the PDF.',
+          description: "e.g. 2022, or 2021–22. Shown only in the PDF.",
         }
       - {
           name: location,
           label: Place,
           type: string,
-          description: 'e.g. Stockholm. Shown only in the PDF, after the year.',
+          description: "e.g. Stockholm. Shown only in the PDF, after the year.",
         }
       - name: link
         label: Link out
         type: object
-        description: 'Optional. A single link at the end of the text, e.g. to the practice that ran the project.'
+        description: "Optional. A single link at the end of the text, e.g. to the practice that ran the project."
         fields:
           - { name: label, label: Link text, type: string }
-          - { name: url, label: URL, type: string, pattern: '^$|^https?://' }
+          - { name: url, label: URL, type: string, pattern: "^$|^https?://" }
       - name: credits
         label: Credits
         type: string
         list: true
-        description: 'One per line, each on its own row: practice, then role, then photographer. e.g. “Anders Berensson Architects”, “Rose Hallgren, Architect”, “Photo: Linda Hutchins”.'
+        description: "One per line, each on its own row: practice, then role, then photographer. e.g. “Anders Berensson Architects”, “Rose Hallgren, Architect”, “Photo: Linda Hutchins”."
       - name: press
         label: Press
         type: object
         list:
-          collapsible: { collapsed: true, summary: '{label}' }
+          collapsible: { collapsed: true, summary: "{label}" }
         fields:
           - { name: label, label: Publication, type: string }
-          - { name: url, label: URL, type: string, pattern: '^$|^https?://' }
+          - { name: url, label: URL, type: string, pattern: "^$|^https?://" }
       - name: media
         label: Images and video
         required: true
         type: object
-        description: 'Drag to reorder. The FIRST image is the one shown with the title and used as the large image on the PDF page; the rest become the collage on the following page. A video can sit anywhere in the list. Keep it to about 20 images — beyond that the PDF gives the project a third page.'
+        description: "Drag to reorder. The FIRST image is the one shown with the title and used as the large image on the PDF page; the rest become the collage on the following page. A video can sit anywhere in the list. Keep it to about 20 images — beyond that the PDF gives the project a third page."
         list:
-          collapsible: { collapsed: true, summary: '{alt}{title}' }
+          collapsible: { collapsed: true, summary: "{alt}{title}" }
         fields:
           - {
               name: file,
@@ -146,32 +146,44 @@ content:
               name: alt,
               label: Description,
               type: string,
-              description: 'What is in the picture, for people who cannot see it. One short sentence.',
+              description: "What is in the picture, for people who cannot see it. One short sentence.",
             }
           - {
               name: drawing,
               label: This is a drawing or plan,
               type: boolean,
-              description: 'Tick for plans, sections and maps. In the PDF these get a soft background and are fitted whole instead of being cropped, so the linework is never sliced through.',
+              description: "Tick for plans, sections and maps. In the PDF these get a soft background and are fitted whole instead of being cropped, so the linework is never sliced through.",
             }
           - {
               name: video,
               label: YouTube ID (instead of an image),
               type: string,
-              description: 'Only for a video. The code after v= in a YouTube link, e.g. yn3Wk3m__r0. Leave the image above empty.',
+              description: "Only for a video. The code after v= in a YouTube link, e.g. yn3Wk3m__r0. Leave the image above empty.",
             }
-          - { name: title, label: Video title, type: string, description: 'Only for a video.' }
+          - {
+              name: title,
+              label: Video title,
+              type: string,
+              description: "Only for a video.",
+            }
       - {
           name: body,
           label: Text,
           type: text,
-          description: 'The project description. Leave a blank line between paragraphs. A line containing only --- splits the text onto a second slide, for long descriptions.',
+          description: "The project description. Leave a blank line between paragraphs. A line containing only --- splits the text onto a second slide, for long descriptions.",
         }
       - {
           name: lang,
           label: Title language,
           type: select,
-          options: { values: [{ value: '', label: 'English' }, { value: 'sv', label: 'Swedish' }] },
+          options:
+            {
+              values:
+                [
+                  { value: "", label: "English" },
+                  { value: "sv", label: "Swedish" },
+                ],
+            },
           description: "Rarely needed. Set to Swedish only for a Swedish title — Torö, Folkbastu, Jag är Gud — so a screen reader reading the page in English still pronounces it as Swedish. Leave as English for everything else.",
         }
 
@@ -195,7 +207,7 @@ content:
               label: Heading,
               type: string,
               required: true,
-              description: 'The main heading at the top of the page.',
+              description: "The main heading at the top of the page.",
             }
           - name: intro
             label: Intro text
@@ -211,69 +223,56 @@ content:
               format: html
               switcher: true
               media: false
-            description: 'Select a word and use the link button to add a link. Enter starts a new paragraph.'
+            description: "Select a word and use the link button to add a link. Enter starts a new paragraph."
           - {
               name: description,
-              label: 'Search description',
+              label: "Search description",
               type: text,
               required: true,
-              description: 'The text search engines and link previews show (~150 characters).',
-            }
-          - {
-              name: portrait,
-              label: Portrait,
-              type: image,
-              options: { media: projects },
-              required: true,
-            }
-          - {
-              name: portrait_alt,
-              label: Portrait description,
-              type: string,
-              description: 'What is in the picture, for people who cannot see it.',
+              description: "The text search engines and link previews show (~150 characters).",
             }
           - {
               name: studio_address,
               label: Studio address,
               type: string,
-              description: 'Shown at the foot of the PDF.',
+              description: "Shown at the foot of the PDF.",
             }
           - {
               name: social_title,
-              label: 'Share title',
+              label: "Share title",
               type: string,
-              description: 'Headline shown when someone shares the site on social media. Leave blank to use the browser tab title.',
+              description: "Headline shown when someone shares the site on social media. Leave blank to use the browser tab title.",
             }
           - {
               name: social_image,
-              label: 'Share image',
+              label: "Share image",
               type: image,
               options: { media: projects },
-              description: 'The picture shown when the site is shared or linked. Use a wide photo, at least 1200 pixels across. Its size is read from the file, so nothing needs to be typed in.',
+              description: "The picture shown when the site is shared or linked. Use a wide photo, at least 1200 pixels across. Its size is read from the file, so nothing needs to be typed in.",
             }
           - {
               name: social_image_alt,
-              label: 'Share image description',
+              label: "Share image description",
               type: string,
-              description: 'What is in the share image, for people who cannot see it.',
+              description: "What is in the share image, for people who cannot see it.",
             }
       - name: contact
         label: Contact links
         type: object
         list:
-          collapsible: { collapsed: true, summary: '{label}' }
+          collapsible: { collapsed: true, summary: "{label}" }
         fields:
           - { name: label, label: Label, type: string, required: true }
           - { name: url, label: URL, type: string, required: true }
           - {
               name: print,
-              label: 'Printed as',
+              label: "Printed as",
               type: string,
-              description: 'What the PDF prints instead of the label, e.g. the full email address. Leave blank to print the label.',
+              description: "What the PDF prints instead of the label, e.g. the full email address. Leave blank to print the label.",
             }
           - {
               name: footer_only,
-              label: 'Only show at the foot of the page',
+              label: "Only show at the foot of the page",
               type: boolean,
-              description: 'Tick to keep this link out of the intro and show it only in the footer.',
+              description: "Tick to keep this link out of the intro and show it only in the footer.",
             }

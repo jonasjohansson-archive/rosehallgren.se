@@ -30,7 +30,7 @@ permalink: index.html
 
     <link
       rel="stylesheet"
-      href="assets/css/styles.css?v=20260801n"
+      href="assets/css/styles.css?v=20260801p"
       media="all"
     />
     <link rel="icon" type="image/svg+xml" href="assets/favicon/favicon.svg" />
@@ -104,7 +104,7 @@ permalink: index.html
         "jobTitle": "Multidisciplinary Architect and Designer",
         "description": {{ settings.site.description | dump | safe }},
         "url": "https://rosehallgren.se",
-        "image": "https://rosehallgren.se{{ settings.site.portrait }}",
+        "image": "https://rosehallgren.se{{ settings.site.social_image }}",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": {{ (settings.site.studio_address | replace(", Stockholm", "")) | dump | safe }},
@@ -136,36 +136,6 @@ permalink: index.html
     >
     <main>
       <section class="about-section">
-        <figure class="about-portrait">
-          <picture>
-            <source
-              type="image/avif"
-              srcset="
-                {{ settings.site.portrait | srcset('avif') }}
-              "
-              sizes="(max-width: 768px) 100vw, 30vw"
-            />
-            <img
-              class="screen-only"
-              src="{{ settings.site.portrait | largest('webp') }}"
-              srcset="
-                {{ settings.site.portrait | srcset('webp') }}
-              "
-              sizes="(max-width: 768px) 100vw, 30vw"
-              alt="{{ settings.site.portrait_alt }}"
-              width="2000"
-              height="2667"
-              decoding="async"
-            />
-          </picture>
-          <img
-            class="print-only"
-            src="{{ settings.site.portrait | printSrc }}"
-            alt=""
-            aria-hidden="true"
-            loading="lazy"
-          />
-        </figure>
         <div class="about-content">
           <div class="about-text">
             <p>

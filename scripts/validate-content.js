@@ -74,12 +74,8 @@ if (!fs.existsSync(SETTINGS)) {
     if (!s.site?.intro) errors.push("settings: intro text is empty");
     if (!s.site?.title) errors.push("settings: browser tab title is empty");
     if (!s.site?.description) errors.push("settings: search description is empty");
-    if (!s.site?.portrait) errors.push("settings: portrait is empty");
     if (s.site?.social_image && !hasImageFile(s.site.social_image)) {
       errors.push(`settings: share image ${s.site.social_image} is not in the repository`);
-    }
-    if (s.site?.portrait && !hasDerivatives(s.site.portrait)) {
-      errors.push(`settings: no web versions built for the portrait ${s.site.portrait}`);
     }
     for (const c of s.contact || []) {
       if (!c.label || !c.url) errors.push(`settings: a contact link is missing its label or URL`);
