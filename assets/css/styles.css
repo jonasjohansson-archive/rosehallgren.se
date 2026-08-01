@@ -714,9 +714,10 @@ body {
 
 .image-slide img {
   max-width: calc(100vw - 5rem);
-  /* 9rem, not 5rem. At 5rem a tall image cleared the title row by nothing at
-     all and the two collided optically; this leaves ~72px top and bottom. */
-  max-height: calc(100vh - 9rem);
+  /* Vertical room reserved for the header. The photograph is centred in the
+     slide, so half of this sits above it — it has to clear the title row, and
+     the title row is taller at the widths where the dots stack underneath. */
+  max-height: calc(100vh - var(--image-inset, 9rem));
   width: auto;
   height: auto;
   object-fit: contain;
@@ -857,6 +858,13 @@ body {
    like PHOTOGRAPHY the two ran into each other. Below the title instead, and
    centred with it, so they read as one header block. */
 @media (min-width: 769px) and (max-width: 1599px) {
+  /* Title, gap, dot row: about 70px of header here against 40px elsewhere, so
+     the photograph needs correspondingly more reserved or its top edge lands
+     under the dots. */
+  :root {
+    --image-inset: 14rem;
+  }
+
   .carousel-navigation {
     top: calc(var(--spacing-large) + var(--font-size-title) * 1.2 + 1.25rem);
     left: 0;

@@ -21,6 +21,7 @@ class Portfolio {
 
     this.initCarousels();
     this.setupBackdrops();
+    this.setupPrintImages();
     this.setupCarouselReset();
     this.setupEventListeners();
     this.setupPermalinkHandling();
@@ -445,6 +446,62 @@ class Portfolio {
       { threshold: 0 },
     );
     this.projects.forEach((project) => observer.observe(project));
+  }
+
+  /**
+   * Get the print JPEGs onto the wire before someone prints.
+   *
+   * They are display: none with loading="lazy", which is what keeps 26MB off
+   * the page — no layout box, so they never intersect and never load. The cost
+   * is that Cmd+P is the first moment they are asked for, and Chrome will
+   * happily rasterise the preview before 125 of them have arrived, which is why
+   * images come out blank. Headless runs never showed it because they pass
+   * --virtual-time-budget and wait.
+   *
+   * Setting loading="eager" on an already-parsed lazy image starts the fetch
+   * immediately, so:
+   *   - Cmd/Ctrl+P keydown warms them while the print dialog is opening;
+   *   - beforeprint warms them for a menu-triggered print, which is later but
+   *     better than nothing;
+   *   - and after two idle minutes they are fetched a few at a time anyway, so
+   *     a print from a page that has been open a while is instant.
+   * Skipped entirely when the browser reports Save Data.
+   */
+  setupPrintImages() {
+    const imgs = () => Array.from(document.querySelectorAll("img.print-only"));
+    let warmed = false;
+    const warmAll = () => {
+      if (warmed) return;
+      warmed = true;
+      imgs().forEach((img) => {
+        img.loading = "eager";
+      });
+    };
+
+    addEventListener(
+      "keydown",
+      (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "p") warmAll();
+      },
+      { capture: true },
+    );
+    addEventListener("beforeprint", warmAll);
+
+    if (navigator.connection?.saveData) return;
+
+    // Trickle them in once the page has been sitting idle, a few at a time, so
+    // this never competes with the photographs someone is actually looking at.
+    setTimeout(() => {
+      const queue = imgs();
+      const pump = () => {
+        if (warmed || !queue.length) return;
+        queue.splice(0, 4).forEach((img) => {
+          img.loading = "eager";
+        });
+        (window.requestIdleCallback || setTimeout)(pump, { timeout: 2000 });
+      };
+      pump();
+    }, 120000);
   }
 
   setupBackdrops() {
