@@ -29,4 +29,4 @@ media:
 
 A two-day tufting workshop at Aavistus, an audiovisual festival in Helsinki, made together with Jonas Johansson. Ten participants tufted their own cultural canon using the exquisite corpse method: two groups of four each designed and tufted a square, then passed it on for the next group to respond to without ever seeing the whole.
 
-The result is 24 tufted squares covering 140 × 210 cm. For the workshop Rose designed and built a custom modular tufting frame that expands to 2 × 4 metres and folds down into a sports bag.
+The result is 24 tufted squares covering 140 × 210 cm. For the workshop I designed and built a custom modular tufting frame that expands to 2 × 4 metres and folds down into a sports bag.

@@ -36,7 +36,7 @@ media:
     alt: "Closing image of the performance"
 ---
 
-An autobiographical one-man show by the dancer Danne Dahlin about living with bipolar disorder. Rose designed the scenography and, with Jonas Johansson, the video; the lighting was kept deliberately plain so the room stays with Danne, who carries the whole piece alone.
+An autobiographical one-man show by the dancer Danne Dahlin about living with bipolar disorder. I designed the scenography and, with Jonas Johansson, the video; the lighting was kept deliberately plain so the room stays with Danne, who carries the whole piece alone.
 
 Dahlin was headed for a career in dance when the illness took hold. The piece looks back across nineteen years: a first manic episode in New York, the stable years that could no longer hold it back, and being found in Los Angeles in 2018 surrounded by police with drawn weapons.
 
