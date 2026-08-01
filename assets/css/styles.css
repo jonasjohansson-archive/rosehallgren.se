@@ -76,18 +76,24 @@
   --paper: #eeece8;
   --ink: #141414;
 
-  /* How much paper sits over the blurred backdrop. This is a contrast floor,
-     not a taste setting: at 0.72 the darkest possible photograph still veils to
-     roughly L=0.41, which keeps --ink above 8:1 on every slide. Lower it and
-     the guarantee goes with it. */
-  --backdrop-veil: 0.72;
+  /* How much paper sits over the blurred backdrop.
+     At 0.72 the wash barely resembled the photograph it came from, so the
+     contained image sat ON a surface rather than IN one. 0.55 lets 45% of the
+     photograph through — nearly double — and is as far as it can go: against a
+     pure black photograph the veiled surface still reaches value 130, which
+     holds --ink at 4.79:1. At 0.52 it is 4.34:1 and fails AA. This is a floor,
+     not a preference. */
+  --backdrop-veil: 0.55;
 
   /* Where two slides meet, the corners are cut away and the page shows
      through. Cycled over five slides so the seams do not repeat on any one
      project, and set to 0 below 769px, where a slide fills the screen and
      there is no visible seam to shape. */
-  --seam: 0px;
-  --seam-large: 0px;
+  --seam-xs: 0px;
+  --seam-s: 0px;
+  --seam-m: 0px;
+  --seam-l: 0px;
+  --seam-xl: 0px;
   --ink-on-paper: var(--ink);
   --ink-on-panel: var(--color-white);
 
@@ -293,6 +299,12 @@ body {
      and the page loses its scroll height. */
   content-visibility: auto;
   contain-intrinsic-size: auto 100vh;
+
+  /* Behind the slides, so the corners cut out of them reveal this rather than
+     the white page. Each project carries its own extracted colour, which means
+     the notch at a seam is a bite out of one project showing the next surface
+     down — not a hole in the page. */
+  background: var(--project-text-bg, var(--paper));
 }
 
 /* Set from data-title-on / data-dots-on, which main.js writes as the name of
@@ -322,7 +334,13 @@ body {
 .project-title {
   position: absolute;
   top: var(--spacing-large);
-  left: var(--indent);
+  /* Centred over the leading slide rather than pinned to the indent: the
+     photographs are contained and centred, so a centred title sits with them.
+     Width, not left/right, because at the two-up breakpoint the title belongs
+     over the first slide, not across the seam between both. */
+  left: 0;
+  width: 100%;
+  justify-content: center;
   z-index: 100;
   /* Fixed line box so the dot row can be centred against it. */
   line-height: 1.2;
@@ -336,7 +354,7 @@ body {
   /* Ink or white depending on the surface underneath, resolved above. No
      shadow — the contrast is in the colour itself. */
   color: var(--project-title-color);
-  text-align: left;
+  text-align: center;
   pointer-events: none;
   text-transform: uppercase;
 }
@@ -374,26 +392,39 @@ body {
   cursor: e-resize;
 }
 
-/* The seam shapes. Radii sit on the corners that face a neighbour, so the
-   rounding reads as a cut in the join rather than as a rounded box. */
-.slide:nth-child(5n + 1) {
-  border-radius: 0 var(--seam-large) 0 0;
+/* The seam shapes.
+   Seven steps, not five, and every step a different combination drawn from
+   five radii rather than two — 7 is prime, so the cycle never lines up with a
+   project's slide count and no two projects cut the same silhouette. Corners
+   are left square as often as they are rounded; that irregularity is what
+   stops it reading as "rounded boxes" and starts it reading like the wordmark,
+   where a bowl swings hard round on one side and stops flat on the other. */
+.slide:nth-child(7n + 1) {
+  border-radius: 0 var(--seam-xl) var(--seam-xs) 0;
 }
 
-.slide:nth-child(5n + 2) {
-  border-radius: 0 0 var(--seam) var(--seam-large);
+.slide:nth-child(7n + 2) {
+  border-radius: var(--seam-m) 0 0 var(--seam-l);
 }
 
-.slide:nth-child(5n + 3) {
-  border-radius: var(--seam-large) 0 0 var(--seam);
+.slide:nth-child(7n + 3) {
+  border-radius: 0 var(--seam-s) var(--seam-xl) 0;
 }
 
-.slide:nth-child(5n + 4) {
-  border-radius: 0 var(--seam) var(--seam-large) 0;
+.slide:nth-child(7n + 4) {
+  border-radius: var(--seam-l) 0 var(--seam-s) var(--seam-xs);
 }
 
-.slide:nth-child(5n + 5) {
-  border-radius: var(--seam) 0 0 var(--seam-large);
+.slide:nth-child(7n + 5) {
+  border-radius: 0 var(--seam-m) 0 var(--seam-xl);
+}
+
+.slide:nth-child(7n + 6) {
+  border-radius: var(--seam-xs) 0 var(--seam-l) var(--seam-s);
+}
+
+.slide:nth-child(7n + 7) {
+  border-radius: var(--seam-xl) var(--seam-xs) 0 0;
 }
 
 .slide {
@@ -703,12 +734,20 @@ body {
    sixth of the display. */
 @media (min-width: 769px) {
   :root {
-    --seam: 28px;
-    --seam-large: 72px;
+    --seam-xs: 12px;
+    --seam-s: 34px;
+    --seam-m: 76px;
+    --seam-l: 128px;
+    --seam-xl: 190px;
   }
 }
 
 @media (min-width: 1600px) {
+  /* Over the first slide, not across both. */
+  .project-title {
+    width: 50%;
+  }
+
   .slide {
     min-width: 50vw;
   }
