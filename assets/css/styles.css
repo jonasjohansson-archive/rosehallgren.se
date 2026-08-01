@@ -70,6 +70,26 @@
   --font-size-title: 1.0625rem;
   --line-height-base: 1.5;
 
+  /* The page heading: her name on the home page, a project name on a project
+     page. One token, so the two can never drift apart again. --font-size-title
+     above is a different thing, the small title over a carousel slide. */
+  --font-size-heading: clamp(1.75rem, 5vw, 3rem);
+  --heading-line-height: 1.05;
+  --heading-tracking: -0.02em;
+
+  /* The opening paragraph of the intro and of every project description, set
+     larger than the copy that follows it.
+
+     Off --font-size-body rather than 1.25em. `em` resolves against whatever the
+     paragraph inherits, which is the 16px body token inside .project-page-body
+     but the 14px page default inside .about-text, so the same declaration
+     produced 20px on a project page and 17.5px on the home page. */
+  --font-size-lead: calc(var(--font-size-body) * 1.25);
+  --lead-line-height: 1.45;
+
+  /* The reading measure the intro and a project description share. */
+  --measure: 600px;
+
   /* The two surfaces a slide can present, and the ink that belongs on each.
      main.js names the surface (data-title-on / data-dots-on) and never a
      colour, so the palette stays in one place. */
@@ -247,29 +267,41 @@ body {
 }
 
 .about-content {
-  max-width: 600px;
+  max-width: var(--measure);
   text-align: left;
   width: 100%;
   /* Holds its width against the portrait rather than being squeezed by it. */
-  flex: 0 1 600px;
+  flex: 0 1 var(--measure);
 }
 
 .about-content h1 {
   font-family: var(--font-display);
   /* Identical to a project page title. Her name should not be set smaller than
      the name of one of her projects. */
-  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-size: var(--font-size-heading);
   font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-tracking);
   margin-bottom: var(--spacing-medium);
 }
 
-.about-text p {
-  /* Same size as the project copy. They were 14px and 16px, which read as two
-     different voices on one page. */
+/* One set of typographic rules for the intro and for a project description.
+   Both selectors live here, in the stylesheet loaded on every page, rather than
+   being stated once here and again in project.css, which is how they drifted to
+   different paragraph spacing in the first place. */
+.about-text p,
+.project-page-body p {
   font-size: var(--font-size-body);
-  margin-bottom: var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
+}
+
+/* The lead paragraph. On a project page it is the first paragraph in the block;
+   on the home page the first <p> holds the wordmark, so the lead is the one
+   after the heading. */
+.about-text h1 + p,
+.project-page-body p:first-child {
+  font-size: var(--font-size-lead);
+  line-height: var(--lead-line-height);
 }
 
 .about-contact p {

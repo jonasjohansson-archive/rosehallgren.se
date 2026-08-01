@@ -62,12 +62,11 @@
 .project-page h1 {
   margin: 2.5rem 0 0;
   font-family: var(--font-display);
-  /* Larger than anywhere else on the site: this page has one subject and the
-     title is not competing with a photograph behind it. */
-  font-size: clamp(2rem, 6vw, 3.5rem);
+  /* The shared heading token, the same one the home page sets her name in. */
+  font-size: var(--font-size-heading);
   font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-tracking);
 }
 
 .project-page-meta {
@@ -78,22 +77,13 @@
 
 /* --- copy ----------------------------------------------------------------- */
 
-/* 600px, the same measure as .about-content on the home page, so the intro and
-   a project description read as one voice rather than two column widths. */
+/* The measure the home page intro also uses, so the two read as one voice
+   rather than two column widths. The paragraph and lead rules themselves live
+   in styles.css, stated once for both pages. */
 .project-page-body {
-  max-width: 600px;
+  max-width: var(--measure);
   padding-bottom: 3.5rem;
   font-size: var(--font-size-body);
-}
-
-.project-page-body p {
-  margin-bottom: var(--spacing-large);
-}
-
-/* The lead paragraph carries the project, as it does in the deck. */
-.project-page-body p:first-child {
-  font-size: 1.25em;
-  line-height: 1.45;
 }
 
 .project-page-body a {
@@ -161,6 +151,7 @@
 /* Right-aligned: the one place on this page that is not flush left, because it
    points forward and the arrow should end at the edge it points towards. */
 .project-page-nav {
+  margin-top: var(--indent);
   padding: 1.5rem 0 5rem;
   text-align: right;
 }
@@ -174,10 +165,6 @@
 .project-page .footer-content {
   max-width: none;
   margin: 0;
-}
-
-.project-page-nav {
-  margin-top: var(--indent);
 }
 
 @media (max-width: 768px) {
