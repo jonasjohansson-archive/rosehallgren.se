@@ -90,26 +90,40 @@ def widths_for(source_width):
     return sorted({min(rung, source_width) for rung in RUNGS})
 
 
-def stale(derivative, source, source_dims, compare_aspect=True):
-    """True if the derivative is missing, unreadable, older than its source, or
-    a different shape from it.
+def expected_dims(source_dims, box, fit_box=False):
+    """The pixel size ImageMagick will produce for this source at this target.
 
-    mtime is the primary test and aspect ratio only the backstop, not the other
-    way round. Shaving a hairline off a source moves the aspect ratio by well
-    under one percent, so an aspect-only check silently passed every derivative
-    this script was written to catch."""
+    `-resize WxH>` only shrinks, and preserves aspect; the wash tile fits inside
+    a square instead of matching a width.
+    """
+    sw, sh = source_dims
+    scale = min(box / sw, box / sh) if fit_box else min(box / sw, 1.0)
+    return max(1, round(sw * scale)), max(1, round(sh * scale))
+
+
+def stale(derivative, source_dims, box, fit_box=False):
+    """True if the derivative is missing, unreadable, or not the exact size this
+    source would produce at this target.
+
+    Deliberately NOT mtime-based. A git checkout stamps every file with the
+    checkout time, so in CI "is the source newer than its derivative" answers
+    arbitrarily depending on the order git happened to write them — it would
+    rebuild everything on one run and nothing on the next.
+
+    Comparing the exact expected height instead is deterministic and strictly
+    sharper. Shaving a hairline off a source moves the aspect ratio by under
+    half a percent, inside any sane ratio tolerance, but it moves the rendered
+    height by a whole pixel: rock-stage-03 at 750 wide went from 1119 to 1126,
+    which this catches and a ratio comparison did not.
+    """
     if not os.path.exists(derivative):
         return True
-    if os.path.getmtime(source) > os.path.getmtime(derivative):
-        return True
-    if not compare_aspect:
-        return False
     dims = size(derivative)
     if dims is None:
         return True
-    sw, sh = source_dims
-    dw, dh = dims
-    return abs(dw / dh - sw / sh) > ASPECT_TOLERANCE
+    want_w, want_h = expected_dims(source_dims, box, fit_box)
+    # one pixel of slack for the encoders' own rounding
+    return abs(dims[0] - want_w) > 1 or abs(dims[1] - want_h) > 1
 
 
 def main():
@@ -167,8 +181,7 @@ def main():
 
         for target, width, kind in targets:
             checked += 1
-            # wash is a square thumbnail, so its aspect never matches the source
-            outdated = args.force or stale(target, source, dims, compare_aspect=(kind != "wash"))
+            outdated = args.force or stale(target, dims, width, fit_box=(kind == "wash"))
             if not outdated:
                 continue
             if args.check:
