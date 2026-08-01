@@ -85,7 +85,7 @@
 }
 
 .project-page-body a:hover {
-  text-decoration-thickness: 2px;
+  opacity: 0.78;
 }
 
 .project-page-body .credit,

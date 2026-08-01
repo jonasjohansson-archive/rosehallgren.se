@@ -30,9 +30,22 @@ permalink: index.html
 
     <link
       rel="stylesheet"
-      href="assets/css/styles.css?v=20260802an"
+      href="assets/css/styles.css?v=20260802ap"
       media="all"
     />
+    {#- Each self-link in the intro carries its own project's colour on the
+        underline. Generated from the project data rather than written into the
+        stylesheet, so a colour changed in the CMS changes the rule with it.
+
+        The underline and not the text: these colours are grounds, picked to
+        carry white type, so as link text on the intro's own dark ground they
+        would sit near-invisible and Torö's would match the background exactly. #}
+    <style>
+{%- for p in projects %}{% if p.color %}
+      .about-text a[href="/{{ p.slug }}/"] { --project-link: {{ p.color }}; }
+{%- endif %}{% endfor %}
+    </style>
+
     <link rel="icon" type="image/svg+xml" href="assets/favicon/favicon.svg" />
     <link
       rel="icon"

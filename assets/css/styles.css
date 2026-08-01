@@ -417,6 +417,29 @@ body {
   margin-bottom: var(--spacing-small);
 }
 
+/* An intro link to a project takes that project's colour on its rule. Mixed
+   towards paper because these colours are grounds and would otherwise be too
+   dark to see on one. Falls back to currentColor for the outward links, which
+   have no project behind them. */
+.about-text a[href^="/"] {
+  text-decoration-color: color-mix(
+    in oklab,
+    var(--project-link, currentColor) 55%,
+    var(--paper)
+  );
+}
+
+/* Hover brightens the rule rather than thickening it. A thickness change nudges
+   the line and reads as movement under the cursor; a colour shift is felt
+   without anything moving. */
+.about-text a[href^="/"]:hover {
+  text-decoration-color: color-mix(
+    in oklab,
+    var(--project-link, currentColor) 20%,
+    var(--paper)
+  );
+}
+
 .about-contact a,
 .about-text a {
   text-underline-offset: 0.18em;
@@ -434,14 +457,14 @@ body {
   margin: -4px 8px -4px -8px;
 }
 
-/* Hover thickens the rule rather than removing it. Taking the underline away on
-   hover withdraws the affordance at the moment it is being used, and on these
-   coloured grounds the underline is most of what marks a link at all. */
+/* Hover leaves the rule alone. It used to be removed, which withdrew the
+   affordance at the moment it was being used; thickening it instead moved the
+   line under the cursor. The underline is constant, and hover lifts the ink. */
 .about-contact a:hover,
 .about-text a:hover,
 .slide-content a:hover,
 .footer-contact a:hover {
-  text-decoration-thickness: 2px;
+  opacity: 0.78;
 }
 
 /* --- projects ------------------------------------------------------------ */
