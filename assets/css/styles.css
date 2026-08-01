@@ -923,7 +923,10 @@ body {
      a position indicator rather than as part of the heading. */
   .carousel-navigation {
     top: auto;
-    bottom: var(--indent);
+    /* The same offset the title takes from the top. --indent is the horizontal
+       rhythm and is nearly five times larger here, which left the dots marooned
+       well above the bottom edge while the title sat tight to the top. */
+    bottom: var(--spacing-large);
     left: 50%;
     right: auto;
     width: 50%;
