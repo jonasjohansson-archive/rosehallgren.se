@@ -20,7 +20,6 @@ class Portfolio {
     this.navUpdaters = new Map();
 
     this.initCarousels();
-    this.setupBackdrops();
     this.setupPrintImages();
     this.setupCarouselReset();
     this.setupEventListeners();
@@ -391,124 +390,6 @@ class Portfolio {
 
   // --- colour --------------------------------------------------------------
 
-  /**
-   * The slide's blurred backdrop, taken from the image already on screen.
-   *
-   * currentSrc, so it reuses the exact file the browser picked off the srcset
-   * and costs no second request. Set after load because before that currentSrc
-   * is empty and the background shorthand would be invalid.
-   */
-  setBackdrop(img) {
-    const slide = img.closest(".image-slide");
-    if (!slide) return;
-    const apply = () => {
-      const src = img.currentSrc || img.src;
-      if (!src) return;
-      slide.style.setProperty("--bg-image", `url("${src}")`);
-      // Lets CSS fade it in rather than snap it on.
-      slide.dataset.backdrop = "";
-    };
-    if (img.complete && img.naturalWidth) apply();
-    else img.addEventListener("load", apply, { once: true });
-  }
-
-  /**
-   * Arm every image slide's backdrop up front.
-   *
-   * This used to hang off the same IntersectionObserver as the colour
-   * extraction, which meant the wash appeared only once the slide was already
-   * on screen — you saw flat paper, then it popped. Hanging it off the image's
-   * own load event instead means the backdrop and the photograph arrive
-   * together, since content-visibility does not start the download until the
-   * slide is near the viewport anyway.
-   */
-  /**
-   * Wind a project's carousel back once it is fully off screen.
-   *
-   * Scroll positions otherwise persist for the life of the page: a project you
-   * paged four slides into is still on slide four when you come back to it,
-   * showing a detail shot with no idea what the project is. Reset on exit
-   * rather than on entry so it is never seen happening, and instantly rather
-   * than smoothly for the same reason.
-   */
-  setupCarouselReset() {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) return;
-          const carousel = entry.target.querySelector(".project-carousel");
-          if (!carousel || carousel.scrollLeft === 0) return;
-          carousel.scrollTo({ left: 0, behavior: "instant" });
-          const update = this.navUpdaters.get(carousel);
-          if (update) update();
-        });
-      },
-      { threshold: 0 },
-    );
-    this.projects.forEach((project) => observer.observe(project));
-  }
-
-  /**
-   * Get the print JPEGs onto the wire before someone prints.
-   *
-   * They are display: none with loading="lazy", which is what keeps 26MB off
-   * the page — no layout box, so they never intersect and never load. The cost
-   * is that Cmd+P is the first moment they are asked for, and Chrome will
-   * happily rasterise the preview before 125 of them have arrived, which is why
-   * images come out blank. Headless runs never showed it because they pass
-   * --virtual-time-budget and wait.
-   *
-   * Setting loading="eager" on an already-parsed lazy image starts the fetch
-   * immediately, so:
-   *   - Cmd/Ctrl+P keydown warms them while the print dialog is opening;
-   *   - beforeprint warms them for a menu-triggered print, which is later but
-   *     better than nothing;
-   *   - and after two idle minutes they are fetched a few at a time anyway, so
-   *     a print from a page that has been open a while is instant.
-   * Skipped entirely when the browser reports Save Data.
-   */
-  setupPrintImages() {
-    const imgs = () => Array.from(document.querySelectorAll("img.print-only"));
-    let warmed = false;
-    const warmAll = () => {
-      if (warmed) return;
-      warmed = true;
-      imgs().forEach((img) => {
-        img.loading = "eager";
-      });
-    };
-
-    addEventListener(
-      "keydown",
-      (e) => {
-        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "p") warmAll();
-      },
-      { capture: true },
-    );
-    addEventListener("beforeprint", warmAll);
-
-    if (navigator.connection?.saveData) return;
-
-    // Trickle them in once the page has been sitting idle, a few at a time, so
-    // this never competes with the photographs someone is actually looking at.
-    setTimeout(() => {
-      const queue = imgs();
-      const pump = () => {
-        if (warmed || !queue.length) return;
-        queue.splice(0, 4).forEach((img) => {
-          img.loading = "eager";
-        });
-        (window.requestIdleCallback || setTimeout)(pump, { timeout: 2000 });
-      };
-      pump();
-    }, 120000);
-  }
-
-  setupBackdrops() {
-    document
-      .querySelectorAll(".image-slide img.screen-only")
-      .forEach((img) => this.setBackdrop(img));
-  }
 
 }
 

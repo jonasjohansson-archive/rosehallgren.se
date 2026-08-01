@@ -21,6 +21,7 @@ const path = require("path");
 const AVIF_DIR = "assets/images/avif";
 const WEBP_DIR = "assets/images/w";
 const PRINT_DIR = "assets/images/print";
+const WASH_DIR = "assets/images/wash";
 
 /**
  * The derivative base name for a CMS image path.
@@ -177,6 +178,17 @@ module.exports = function (eleventyConfig) {
   });
 
   eleventyConfig.addFilter("printSrc", (file) => `${PRINT_DIR}/${stem(file)}.jpg`);
+
+  /**
+   * The blurred backdrop's own file: 40px on the long edge, ~700 bytes.
+   *
+   * The backdrop used to reuse whatever rung the browser had picked for the
+   * photograph, which meant JS could only set it after that image loaded — so
+   * it arrived late and had to be faded in to hide the fact. Its own file is
+   * known at build time, is small enough to land immediately, and is blurred
+   * 40px and scaled 1.4x anyway, so 40px is all the detail that could survive.
+   */
+  eleventyConfig.addFilter("washSrc", (file) => `${WASH_DIR}/${stem(file)}.jpg`);
   eleventyConfig.addFilter("intrinsicWidth", (file) => intrinsic(stem(file))?.width || "");
   eleventyConfig.addFilter("intrinsicHeight", (file) => intrinsic(stem(file))?.height || "");
 

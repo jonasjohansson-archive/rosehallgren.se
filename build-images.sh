@@ -29,6 +29,7 @@ SRC_DIRS=("assets/images/projects" "assets/images/photography" "assets/images/be
 OUT="assets/images/w"
 AVIF_OUT="assets/images/avif"
 PRINT_OUT="assets/images/print"
+WASH_OUT="assets/images/wash"
 WIDTHS=(640 750 1000 1250 1500 2000)
 Q=80          # webp; measured indistinguishable from q85 on contain-fitted photos
 AVIF_CQ=32    # ~40% smaller than webp q80 at visually equivalent quality
@@ -78,7 +79,7 @@ done
 stage="$(mktemp -d)"
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp" "$stage"' EXIT
-mkdir -p "$stage/w" "$stage/avif" "$stage/print"
+mkdir -p "$stage/w" "$stage/avif" "$stage/print" "$stage/wash"
 
 total_src=0; total_webp=0; total_avif=0; total_print=0; count=0
 
@@ -132,6 +133,14 @@ for dir in "${SRC_DIRS[@]}"; do
            -colorspace sRGB -quality "$PRINT_Q" -interlace none \
            "$stage/print/$base.jpg"
     total_print=$((total_print + $(stat -f%z "$stage/print/$base.jpg")))
+
+    # the blurred backdrop's own file: 40px on the long edge, ~700 bytes. It is
+    # blurred 40px and scaled 1.4x on the page, so this is all the detail that
+    # could survive, and being tiny it lands before the photograph does — which
+    # is what lets the wash be in place instead of fading in.
+    magick "${src}[0]" -auto-orient -resize "40x40" -strip \
+           -colorspace sRGB -quality 72 -interlace none \
+           "$stage/wash/$base.jpg"
   done < <(find "$dir" -maxdepth 1 -type f \
              \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) -print0)
 done
@@ -139,7 +148,7 @@ done
 [ "$count" -gt 0 ] || { echo "no sources found; refusing to swap" >&2; exit 1; }
 
 # Swap only now that every file exists.
-for pair in "w:$OUT" "avif:$AVIF_OUT" "print:$PRINT_OUT"; do
+for pair in "w:$OUT" "avif:$AVIF_OUT" "print:$PRINT_OUT" "wash:$WASH_OUT"; do
   from="$stage/${pair%%:*}"; to="${pair##*:}"
   mkdir -p "$(dirname "$to")"
   rm -rf "$to.old"

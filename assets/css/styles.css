@@ -527,15 +527,6 @@ body {
   filter: blur(40px) saturate(1.6);
   transform: scale(1.4);
   z-index: 1;
-  /* Faded in once main.js knows which file the browser actually picked, so the
-     wash arrives with the photograph instead of appearing under one already on
-     screen. */
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-
-.image-slide[data-backdrop]::before {
-  opacity: 1;
 }
 
 .image-slide::after {

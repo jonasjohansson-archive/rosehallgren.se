@@ -12,7 +12,7 @@
 {%- set SIZES = "(min-width: 1600px) 50vw, 100vw" %}
 {%- macro imageSlide(img, extraClass, projectName, eager) %}
         <div{% if projectName %} data-project="{{ projectName }}"{% endif %} class="slide{% if extraClass %} {{ extraClass }}{% endif %}">
-          <div class="image-slide">
+          <div class="image-slide" style="--bg-image: url({{ img.file | washSrc }})">
             <picture>
               <source
                 type="image/avif"
