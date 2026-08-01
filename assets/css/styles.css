@@ -101,11 +101,17 @@
   --spacing-medium: 16px;
   --spacing-large: 20px;
 
-  /* One indent for the intro copy, every project title and the dot row, so the
-     three line up down the left edge instead of each carrying its own padding.
-     The intro used to be a centred 600px column, which put its text at
-     (100vw - 600px) / 2 — nowhere near the title at 20px. */
-  --indent: 2.5rem;
+  /* One indent for the intro copy, every project title, the project copy, the
+     dot row and the footer — each measured from its own container, so at the
+     two-up breakpoint the title sits --indent from the viewport and the copy
+     sits --indent from its panel. That is the only rule that holds at both
+     breakpoints: the copy's own centred position is (100vw - 600px) / 2 below
+     1600px and 75vw - 300px above it, so nothing can align to both, and a title
+     that tried would land mid-screen over the photograph.
+
+     Fluid, because a fixed 120px is generous on a 1728px display and most of a
+     laptop's margin. */
+  --indent: clamp(2.5rem, 5vw, 7.5rem);
 
   --transition-fast: all 0.2s ease;
   --z-index-high: 9999;
