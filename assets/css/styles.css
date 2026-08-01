@@ -452,38 +452,25 @@ body {
   }
 }
 
-/* The seam shapes.
-   One radius, always — what varies is WHICH corners take it. Mixing sizes read
-   as a set of differently rounded boxes; a single radius appearing on different
-   corners reads as one shape being cut in different places, which is closer to
-   how the wordmark works. Seven steps, prime, so the cycle never lines up with
-   a project's slide count. */
-.slide:nth-child(7n + 1) {
+/* Two cuts in the whole page, not nineteen.
+
+   Where the intro meets the first project, and where the last project meets the
+   footer — the two edges of the work itself. Running the cycle through every
+   project notched every join in the site, which made it the grid rather than a
+   gesture; and the joins BETWEEN projects never needed it, because a project
+   ending and another starting is already a change of colour.
+
+   Applied to every slide rather than only the first, so the edge is cut
+   wherever you happen to be along the carousel.
+
+   --seam is 0 below 1600px, so this is a two-up device only: at narrower widths
+   a slide fills the screen and its corners are the screen's corners. */
+.about-section + .project .slide {
   border-radius: 0 var(--seam) 0 0;
 }
 
-.slide:nth-child(7n + 2) {
-  border-radius: var(--seam) 0 0 var(--seam);
-}
-
-.slide:nth-child(7n + 3) {
+.project:last-of-type .slide {
   border-radius: 0 0 var(--seam) 0;
-}
-
-.slide:nth-child(7n + 4) {
-  border-radius: var(--seam) 0 var(--seam) 0;
-}
-
-.slide:nth-child(7n + 5) {
-  border-radius: 0 var(--seam) 0 var(--seam);
-}
-
-.slide:nth-child(7n + 6) {
-  border-radius: 0 0 0 var(--seam);
-}
-
-.slide:nth-child(7n + 7) {
-  border-radius: var(--seam) var(--seam) 0 0;
 }
 
 .slide {
