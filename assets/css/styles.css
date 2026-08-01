@@ -62,6 +62,10 @@
   --font-body: "Instrument", Helvetica, Arial, sans-serif;
 
   --font-size-base: 0.875rem;
+  /* Running copy, in the intro and on the project panels alike. They were
+     14px and 16px respectively, which read as two different voices on the
+     same page. */
+  --font-size-body: 1rem;
   --font-size-chrome: 0.75rem;
   --font-size-title: 1.0625rem;
   --line-height-base: 1.5;
@@ -229,6 +233,9 @@ body {
 }
 
 .about-text p {
+  /* Same size as the project copy. They were 14px and 16px, which read as two
+     different voices on one page. */
+  font-size: var(--font-size-body);
   margin-bottom: var(--spacing-medium);
 }
 
@@ -427,17 +434,27 @@ body {
   color: var(--ink);
 }
 
+/* Copy sits at the left edge of its slide, not in the middle of it. The slide
+   is a centring flex container for photographs; left unchanged it also centred
+   the 600px copy column, which put the text at (slide width - 600) / 2 and
+   lined it up with nothing. Flush left, it sits under the project title, which
+   sits under the intro. */
 .slide:has(.slide-content) {
   background: var(--project-text-bg, var(--project-primary-color));
   color: #fff;
+  justify-content: flex-start;
 }
 
 .slide-content {
   max-width: 600px;
   text-align: left;
-  font-size: 1rem;
-  padding: 1rem;
-  margin: 0 auto;
+  font-size: var(--font-size-body);
+  /* Flush left on --indent rather than centred in the slide, so the copy sits
+     on the same vertical as the project title above it and the intro above
+     that. Centred, it started at (100vw - 600px) / 2 and lined up with
+     nothing. */
+  padding: 1rem var(--indent);
+  margin: 0;
   position: relative;
   z-index: 10;
 }
