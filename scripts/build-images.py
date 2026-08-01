@@ -152,6 +152,19 @@ def main():
     built = removed = checked = 0
     problems = []
 
+    # Every derivative is named after the source's stem alone, with no directory
+    # in it, so two sources anywhere in SOURCE_DIRS that share a basename write
+    # to the same files and the second silently replaces the first. .pages.yml
+    # accepts both .jpg and .jpeg, which makes cover.jpg and cover.jpeg exactly
+    # this collision. Nothing else in the pipeline can see it.
+    by_stem = {}
+    for source in sources():
+        by_stem.setdefault(os.path.splitext(os.path.basename(source))[0], []).append(source)
+    for stem_name, paths in sorted(by_stem.items()):
+        if len(paths) > 1:
+            rel = ", ".join(os.path.relpath(p, ROOT) for p in paths)
+            problems.append(f"{stem_name}: {len(paths)} sources share this name ({rel})")
+
     # Share cards, for whichever images settings.json nominates. Generated here
     # rather than for every source, because 123 of them would be 123 files
     # nobody links to.
@@ -206,25 +219,37 @@ def main():
                 problems.append(f"{os.path.basename(target)}: stale or missing")
                 continue
 
-            if kind in ("avif", "webp"):
-                tmp = os.path.join(ROOT, f".build-{stem}-{width}.png")
-                run([MAGICK, f"{source}[0]", "-auto-orient", "-resize", f"{width}x>",
-                     "-strip", "-colorspace", "sRGB", tmp])
-                try:
-                    if kind == "avif":
-                        run(["avifenc", "-q", "50", "-s", "6", tmp, target])
-                    else:
-                        run(["cwebp", "-q", "78", "-m", "4", "-mt", tmp, "-o", target])
-                finally:
-                    os.path.exists(tmp) and os.remove(tmp)
-            elif kind == "print":
-                run([MAGICK, f"{source}[0]", "-auto-orient", "-resize", f"{PRINT_WIDTH}x>",
-                     "-strip", "-colorspace", "sRGB", "-quality", "80",
-                     "-interlace", "none", target])
-            else:
-                run([MAGICK, f"{source}[0]", "-auto-orient", "-resize", f"{WASH_WIDTH}x{WASH_WIDTH}",
-                     "-strip", "-colorspace", "sRGB", "-quality", "72",
-                     "-interlace", "none", target])
+            # One unreadable file must not abandon the other 122 images. A
+            # resize can succeed and the encode that follows it fail, and an
+            # uncaught error there used to kill the run mid-batch and print a
+            # traceback instead of saying which image was at fault. Collected
+            # like every other problem, and the run still exits non-zero.
+            try:
+                if kind in ("avif", "webp"):
+                    tmp = os.path.join(ROOT, f".build-{stem}-{width}.png")
+                    try:
+                        run([MAGICK, f"{source}[0]", "-auto-orient", "-resize", f"{width}x>",
+                             "-strip", "-colorspace", "sRGB", tmp])
+                        if kind == "avif":
+                            run(["avifenc", "-q", "50", "-s", "6", tmp, target])
+                        else:
+                            run(["cwebp", "-q", "78", "-m", "4", "-mt", tmp, "-o", target])
+                    finally:
+                        os.path.exists(tmp) and os.remove(tmp)
+                elif kind == "print":
+                    run([MAGICK, f"{source}[0]", "-auto-orient", "-resize", f"{PRINT_WIDTH}x>",
+                         "-strip", "-colorspace", "sRGB", "-quality", "80",
+                         "-interlace", "none", target])
+                else:
+                    run([MAGICK, f"{source}[0]", "-auto-orient", "-resize", f"{WASH_WIDTH}x{WASH_WIDTH}",
+                         "-strip", "-colorspace", "sRGB", "-quality", "72",
+                         "-interlace", "none", target])
+            except RuntimeError as exc:
+                problems.append(f"{os.path.basename(target)}: {exc}")
+                # a half-written target is worse than none
+                if os.path.exists(target):
+                    os.remove(target)
+                continue
             built += 1
             print(f"  {os.path.relpath(target, ROOT)}")
 

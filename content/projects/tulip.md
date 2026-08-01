@@ -4,7 +4,7 @@ slug: "tulip"
 order: 17
 color: "#372724"
 year: "2021"
-location: "Blomsterfrämjandet, Klong and Straight Design Studio"
+location: ""
 credits:
   - "Winning entry in the Tulip competition, run by Blomsterfrämjandet with Klong and Straight Design Studio"
 media:

@@ -101,13 +101,13 @@ content:
           name: year,
           label: Year,
           type: string,
-          description: "e.g. 2022, or 2021–22. Shown only in the PDF.",
+          description: "e.g. 2022, or a span like 2021–2023. Not shown on the page: it goes into the PDF, and into the data search engines and link previews read.",
         }
       - {
           name: location,
           label: Place,
           type: string,
-          description: "e.g. Stockholm. Shown only in the PDF, after the year.",
+          description: "Where the work is, e.g. Stockholm, or Torö, Nynäshamn. A place, not an organisation — it is published as a place in the page's structured data. Not shown on the page: it goes into the PDF, after the year.",
         }
       - name: links
         label: Links
@@ -126,6 +126,7 @@ content:
       - name: press
         label: Press
         type: object
+        description: "Where the project was written about. These print as a Press line under the credits, separate from the Links above, which are for the practice or festival behind the work."
         list:
           collapsible: { collapsed: true, summary: "{label}" }
         fields:
@@ -135,7 +136,7 @@ content:
         label: Images and video
         required: true
         type: object
-        description: "Drag to reorder. The FIRST image is the one shown with the title and used as the large image on the PDF page; the rest become the collage on the following page. A video can sit anywhere in the list. Keep it to about 20 images — beyond that the PDF gives the project a third page."
+        description: "Drag to reorder. The FIRST image is the one shown with the title and used as the large image on the PDF page; the rest become the collage on the following page. A video can sit anywhere in the list. Keep it to 20 images or fewer. At 21 the PDF gives the project a third page."
         list:
           collapsible: { collapsed: true, summary: "{alt}{title}" }
         fields:
@@ -194,7 +195,7 @@ content:
                   { value: "sv", label: "Swedish" },
                 ],
             },
-          description: "Rarely needed. Set to Swedish only for a Swedish title — Torö, Folkbastu, Jag är Gud — so a screen reader reading the page in English still pronounces it as Swedish. Leave as English for everything else.",
+          description: "Rarely needed. Set to Swedish only for a Swedish title — Torö, Folkbastu, Jag är Gud, Järva Stadspark, Drömmarens Malmö — so a screen reader reading the page in English still pronounces it as Swedish. Leave as English for everything else.",
         }
 
   - name: settings
