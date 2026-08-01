@@ -400,41 +400,80 @@ body {
 }
 
 /* An occasional nudge that the project continues to the right.
-   Only on image slides that actually have a slide after them, and on strides of
-   7 and 11 — primes, so they rarely coincide and never settle into a rhythm.
-   Every fourth slide put one on half the site, which reads as a control. Placed in the bottom
-   corner, clear of the contained photograph above it and of the title row.
-   Drawn as a mask rather than an image so it takes --project-title-color and
-   is legible on paper and on the dark panel alike. Off on touch, where tapping
-   anywhere already advances. */
+   Five hand-drawn arrows, every one of them pointing rightward, on strides of
+   11, 17, 23, 29 and 37 — all prime, so they rarely coincide and never settle
+   into a rhythm. Tighter strides put one on half the slides, which reads as a
+   control on every frame rather than as something you happen upon. Sizes and positions differ per arrow so they read as scattered
+   through the work rather than parked in the same corner of every slide.
+   Placed in the margin below the contained photograph, clear of the title row
+   above it. Drawn as masks rather than images so each takes
+   --project-title-color and stays legible on paper and on the dark panel alike.
+   Off on touch, where tapping anywhere already advances. */
 @media (min-width: 769px) and (pointer: fine) {
-  .slide:has(.image-slide):not(:last-child):nth-child(7n + 2)::after,
-  .slide:has(.image-slide):not(:last-child):nth-child(11n + 6)::after {
+  .slide:has(.image-slide):not(:last-child):nth-child(11n + 4)::after,
+  .slide:has(.image-slide):not(:last-child):nth-child(17n + 9)::after,
+  .slide:has(.image-slide):not(:last-child):nth-child(23n + 13)::after,
+  .slide:has(.image-slide):not(:last-child):nth-child(29n + 7)::after,
+  .slide:has(.image-slide):not(:last-child):nth-child(37n + 21)::after {
     content: "";
     position: absolute;
-    right: var(--indent);
-    bottom: var(--indent);
-    width: 68px;
-    height: 30px;
-    background-color: var(--project-title-color);
-    opacity: 0.5;
+    /* A plain background image, not a mask. Masking an SVG referenced by URL
+       resolved correctly in every computed style I checked and still painted
+       nothing, and these only ever sit on image slides — which always carry the
+       paper-veiled backdrop — so ink is legible without needing to follow
+       --project-title-color. Simpler, and it cannot silently render empty. */
+    background: var(--arrow) center / contain no-repeat;
+    opacity: 0.4;
     pointer-events: none;
-    /* Above the photograph (3) and, more to the point, above the veil inside
-       .image-slide, which is inset: 0 at z-index 2 and was painting straight
-       over this. The arrow was rendering the whole time, underneath it. */
+    /* Above the photograph (3) and above the veil inside .image-slide, which is
+       inset: 0 at z-index 2 and painted straight over an earlier attempt. */
     z-index: 4;
-    -webkit-mask: var(--arrow) center / contain no-repeat;
-    mask: var(--arrow) center / contain no-repeat;
   }
 
-  .slide:has(.image-slide):not(:last-child):nth-child(7n + 2)::after {
-    --arrow: url("../arrows/arrow-right.svg");
+  /* straight, wide */
+  .slide:has(.image-slide):not(:last-child):nth-child(11n + 4)::after {
+    --arrow: url("../arrows/arrow-a.svg");
+    right: var(--indent);
+    bottom: 2.2rem;
+    width: 132px;
+    height: 54px;
   }
 
-  .slide:has(.image-slide):not(:last-child):nth-child(11n + 6)::after {
-    --arrow: url("../arrows/arrow-loop.svg");
+  /* the loop, low and further in */
+  .slide:has(.image-slide):not(:last-child):nth-child(17n + 9)::after {
+    --arrow: url("../arrows/arrow-b.svg");
+    right: calc(var(--indent) * 2.4);
+    bottom: 1.6rem;
+    width: 104px;
+    height: 64px;
+  }
+
+  /* falling away, tucked into the right margin */
+  .slide:has(.image-slide):not(:last-child):nth-child(23n + 13)::after {
+    --arrow: url("../arrows/arrow-c.svg");
+    right: calc(var(--indent) * 0.5);
+    bottom: 4.5rem;
     width: 62px;
-    height: 42px;
+    height: 96px;
+  }
+
+  /* the long diagonal, larger and lower */
+  .slide:has(.image-slide):not(:last-child):nth-child(29n + 7)::after {
+    --arrow: url("../arrows/arrow-d.svg");
+    right: calc(var(--indent) * 1.6);
+    bottom: 1.2rem;
+    width: 92px;
+    height: 106px;
+  }
+
+  /* rising, on the left of the bottom band */
+  .slide:has(.image-slide):not(:last-child):nth-child(37n + 21)::after {
+    --arrow: url("../arrows/arrow-e.svg");
+    left: var(--indent);
+    right: auto;
+    bottom: 2rem;
+    width: 118px;
+    height: 108px;
   }
 }
 
@@ -804,7 +843,10 @@ body {
    the old 1200px threshold every laptop (1440, 1512, 1728) fell on the wrong
    side and showed the photograph at 40vw: 576px on a 1440 screen, about a
    sixth of the display. */
-@media (min-width: 769px) {
+/* Only once two slides share the viewport. Below that a slide fills the screen
+   and its corners are the screen's corners, so cutting them just rounds the
+   page. */
+@media (min-width: 1600px) {
   :root {
     --seam: 120px;
   }
