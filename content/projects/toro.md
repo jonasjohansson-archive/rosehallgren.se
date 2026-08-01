@@ -16,10 +16,6 @@ credits:
 media:
   - file: "/assets/images/athh/toro-09.jpg"
     alt: "Exterior at the highest point of the island"
-  - file: "/assets/images/athh/toro-02.jpg"
-    alt: "The new gable extension"
-  - file: "/assets/images/athh/toro-03.jpg"
-    alt: "Interior after the reprogramming"
   - file: "/assets/images/athh/toro-04.jpg"
     alt: "The new roof from inside"
   - file: "/assets/images/athh/toro-05.jpg"
@@ -28,12 +24,8 @@ media:
     alt: "Detail of the addition"
   - file: "/assets/images/athh/toro-07.jpg"
     alt: "Interior looking through the plan"
-  - file: "/assets/images/athh/toro-08.jpg"
-    alt: "The house among the pines"
   - file: "/assets/images/athh/toro-01.jpg"
     alt: "The house in its clearing on Torö"
-  - file: "/assets/images/athh/toro-10.jpg"
-    alt: "Interior detail"
 ---
 
 An addition and renovation of a weekend house on Torö, an island in Stockholm's southern archipelago. The existing building is a catalogue home from the early 1970s, standing in a mossy clearing on the highest point of the island.
