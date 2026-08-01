@@ -45,6 +45,10 @@
   opacity: 1;
 }
 
+.project-page-next-arrow {
+  margin-right: 0.5em;
+}
+
 .project-page h1 {
   margin: 2.5rem 0 0;
   font-family: var(--font-display);
@@ -126,8 +130,23 @@
   border-radius: 4px;
 }
 
+/* Right-aligned: the one place on this page that is not flush left, because it
+   points forward and the arrow should end at the edge it points towards. */
 .project-page-nav {
   padding: 1.5rem 0 5rem;
+  text-align: right;
+}
+
+/* The footer sits outside main, so it repeats main's own box exactly — 900px
+   centred with the indent inside it — rather than centring a 600px column in
+   the full window, which left its left edge short of the copy above. */
+.project-page .footer {
+  padding-inline: 0;
+}
+
+.project-page .footer-content {
+  max-width: 900px;
+  padding-inline: var(--indent);
 }
 
 @media (max-width: 768px) {

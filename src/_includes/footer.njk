@@ -1,6 +1,6 @@
-{#- The same footer everywhere: contact links from the CMS, the wordmark,
-    and the arrow credit. footerBg is the ground it sits on, passed in so the
-    home page can take the last project's colour and a project page its own. #}
+{#- The same footer everywhere: contact links from the CMS and the wordmark.
+    footerBg is the ground it sits on, passed in so the home page can take the
+    last project's colour and a project page its own. #}
     <footer
       class="footer"
       {%- if footerBg %} style="--footer-bg: {{ footerBg }}"{% endif %}>
@@ -23,9 +23,6 @@
 {%- endfor %}
           </p>
           <p class="in-print studio-address">{{ settings.site.studio_address }}</p>
-          <p class="colophon">
-            Arrows by David Alexander Slaager from the Noun Project
-          </p>
           <br />
           <p>
             <a

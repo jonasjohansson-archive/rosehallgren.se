@@ -68,12 +68,9 @@ eleventyExcludeFromCollections: true
         <a class="project-page-mark" href="/" aria-label="Studio Rose Hallgren, all work">
           {% set markId = "logo-project" %}{% include "wordmark.njk" %}
         </a>
+        {#- No year/location line: the copy underneath says where and when in a
+            sentence, and the standalone metadata was repeating it. #}
         <h1{% if p.lang %} lang="{{ p.lang }}"{% endif %}>{{ p.title }}</h1>
-        {%- if p.year or p.location %}
-        <p class="project-page-meta">
-          {{ p.year }}{% if p.year and p.location %} · {% endif %}{{ p.location }}
-        </p>
-        {%- endif %}
       </header>
 
       <div class="project-page-body">
@@ -135,12 +132,19 @@ eleventyExcludeFromCollections: true
       {%- set idx = projects.indexOf(p) %}
       {%- set next = projects[(idx + 1) % (projects | length)] %}
       <nav class="project-page-nav">
-        <a class="project-page-next" href="/{{ next.slug }}/">
-          <span class="project-page-next-label">Next</span>
-          <span class="project-page-next-title"{% if next.lang %} lang="{{ next.lang }}"{% endif %}>{{ next.title }}</span>
+        {#- The arrow does the work the word "Next" was doing, and sits on the
+            right where the eye already is at the end of a scroll. It is marked
+            aria-hidden and the link keeps an accessible name, so a screen
+            reader hears the project rather than a punctuation character. #}
+        <a class="project-page-next" href="/{{ next.slug }}/" aria-label="Next project: {{ next.title }}">
+          <span class="project-page-next-arrow" aria-hidden="true">&#8594;</span>
+          <span{% if next.lang %} lang="{{ next.lang }}"{% endif %}>{{ next.title }}</span>
         </a>
       </nav>
     </main>
-    {% include "footer.njk" %}
+    {#- The footer takes this project's own colour, the way the home page footer
+        takes the last project's, so the page has one ground from top to bottom
+        rather than ending on white. #}
+    {% set footerBg = p.color %}{% include "footer.njk" %}
   </body>
 </html>

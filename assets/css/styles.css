@@ -212,12 +212,14 @@ body {
 
 /* --- masthead ------------------------------------------------------------ */
 
+.wordmark,
 #logo-top,
 #logo-bottom {
   height: 2.5rem;
   width: auto;
 }
 
+.wordmark path,
 #logo-top path,
 #logo-bottom path {
   fill: var(--paper);
@@ -411,59 +413,6 @@ body {
   cursor: e-resize;
 }
 
-/* An occasional nudge that the project continues to the right.
-
-   On the opening slides — the hero, or the first picture after the copy —
-   because that is where someone needs telling there is more; an arrow eight
-   slides in is telling them something they already know. Strides of 3 and 5
-   across PROJECTS rather than slides, so roughly one project in two carries a
-   single arrow rather than arrows appearing throughout.
-
-   Drawn as a mask over --project-title-color, which is the same ink-or-white
-   the title resolves to, so it is legible whatever the veiled backdrop happens
-   to be. The artwork is white and mask-mode is stated: an SVG referenced by URL
-   can otherwise be read as a luminance mask, under which dark artwork is
-   exactly the part that gets hidden. Each file carries an feTurbulence filter
-   that varies its alpha, so the stroke breaks up like a dry pen. */
-@media (min-width: 769px) and (pointer: fine) {
-  .project:nth-of-type(3n + 2) .slide:has(.image-slide):nth-child(1)::after,
-  .project:nth-of-type(5n + 4) .slide:has(.image-slide):nth-child(3)::after,
-  .project:nth-of-type(7n + 6) .slide:has(.image-slide):nth-child(2)::after {
-    content: "";
-    position: absolute;
-    background-color: var(--project-title-color);
-    opacity: 0.55;
-    pointer-events: none;
-    z-index: 4;
-    -webkit-mask: var(--arrow) center / contain no-repeat;
-    mask: var(--arrow) center / contain no-repeat;
-    -webkit-mask-mode: alpha;
-    mask-mode: alpha;
-    right: var(--indent);
-    bottom: 2rem;
-  }
-
-  .project:nth-of-type(3n + 2) .slide:has(.image-slide):nth-child(1)::after {
-    --arrow: url("../arrows/arrow-a.svg");
-    width: 74px;
-    height: 30px;
-  }
-
-  .project:nth-of-type(5n + 4) .slide:has(.image-slide):nth-child(3)::after {
-    --arrow: url("../arrows/arrow-b.svg");
-    width: 62px;
-    height: 38px;
-    right: calc(var(--indent) * 1.5);
-  }
-
-  .project:nth-of-type(7n + 6) .slide:has(.image-slide):nth-child(2)::after {
-    --arrow: url("../arrows/arrow-e.svg");
-    width: 66px;
-    height: 60px;
-    bottom: 2.6rem;
-  }
-}
-
 /* Two cuts in the whole page, not nineteen.
 
    Where the intro meets the first project, and where the last project meets the
@@ -620,14 +569,6 @@ body {
    it belonged to. */
 .credit-line {
   display: block;
-}
-
-/* Required by the Noun Project's free licence (CC BY). If the arrows are ever
-   swapped for drawn ones, or bought under a subscription, this comes out. */
-.colophon {
-  margin-top: var(--spacing-large);
-  font-size: var(--font-size-chrome);
-  opacity: 0.65;
 }
 
 .slide-content a {
@@ -932,6 +873,7 @@ body {
 
   /* Flush left with the copy beneath it, matching print and desktop. `margin:
      0 auto` was centring the wordmark over left-aligned text. */
+  .wordmark,
   #logo-top,
   #logo-bottom {
     display: block;
@@ -1173,6 +1115,7 @@ body {
   }
 
   /* Flush left with the copy, not centred. */
+  .wordmark,
   #logo-top,
   #logo-bottom {
     display: block;
@@ -1193,6 +1136,7 @@ body {
     font-size: 11.5pt;
   }
 
+  .wordmark path,
   #logo-top path,
   #logo-bottom path {
     fill: #000 !important;
