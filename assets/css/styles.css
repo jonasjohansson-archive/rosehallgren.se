@@ -400,80 +400,55 @@ body {
 }
 
 /* An occasional nudge that the project continues to the right.
-   Five hand-drawn arrows, every one of them pointing rightward, on strides of
-   11, 17, 23, 29 and 37 — all prime, so they rarely coincide and never settle
-   into a rhythm. Tighter strides put one on half the slides, which reads as a
-   control on every frame rather than as something you happen upon. Sizes and positions differ per arrow so they read as scattered
-   through the work rather than parked in the same corner of every slide.
-   Placed in the margin below the contained photograph, clear of the title row
-   above it. Drawn as masks rather than images so each takes
-   --project-title-color and stays legible on paper and on the dark panel alike.
-   Off on touch, where tapping anywhere already advances. */
+
+   On the opening slides — the hero, or the first picture after the copy —
+   because that is where someone needs telling there is more; an arrow eight
+   slides in is telling them something they already know. Strides of 3 and 5
+   across PROJECTS rather than slides, so roughly one project in two carries a
+   single arrow rather than arrows appearing throughout.
+
+   Drawn as a mask over --project-title-color, which is the same ink-or-white
+   the title resolves to, so it is legible whatever the veiled backdrop happens
+   to be. The artwork is white and mask-mode is stated: an SVG referenced by URL
+   can otherwise be read as a luminance mask, under which dark artwork is
+   exactly the part that gets hidden. Each file carries an feTurbulence filter
+   that varies its alpha, so the stroke breaks up like a dry pen. */
 @media (min-width: 769px) and (pointer: fine) {
-  .slide:has(.image-slide):not(:last-child):nth-child(11n + 4)::after,
-  .slide:has(.image-slide):not(:last-child):nth-child(17n + 9)::after,
-  .slide:has(.image-slide):not(:last-child):nth-child(23n + 13)::after,
-  .slide:has(.image-slide):not(:last-child):nth-child(29n + 7)::after,
-  .slide:has(.image-slide):not(:last-child):nth-child(37n + 21)::after {
+  .project:nth-of-type(3n + 2) .slide:has(.image-slide):nth-child(1)::after,
+  .project:nth-of-type(5n + 4) .slide:has(.image-slide):nth-child(3)::after,
+  .project:nth-of-type(7n + 6) .slide:has(.image-slide):nth-child(2)::after {
     content: "";
     position: absolute;
-    /* A plain background image, not a mask. Masking an SVG referenced by URL
-       resolved correctly in every computed style I checked and still painted
-       nothing, and these only ever sit on image slides — which always carry the
-       paper-veiled backdrop — so ink is legible without needing to follow
-       --project-title-color. Simpler, and it cannot silently render empty. */
-    background: var(--arrow) center / contain no-repeat;
-    opacity: 0.4;
+    background-color: var(--project-title-color);
+    opacity: 0.55;
     pointer-events: none;
-    /* Above the photograph (3) and above the veil inside .image-slide, which is
-       inset: 0 at z-index 2 and painted straight over an earlier attempt. */
     z-index: 4;
-  }
-
-  /* straight, wide */
-  .slide:has(.image-slide):not(:last-child):nth-child(11n + 4)::after {
-    --arrow: url("../arrows/arrow-a.svg");
+    -webkit-mask: var(--arrow) center / contain no-repeat;
+    mask: var(--arrow) center / contain no-repeat;
+    -webkit-mask-mode: alpha;
+    mask-mode: alpha;
     right: var(--indent);
-    bottom: 2.2rem;
-    width: 132px;
-    height: 54px;
-  }
-
-  /* the loop, low and further in */
-  .slide:has(.image-slide):not(:last-child):nth-child(17n + 9)::after {
-    --arrow: url("../arrows/arrow-b.svg");
-    right: calc(var(--indent) * 2.4);
-    bottom: 1.6rem;
-    width: 104px;
-    height: 64px;
-  }
-
-  /* falling away, tucked into the right margin */
-  .slide:has(.image-slide):not(:last-child):nth-child(23n + 13)::after {
-    --arrow: url("../arrows/arrow-c.svg");
-    right: calc(var(--indent) * 0.5);
-    bottom: 4.5rem;
-    width: 62px;
-    height: 96px;
-  }
-
-  /* the long diagonal, larger and lower */
-  .slide:has(.image-slide):not(:last-child):nth-child(29n + 7)::after {
-    --arrow: url("../arrows/arrow-d.svg");
-    right: calc(var(--indent) * 1.6);
-    bottom: 1.2rem;
-    width: 92px;
-    height: 106px;
-  }
-
-  /* rising, on the left of the bottom band */
-  .slide:has(.image-slide):not(:last-child):nth-child(37n + 21)::after {
-    --arrow: url("../arrows/arrow-e.svg");
-    left: var(--indent);
-    right: auto;
     bottom: 2rem;
-    width: 118px;
-    height: 108px;
+  }
+
+  .project:nth-of-type(3n + 2) .slide:has(.image-slide):nth-child(1)::after {
+    --arrow: url("../arrows/arrow-a.svg");
+    width: 74px;
+    height: 30px;
+  }
+
+  .project:nth-of-type(5n + 4) .slide:has(.image-slide):nth-child(3)::after {
+    --arrow: url("../arrows/arrow-b.svg");
+    width: 62px;
+    height: 38px;
+    right: calc(var(--indent) * 1.5);
+  }
+
+  .project:nth-of-type(7n + 6) .slide:has(.image-slide):nth-child(2)::after {
+    --arrow: url("../arrows/arrow-e.svg");
+    width: 66px;
+    height: 60px;
+    bottom: 2.6rem;
   }
 }
 
@@ -876,18 +851,32 @@ body {
 }
 
 @media (min-width: 1600px) {
+  /* Every other project leads with its copy instead of its photograph, so
+     scrolling alternates between a picture and a coloured panel. Done with
+     `order` rather than in the markup because it only makes sense here, where
+     both slides are on screen at once: at narrower widths a slide fills the
+     screen and opening on text just delays the work. `order` applies to flex
+     children only, so print — which lays these out as floats — is untouched. */
+  .project.copy-first .slide:has(.slide-content) {
+    order: -1;
+  }
+
   /* Over the first slide, not across both. */
   .project-title {
     width: 50%;
   }
 
-  /* And the dots centred over the second, mirroring the title on the first, so
-     the two halves of the header read as a pair rather than as a title with
-     something pinned to the far corner. */
+  /* Along the bottom, centred under the second slide. With both slides on
+     screen the header row was carrying the title and the dots at once; down
+     here they sit clear of the photographs and clear of the title, and read as
+     a position indicator rather than as part of the heading. */
   .carousel-navigation {
+    top: auto;
+    bottom: var(--indent);
     left: 50%;
     right: auto;
     width: 50%;
+    height: auto;
     justify-content: center;
   }
 

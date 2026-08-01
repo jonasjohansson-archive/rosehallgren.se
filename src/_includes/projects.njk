@@ -58,8 +58,24 @@
         </div>
 {%- endmacro %}
 {%- for p in projects %}
+{#- Every other project opens on its copy instead of its photograph, so
+    scrolling alternates between a picture and a coloured panel rather than
+    hitting the same shape nineteen times.
+
+    Marked as a class rather than reordered here, because it should only happen
+    where two slides share the viewport — below that a slide fills the screen
+    and leading with text just delays the work. The stylesheet does the swap
+    with `order`, which only applies to a flex container, so the DOM order stays
+    hero-first for print and for every narrower layout.
+
+    The FIRST project is never marked: its hero is the LCP element the preload
+    in the head points at. #}
+{#- ...but never when the project has more than one copy panel, or the two
+    would open back to back and you would scroll past two screens of text
+    before reaching a photograph. Fluffy Encounters is the only one today. #}
+{%- set copyFirst = ((loop.index % 2) == 0) and ((p.panels | length) < 2) %}
       <section
-        class="project deck-tiles-{{ p.supportCount | collageTiles }} deck-rows-{{ p.supportCount | collageRows }}"
+        class="project deck-tiles-{{ p.supportCount | collageTiles }} deck-rows-{{ p.supportCount | collageRows }}{% if copyFirst %} copy-first{% endif %}"
         id="{{ p.slug }}"
         {%- if p.color %} style="--project-text-bg: {{ p.color }}"{% endif %}
         aria-labelledby="title-{{ p.slug }}">
@@ -68,20 +84,7 @@
         <p class="project-meta">{{ p.year }}{% if p.year and p.location %} · {% endif %}{{ p.location }}</p>
 {%- endif %}
         <div class="project-carousel">
-{#- Every other project opens on its copy instead of its photograph, so
-    scrolling alternates between a picture and a coloured panel rather than
-    hitting the same shape seventeen times. The FIRST project always leads with
-    its image: that is the LCP element the preload in the head points at.
-
-    Deck is unaffected. In print the copy floats left and .deck-hero floats
-    right, and a float takes its position from the float rule, not from where it
-    sits in the source — so both pages come out identical either way. Verified:
-    36 pages before and after. #}
-{#- ...but never when the project has more than one copy panel, or the two
-    would open back to back and you would scroll past two screens of text
-    before reaching a photograph. Fluffy Encounters is the only one today. #}
-{%- set copyFirst = ((loop.index % 2) == 0) and ((p.panels | length) < 2) %}
-{%- if p.hero and not copyFirst %}{{ imageSlide(p.hero, "deck-hero", "", loop.first) }}{% endif %}
+{%- if p.hero %}{{ imageSlide(p.hero, "deck-hero", "", loop.first) }}{% endif %}
 {%- for panel in p.panels %}
         <div class="slide">
           <div class="slide-content">
@@ -104,7 +107,6 @@
           </div>
         </div>
 {%- endfor %}
-{%- if p.hero and copyFirst %}{{ imageSlide(p.hero, "deck-hero", "") }}{% endif %}
 {%- for m in p.rest %}
 {%- if m.video %}{{ videoSlide(m) }}
 {%- else %}
