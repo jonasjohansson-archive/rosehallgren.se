@@ -26,7 +26,7 @@ const stem = (f) =>
     .replace(/\.[^.]+$/, "");
 
 /**
- * All three derivative sets, not just AVIF. build-images.sh swaps the three
+ * All three derivative sets, not just AVIF. build-images.py writes the three
  * output directories together so in practice they agree, but that is a
  * property of the script rather than a guarantee, and a page missing its print
  * JPEG only shows up as a blank tile in the PDF.
@@ -181,7 +181,7 @@ for (const f of files) {
     if (!fs.existsSync(onDisk)) errors.push(`${at}: ${m.file} is not in the repository`);
     else if (!hasDerivatives(m.file)) {
       errors.push(
-        `${at}: no web versions built for ${m.file} — run ./build-images.sh so the ` +
+        `${at}: no web versions built for ${m.file} — run python3 scripts/build-images.py so the ` +
           `AVIF and WebP sizes exist`,
       );
     }

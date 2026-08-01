@@ -42,6 +42,24 @@ WASH_WIDTH = 40
 ASPECT_TOLERANCE = 0.01
 
 
+def which(*names):
+    """First of `names` that is executable on PATH, or None.
+
+    ImageMagick 7 installs `magick`; ImageMagick 6, which is what Ubuntu still
+    packages and therefore what a GitHub runner gets, installs `convert` and no
+    `magick` at all. Resolving it once here means the rest of the script does
+    not care which is present.
+    """
+    for name in names:
+        for d in os.environ.get("PATH", "").split(os.pathsep):
+            if d and os.access(os.path.join(d, name), os.X_OK):
+                return os.path.join(d, name)
+    return None
+
+
+MAGICK = None  # resolved in main()
+
+
 def run(cmd):
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
@@ -52,7 +70,7 @@ def run(cmd):
 def size(path):
     """(width, height), honouring EXIF rotation, or None if unreadable."""
     try:
-        w, h = run(["magick", f"{path}[0]", "-auto-orient", "-format", "%w %h", "info:"]).split()
+        w, h = run([MAGICK, f"{path}[0]", "-auto-orient", "-format", "%w %h", "info:"]).split()
         return int(w), int(h)
     except (RuntimeError, ValueError):
         return None
@@ -100,12 +118,14 @@ def main():
     parser.add_argument("--check", action="store_true", help="report only, build nothing")
     args = parser.parse_args()
 
-    for tool in ("magick", "avifenc", "cwebp"):
-        if not any(
-            os.access(os.path.join(p, tool), os.X_OK)
-            for p in os.environ.get("PATH", "").split(os.pathsep)
-        ):
-            sys.exit(f"build-images: {tool} is not on PATH")
+    global MAGICK
+    MAGICK = which("magick", "convert")
+    if MAGICK is None:
+        sys.exit("build-images: neither magick nor convert is on PATH (install imagemagick)")
+    for tool in ("avifenc", "cwebp"):
+        if which(tool) is None:
+            sys.exit(f"build-images: {tool} is not on PATH "
+                     f"(install libavif-bin and webp)")
 
     for sub in ("avif", "w", "print", "wash"):
         os.makedirs(os.path.join(ROOT, "assets", "images", sub), exist_ok=True)
@@ -157,7 +177,7 @@ def main():
 
             if kind in ("avif", "webp"):
                 tmp = os.path.join(ROOT, f".build-{stem}-{width}.png")
-                run(["magick", f"{source}[0]", "-auto-orient", "-resize", f"{width}x>",
+                run([MAGICK, f"{source}[0]", "-auto-orient", "-resize", f"{width}x>",
                      "-strip", "-colorspace", "sRGB", tmp])
                 try:
                     if kind == "avif":
@@ -167,11 +187,11 @@ def main():
                 finally:
                     os.path.exists(tmp) and os.remove(tmp)
             elif kind == "print":
-                run(["magick", f"{source}[0]", "-auto-orient", "-resize", f"{PRINT_WIDTH}x>",
+                run([MAGICK, f"{source}[0]", "-auto-orient", "-resize", f"{PRINT_WIDTH}x>",
                      "-strip", "-colorspace", "sRGB", "-quality", "80",
                      "-interlace", "none", target])
             else:
-                run(["magick", f"{source}[0]", "-auto-orient", "-resize", f"{WASH_WIDTH}x{WASH_WIDTH}",
+                run([MAGICK, f"{source}[0]", "-auto-orient", "-resize", f"{WASH_WIDTH}x{WASH_WIDTH}",
                      "-strip", "-colorspace", "sRGB", "-quality", "72",
                      "-interlace", "none", target])
             built += 1

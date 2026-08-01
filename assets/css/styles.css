@@ -777,11 +777,15 @@ body {
   color: var(--paper);
 }
 
+/* Flush left at --indent and on the intro's measure, so the page closes on the
+   same column it opened on. `margin: 0 auto` centred this 600px block inside
+   the padded footer, which put its left edge somewhere between the indent and
+   the middle of the window and lined it up with nothing. */
 .footer-content {
-  max-width: 600px;
+  max-width: var(--measure);
   text-align: left;
   width: 100%;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .footer-contact p {
