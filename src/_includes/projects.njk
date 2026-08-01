@@ -78,6 +78,13 @@
         class="project deck-tiles-{{ p.supportCount | collageTiles }} deck-rows-{{ p.supportCount | collageRows }}{% if copyFirst %} copy-first{% endif %}"
         id="{{ p.slug }}"
         {%- if p.color %} style="--project-text-bg: {{ p.color }}"{% endif %}
+        {#- The surface the title and dots start on, so they are the right ink
+            before main.js has run and for anyone it never runs for. A copy-first
+            project opens on the dark panel, everything else on a veiled
+            photograph, which the veil holds at paper. main.js overwrites both
+            per slide from here on. #}
+        data-title-on="{{ "panel" if copyFirst else "paper" }}"
+        data-dots-on="{{ "panel" if copyFirst else "paper" }}"
         aria-labelledby="title-{{ p.slug }}">
         <h2 class="project-title" id="title-{{ p.slug }}"{% if p.lang %} lang="{{ p.lang }}"{% endif %}><a href="/{{ p.slug }}/">{{ p.title }}</a></h2>
 {%- if p.year or p.location %}

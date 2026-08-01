@@ -641,6 +641,18 @@ body {
   border-radius: inherit;
 }
 
+/* The surface the veil guarantees, stated on the element itself.
+
+   ::before paints the blurred backdrop over this, so nothing changes visually.
+   It matters twice: if the backdrop image fails, the slide is paper rather than
+   whatever shows through, and a contrast checker reading the DOM now sees the
+   light surface the title is actually measured against. Reading only the
+   section's project colour, it scored the ink title at 1.16:1 against a ground
+   no pixel of which is ever under the title. */
+.image-slide {
+  background-color: var(--paper);
+}
+
 .video-slide {
   background: var(--color-dark-bg);
 }
