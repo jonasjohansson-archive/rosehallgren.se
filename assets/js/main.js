@@ -66,8 +66,8 @@ class Portfolio {
    *
    * Touch: tapping an image advances, since aiming for a 20% strip with a
    * thumb is fiddly.
-   * Mouse: the outer fifth on each side steps back or forward, the middle
-   * three fifths do nothing, so text stays selectable and the image stays
+   * Mouse: the outer two fifths on each side step back or forward, the middle
+   * fifth does nothing, so text stays selectable and the image stays
    * clickable-through to nothing by accident.
    *
    * Guarded either way: never on a link, a dot or the copy, never when the
@@ -77,7 +77,10 @@ class Portfolio {
    */
   setupPointerNavigation(carousel) {
     const coarse = window.matchMedia("(pointer: coarse)").matches;
-    const EDGE = 0.2;
+    // 40% a side. At 20% the target was a narrow strip most people never found;
+    // this leaves the middle fifth neutral, which is enough to select text and
+    // to click a link without triggering navigation.
+    const EDGE = 0.4;
     let x = 0;
     let y = 0;
     let t = 0;

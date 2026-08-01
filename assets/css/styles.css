@@ -419,6 +419,10 @@ body {
     background-color: var(--project-title-color);
     opacity: 0.5;
     pointer-events: none;
+    /* Above the photograph (3) and, more to the point, above the veil inside
+       .image-slide, which is inset: 0 at z-index 2 and was painting straight
+       over this. The arrow was rendering the whole time, underneath it. */
+    z-index: 4;
     -webkit-mask: var(--arrow) center / contain no-repeat;
     mask: var(--arrow) center / contain no-repeat;
   }
@@ -806,6 +810,21 @@ body {
   }
 }
 
+/* Between the phone layout and the two-up one, the title is centred across the
+   whole slide and the dots sat on the same line at the right — on a wide title
+   like PHOTOGRAPHY the two ran into each other. Below the title instead, and
+   centred with it, so they read as one header block. */
+@media (min-width: 769px) and (max-width: 1599px) {
+  .carousel-navigation {
+    top: calc(var(--spacing-large) + var(--font-size-title) * 1.2 + 1.25rem);
+    left: 0;
+    right: auto;
+    width: 100%;
+    height: auto;
+    justify-content: center;
+  }
+}
+
 @media (min-width: 1600px) {
   /* Over the first slide, not across both. */
   .project-title {
@@ -866,7 +885,11 @@ body {
     align-items: flex-start;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
+    /* NOT contain. `contain` stops the scroll chaining to the page, so once a
+       panel was at its top a swipe up did nothing at all — the page was
+       unreachable from inside the copy. Chaining is the behaviour that lets a
+       short panel scroll the page and a long one scroll itself first. */
+    overscroll-behavior: auto;
   }
 
   /* Clear the absolutely positioned title above and the dot row below. The
