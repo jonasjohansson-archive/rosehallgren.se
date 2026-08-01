@@ -534,6 +534,12 @@ body {
   border-radius: 0 var(--seam) 0 0;
 }
 
+/* The same second cut the last project gets, mirrored: top left here, because
+   the first project's seam is with the intro above it. */
+.about-section + .project .slide:nth-child(3) {
+  border-radius: var(--seam) 0 0 0;
+}
+
 /* First slide only, not every slide in the project. The cut belongs to the seam
    between the work and the page around it, and that seam is only at the start;
    applied to all of them the curve came back on each slide of Photography as
