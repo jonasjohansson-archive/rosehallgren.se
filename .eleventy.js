@@ -214,6 +214,16 @@ module.exports = function (eleventyConfig) {
 
   eleventyConfig.addFilter("isoDate", (d) => new Date(d).toISOString().slice(0, 10));
 
+  /* The opening year of a project's year field, for structured data and
+     article:published_time. A year is written for a reader, so it can be
+     "2022" or a span like "2021–2023"; both need to reach a crawler as a
+     single four-digit year. Returns "" if there is no year to find, so the
+     template can leave the tag out rather than emit a broken date. */
+  eleventyConfig.addFilter("first4", (value) => {
+    const match = String(value || "").match(/\d{4}/);
+    return match ? match[0] : "";
+  });
+
   /**
    * Collaborators who always carry a link, wherever their name appears.
    *

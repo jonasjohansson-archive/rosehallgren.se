@@ -228,12 +228,17 @@ body {
 .about-section {
   min-height: 50vh;
   display: flex;
-  align-items: center;
+  /* Top-aligned, not centred: the wordmark has to land at a fixed height so it
+     matches a project page, and a centred flex line moves it with the length of
+     the copy. */
+  align-items: flex-start;
   /* flush left, not centred: the copy now starts on the same vertical as every
      project title below it */
   justify-content: flex-start;
   gap: clamp(2rem, 5vw, 5rem);
-  padding: 2.5rem var(--indent);
+  /* The same top space a project page gives its wordmark: main's indent plus
+     the header's 4rem. The two pages now open at the same height. */
+  padding: calc(var(--indent) + 4rem) var(--indent) 2.5rem;
   /* The first project's own colour, so the page opens into it rather than
      starting on white and cutting to a colour field a screen later. */
   background: var(--intro-bg, var(--color-bg));
@@ -251,8 +256,12 @@ body {
 
 .about-content h1 {
   font-family: var(--font-display);
+  /* Identical to a project page title. Her name should not be set smaller than
+     the name of one of her projects. */
+  font-size: clamp(2rem, 6vw, 3.5rem);
   font-weight: 700;
-  letter-spacing: -0.01em;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
   margin-bottom: var(--spacing-medium);
 }
 

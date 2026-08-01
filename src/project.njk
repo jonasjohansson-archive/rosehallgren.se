@@ -32,7 +32,7 @@ eleventyExcludeFromCollections: true
       type="image/avif"
       href="{{ p.hero.file | largest('avif') | abs }}"
       imagesrcset="{{ p.hero.file | srcset('avif') | abs }}"
-      imagesizes="(min-width: 1000px) 900px, 100vw"
+      imagesizes="(min-width: 1200px) 50vw, 100vw"
       fetchpriority="high" />
     <link
       rel="preload"
@@ -41,26 +41,76 @@ eleventyExcludeFromCollections: true
       href="/assets/fonts/Instrument.woff2"
       crossorigin />
 
-    <link rel="stylesheet" href="/assets/css/styles.css?v=20260802y" media="all" />
-    <link rel="stylesheet" href="/assets/css/project.css?v=20260802y" media="all" />
+    <link rel="stylesheet" href="/assets/css/styles.css?v=20260802z" media="all" />
+    <link rel="stylesheet" href="/assets/css/project.css?v=20260802z" media="all" />
     <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg" />
     <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon/favicon-96x96.png" />
     <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png" />
 
+    {#- The share card. The title carries the studio name as well as the
+        project, because a link posted on its own has no other context, and the
+        description is the project's own opening sentence rather than the site
+        blurb, so nineteen links do not all preview identically.
+
+        The image is the project's hero at its real dimensions, read from the
+        file: a declared size that does not match the file makes every crawler
+        that trusts it reserve the wrong shape. og:image must be absolute. #}
     {%- set desc = p.panels[0][0] | striptags %}
-    <meta name="description" content="{{ desc | truncate(180) }}" />
+    {%- set shareDesc = desc | truncate(200) %}
+    {%- set shareTitle = p.title + " · " + settings.site.title %}
+    <meta name="description" content="{{ shareDesc }}" />
+    <meta name="author" content="Rose Hallgren" />
     <link rel="canonical" href="https://rosehallgren.se/{{ p.slug }}/" />
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
     <meta property="og:type" content="article" />
     <meta property="og:url" content="https://rosehallgren.se/{{ p.slug }}/" />
     <meta property="og:site_name" content="{{ settings.site.title }}" />
-    <meta property="og:title" content="{{ p.title }}" />
-    <meta property="og:description" content="{{ desc | truncate(180) }}" />
+    <meta property="og:title" content="{{ shareTitle }}" />
+    <meta property="og:description" content="{{ shareDesc }}" />
     <meta property="og:image" content="https://rosehallgren.se{{ p.hero.file | largest('webp') | abs }}" />
     <meta property="og:image:width" content="{{ p.hero.file | intrinsicWidth }}" />
     <meta property="og:image:height" content="{{ p.hero.file | intrinsicHeight }}" />
     <meta property="og:image:alt" content="{{ p.hero.alt }}" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:locale:alternate" content="sv_SE" />
+    {%- if p.year %}
+    <meta property="article:published_time" content="{{ p.year | first4 }}-01-01" />
+    {%- endif %}
+
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ shareTitle }}" />
+    <meta name="twitter:description" content="{{ shareDesc }}" />
+    <meta name="twitter:image" content="https://rosehallgren.se{{ p.hero.file | largest('webp') | abs }}" />
+    <meta name="twitter:image:alt" content="{{ p.hero.alt }}" />
+
     <meta name="theme-color" content="{{ p.color }}" />
+
+    {#- CreativeWork, built from the project's own front matter, so it cannot
+        drift the way a hand-written block would. #}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CreativeWork",
+        "name": {{ p.title | dump | safe }},
+        "url": "https://rosehallgren.se/{{ p.slug }}/",
+        "description": {{ shareDesc | dump | safe }},
+        "image": "https://rosehallgren.se{{ p.hero.file | largest('webp') | abs }}",
+        {%- if p.year %}
+        "dateCreated": {{ (p.year | first4) | dump | safe }},
+        {%- endif %}
+        {%- if p.location %}
+        "locationCreated": { "@type": "Place", "name": {{ p.location | dump | safe }} },
+        {%- endif %}
+        "creator": {
+          "@type": "Person",
+          "name": "Rose Hallgren",
+          "url": "https://rosehallgren.se/"
+        }
+      }
+    </script>
   </head>
   <body class="project-page" style="--project-text-bg: {{ p.color }}">
     <main>
@@ -111,11 +161,11 @@ eleventyExcludeFromCollections: true
             <source
               type="image/avif"
               srcset="{{ m.file | srcset('avif') | abs }}"
-              sizes="(min-width: 1000px) 900px, 100vw" />
+              sizes="(min-width: 1200px) 50vw, 100vw" />
             <img
               src="{{ m.file | largest('webp') | abs }}"
               srcset="{{ m.file | srcset('webp') | abs }}"
-              sizes="(min-width: 1000px) 900px, 100vw"
+              sizes="(min-width: 1200px) 50vw, 100vw"
               alt="{{ m.alt }}"
               width="{{ m.file | intrinsicWidth }}"
               height="{{ m.file | intrinsicHeight }}"

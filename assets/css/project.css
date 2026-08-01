@@ -15,16 +15,26 @@
   color: var(--paper);
 }
 
+/* No max-width and no centring. The home page runs its work to the full width
+   of the window inside --indent, and a project page reading half as wide as the
+   page it was linked from looked like a different site. The copy still holds a
+   readable measure; only the pictures take the width. */
 .project-page main {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: var(--indent) var(--indent) 0;
+  padding: calc(var(--indent) + 4rem) var(--indent) 0;
 }
 
 /* --- header --------------------------------------------------------------- */
 
 .project-page-header {
-  padding: 4rem 0 2.5rem;
+  padding: 0 0 2.5rem;
+}
+
+/* Block, with the line box collapsed. As an inline anchor the wordmark sat on
+   a text baseline, which pushed it 27px below where the same mark sits on the
+   home page even though both have identical padding above them. */
+.project-page-mark {
+  display: block;
+  line-height: 0;
 }
 
 .project-page-back,
@@ -68,8 +78,10 @@
 
 /* --- copy ----------------------------------------------------------------- */
 
+/* 600px, the same measure as .about-content on the home page, so the intro and
+   a project description read as one voice rather than two column widths. */
 .project-page-body {
-  max-width: 34em;
+  max-width: 600px;
   padding-bottom: 3.5rem;
   font-size: var(--font-size-body);
 }
@@ -107,8 +119,24 @@
 
 /* --- the work ------------------------------------------------------------- */
 
+/* One column, then two once there is room for two pictures to be worth looking
+   at side by side. A grid rather than floats so a portrait and a landscape
+   sitting next to each other keep their own heights. */
+.project-page-media {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--indent);
+  align-items: start;
+}
+
+@media (min-width: 1200px) {
+  .project-page-media {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .project-page-media figure {
-  margin: 0 0 var(--indent);
+  margin: 0;
 }
 
 .project-page-media img {
@@ -119,7 +147,7 @@
 }
 
 .project-page-video {
-  margin: 0 0 var(--indent);
+  margin: 0;
   aspect-ratio: 16 / 9;
 }
 
@@ -137,16 +165,19 @@
   text-align: right;
 }
 
-/* The footer sits outside main, so it repeats main's own box exactly — 900px
-   centred with the indent inside it — rather than centring a 600px column in
-   the full window, which left its left edge short of the copy above. */
+/* The footer sits outside main, so it repeats main's own box: full width with
+   the indent inside it, flush left like everything above. */
 .project-page .footer {
-  padding-inline: 0;
+  padding-inline: var(--indent);
 }
 
 .project-page .footer-content {
-  max-width: 900px;
-  padding-inline: var(--indent);
+  max-width: none;
+  margin: 0;
+}
+
+.project-page-nav {
+  margin-top: var(--indent);
 }
 
 @media (max-width: 768px) {
