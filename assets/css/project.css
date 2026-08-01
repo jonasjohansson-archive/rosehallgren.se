@@ -11,7 +11,7 @@
  */
 
 .project-page {
-  background: var(--project-text-bg, var(--paper));
+  background-color: var(--project-text-bg, var(--paper));
   color: var(--paper);
 }
 

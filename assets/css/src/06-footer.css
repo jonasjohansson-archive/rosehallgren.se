@@ -3,7 +3,7 @@
 .footer {
   /* The last project's colour, mirroring the intro taking the first project's,
      so the page opens and closes inside the work rather than on white. */
-  background: var(--footer-bg, var(--color-bg));
+  background-color: var(--footer-bg, var(--color-bg));
   /* same left edge as the intro and every project title */
   padding: 2.5rem var(--indent);
   color: var(--paper);

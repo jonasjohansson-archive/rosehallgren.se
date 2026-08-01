@@ -29,7 +29,7 @@
   padding: calc(var(--indent) + 4rem) var(--indent) 2.5rem;
   /* The first project's own colour, so the page opens into it rather than
      starting on white and cutting to a colour field a screen later. */
-  background: var(--intro-bg, var(--color-bg));
+  background-color: var(--intro-bg, var(--color-bg));
   color: var(--paper);
   transition: color 1s ease;
 }
@@ -53,43 +53,30 @@
   margin: var(--heading-gap) 0;
 }
 
-/* The grain, on the coloured grounds only.
+/* The grain, on the coloured grounds.
 
-   z-index -1 puts it behind everything in the section, so it never lies over a
-   photograph: an image slide paints its own paper background, so the grain
-   shows exactly where the project colour shows and nowhere else.
+   A background LAYER, not a pseudo-element. As ::after with z-index -1 it
+   depended on stacking contexts, and that failed in both directions: the footer
+   inside a project page rendered no grain at all while the page around it did,
+   a fifteen-level mismatch down the same page; and the same nesting had the
+   footer matched twice, which would have doubled it. background-blend-mode has
+   neither problem — each element blends its own colour with its own tile, once,
+   with no reference to what contains it.
 
-   pointer-events: none because these sections carry the carousel click zones. */
-.about-section::after,
-.project::after,
-.footer::after,
-.project-page::after,
-.slide:has(.slide-content)::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image: var(--grain);
-  background-repeat: repeat;
-  background-size: 160px 160px;
-  opacity: var(--grain-opacity);
-  mix-blend-mode: overlay;
-}
+   The opacity is baked into the tile rather than set here, because a background
+   layer has no opacity property of its own.
 
-/* Each needs a stacking context of its own, or z-index -1 escapes the section
-   and lands behind the page. */
-/* The text panel needs its own, because the section's grain sits at z-index -1
-   behind the slides and the panel paints its own ground straight over it. That
-   left the intro grained and the panel beside it flat, the same colour reading
-   as two. */
+   Photographs are untouched: an image slide paints its own paper ground and is
+   not in this list. */
 .about-section,
 .project,
 .footer,
 .project-page,
 .slide:has(.slide-content) {
-  position: relative;
-  isolation: isolate;
+  background-image: var(--grain);
+  background-repeat: repeat;
+  background-size: 160px 160px;
+  background-blend-mode: overlay;
 }
 
 /* Rose and Sigge, beside the intro.

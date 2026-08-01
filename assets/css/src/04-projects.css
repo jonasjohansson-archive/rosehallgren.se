@@ -21,7 +21,7 @@
      the white page. Each project carries its own extracted colour, which means
      the notch at a seam is a bite out of one project showing the next surface
      down — not a hole in the page. */
-  background: var(--project-text-bg, var(--paper));
+  background-color: var(--project-text-bg, var(--paper));
 }
 
 /* Set from data-title-on / data-dots-on, which main.js writes as the name of
@@ -255,7 +255,7 @@
    lined it up with nothing. Flush left, it sits under the project title, which
    sits under the intro. */
 .slide:has(.slide-content) {
-  background: var(--project-text-bg, var(--project-primary-color));
+  background-color: var(--project-text-bg, var(--project-primary-color));
   color: #fff;
   justify-content: flex-start;
 }
