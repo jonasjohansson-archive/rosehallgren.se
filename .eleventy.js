@@ -23,6 +23,7 @@ const AVIF_DIR = "assets/images/avif";
 const WEBP_DIR = "assets/images/w";
 const PRINT_DIR = "assets/images/print";
 const WASH_DIR = "assets/images/wash";
+const SHARE_DIR = "assets/images/share";
 
 /**
  * The derivative base name for a CMS image path.
@@ -151,6 +152,11 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("abs", (value) =>
     String(value || "").replace(/(^|, )assets\//g, "$1/assets/"),
   );
+
+  /* The 1.91:1 card platforms actually lay a link preview out at. A photograph
+     at its own ratio gets letterboxed or centre-cropped by whoever is showing
+     it; generating the shape means we choose the crop. */
+  eleventyConfig.addFilter("shareSrc", (file) => `/${SHARE_DIR}/${stem(file)}.jpg`);
 
   eleventyConfig.addFilter("washSrc", (file) => `/${WASH_DIR}/${stem(file)}.jpg`);
   eleventyConfig.addFilter("intrinsicWidth", (file) => intrinsic(stem(file))?.width || "");

@@ -27,6 +27,7 @@ derivative built from a since-edited source no matter how the files were made.
 
 import argparse
 import glob
+import json
 import os
 import subprocess
 import sys
@@ -37,6 +38,10 @@ RUNGS = (640, 750, 1000, 1250, 1500, 2000)
 SOURCE_EXT = (".jpg", ".jpeg", ".png")
 PRINT_WIDTH = 1200
 WASH_WIDTH = 40
+# Share cards. Platforms lay out link previews at 1.91:1 and letterbox or crop
+# anything else, so these are generated to that shape rather than trusted to
+# whatever a photograph happens to be.
+SHARE_W, SHARE_H = 1200, 630
 # A rung and its source may differ by a pixel of rounding; more than that means
 # the derivative was built from a different picture.
 ASPECT_TOLERANCE = 0.01
@@ -141,11 +146,24 @@ def main():
             sys.exit(f"build-images: {tool} is not on PATH "
                      f"(install libavif-bin and webp)")
 
-    for sub in ("avif", "w", "print", "wash"):
+    for sub in ("avif", "w", "print", "wash", "share"):
         os.makedirs(os.path.join(ROOT, "assets", "images", sub), exist_ok=True)
 
     built = removed = checked = 0
     problems = []
+
+    # Share cards, for whichever images settings.json nominates. Generated here
+    # rather than for every source, because 123 of them would be 123 files
+    # nobody links to.
+    share_stems = set()
+    try:
+        settings = json.load(open(os.path.join(ROOT, "content", "settings.json"), encoding="utf-8"))
+        site = settings.get("site", {})
+        for value in [site.get("social_image")] + list(site.get("social_images") or []):
+            if value:
+                share_stems.add(os.path.splitext(os.path.basename(value))[0])
+    except Exception as exc:
+        problems.append(f"settings.json unreadable for share cards: {exc}")
 
     for source in sources():
         stem = os.path.splitext(os.path.basename(source))[0]
@@ -209,6 +227,26 @@ def main():
                      "-interlace", "none", target])
             built += 1
             print(f"  {os.path.relpath(target, ROOT)}")
+
+    # share cards last, so a missing one is reported with everything else
+    for source in sources():
+        stem_name = os.path.splitext(os.path.basename(source))[0]
+        if stem_name not in share_stems:
+            continue
+        target = os.path.join(ROOT, "assets", "images", "share", f"{stem_name}.jpg")
+        checked += 1
+        dims = size(target)
+        if not args.force and dims == (SHARE_W, SHARE_H):
+            continue
+        if args.check:
+            problems.append(f"{stem_name}.jpg (share): stale or missing")
+            continue
+        run([MAGICK, f"{source}[0]", "-auto-orient",
+             "-resize", f"{SHARE_W}x{SHARE_H}^", "-gravity", "center",
+             "-extent", f"{SHARE_W}x{SHARE_H}", "-strip", "-colorspace", "sRGB",
+             "-quality", "86", "-interlace", "none", target])
+        built += 1
+        print(f"  {os.path.relpath(target, ROOT)}")
 
     print(f"\nbuild-images: {checked} derivatives checked, {built} built, {removed} stale removed")
     if problems:

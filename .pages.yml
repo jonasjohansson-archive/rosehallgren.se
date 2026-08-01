@@ -264,12 +264,18 @@ content:
               type: string,
               description: "Headline shown when someone shares the site on social media. Leave blank to use the browser tab title.",
             }
+          - name: social_images
+            label: "Share images"
+            type: image
+            list: true
+            options: { media: projects }
+            description: "The pictures shown when the site is shared or linked. The first is the one almost everywhere will use; the rest are alternatives some platforms let a person choose between. Any shape will do — each is cropped to the 1200 by 630 that link previews are laid out at, from the middle, so put the subject near the centre."
           - {
               name: social_image,
-              label: "Share image",
+              label: "Share image (old field, no longer used)",
               type: image,
               options: { media: projects },
-              description: "The picture shown when the site is shared or linked. Use a wide photo, at least 1200 pixels across. Its size is read from the file, so nothing needs to be typed in.",
+              description: "Superseded by Share images above. Kept so nothing breaks if that list is emptied.",
             }
           - {
               name: social_image_alt,

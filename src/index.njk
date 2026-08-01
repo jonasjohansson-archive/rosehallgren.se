@@ -51,8 +51,11 @@ permalink: index.html
         directives and the geo tags. #}
     {%- set portrait = settings.site.portrait %}
     {%- set shareTitle = settings.site.social_title or settings.site.title %}
-    {%- set shareImage = settings.site.social_image %}
-    {%- set shareSize = shareImage | imageSize %}
+    {#- Several cards, primary first. og:image may be repeated: crawlers take
+        the first and some let a person pick among the rest, so the order here
+        is the order of preference. Each is generated at 1200x630. #}
+    {%- set shareImages = settings.site.social_images or [settings.site.social_image] %}
+    {%- set shareImage = shareImages[0] %}
     <meta name="description" content="{{ settings.site.description }}" />
     <meta name="author" content="Rose Hallgren" />
     <meta name="apple-mobile-web-app-title" content="{{ settings.site.title }}" />
@@ -62,12 +65,14 @@ permalink: index.html
     <meta property="og:site_name" content="{{ settings.site.title }}" />
     <meta property="og:title" content="{{ shareTitle }}" />
     <meta property="og:description" content="{{ settings.site.description }}" />
-    <meta property="og:image" content="https://rosehallgren.se{{ shareImage }}" />
-    {#- Read from the file rather than asserted. These were declared 1200x630
-        against an image that is actually 1500x998, so every crawler that
-        trusted the declaration reserved the wrong shape. #}
-    <meta property="og:image:width" content="{{ shareSize.width }}" />
-    <meta property="og:image:height" content="{{ shareSize.height }}" />
+{%- for img in shareImages %}
+    <meta property="og:image" content="https://rosehallgren.se{{ img | shareSrc }}" />
+{%- endfor %}
+    {#- The generated card's own size. These were once declared 1200x630 against
+        an image that was actually 1500x998, so every crawler that trusted the
+        declaration reserved the wrong shape. Now the file really is 1200x630. #}
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="{{ settings.site.social_image_alt or settings.site.heading }}" />
     <meta property="og:locale" content="en_GB" />
     <meta property="og:locale:alternate" content="sv_SE" />
@@ -75,7 +80,7 @@ permalink: index.html
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="{{ shareTitle }}" />
     <meta name="twitter:description" content="{{ settings.site.description }}" />
-    <meta name="twitter:image" content="https://rosehallgren.se{{ shareImage }}" />
+    <meta name="twitter:image" content="https://rosehallgren.se{{ shareImage | shareSrc }}" />
     <meta name="twitter:image:alt" content="{{ settings.site.social_image_alt or settings.site.heading }}" />
 
     <meta
