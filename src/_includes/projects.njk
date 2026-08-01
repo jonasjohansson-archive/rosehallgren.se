@@ -76,9 +76,10 @@
     right, and a float takes its position from the float rule, not from where it
     sits in the source — so both pages come out identical either way. Verified:
     36 pages before and after. #}
-{#- Parenthesised: Nunjucks binds == tighter than %, so `loop.index % 2 == 0`
-    evaluates as `loop.index % (2 == 0)` — NaN, always falsy, silently. #}
-{%- set copyFirst = (loop.index % 2) == 0 %}
+{#- ...but never when the project has more than one copy panel, or the two
+    would open back to back and you would scroll past two screens of text
+    before reaching a photograph. Fluffy Encounters is the only one today. #}
+{%- set copyFirst = ((loop.index % 2) == 0) and ((p.panels | length) < 2) %}
 {%- if p.hero and not copyFirst %}{{ imageSlide(p.hero, "deck-hero", "", loop.first) }}{% endif %}
 {%- for panel in p.panels %}
         <div class="slide">
