@@ -314,12 +314,17 @@ body {
     order: 2;
     flex: 0 0 auto;
     width: var(--portrait-width);
-    margin: 0;
+    /* Centred in the space left beside the copy. Auto margins on both sides of
+       a flex item absorb the free space equally, so this stays centred in
+       whatever is left over as the window changes rather than being pinned to
+       either edge. */
+    margin: 0 auto;
+    /* The section is flex-start so the wordmark lands at a fixed height; the
+       portrait opts out and centres against the copy beside it. */
+    align-self: center;
     /* No line box under the image; the figure is exactly the picture. */
     line-height: 0;
     transform: rotate(2.4deg);
-    /* Nudged down so the tilt does not lift its top edge above the wordmark. */
-    margin-top: var(--heading-gap);
   }
 }
 
