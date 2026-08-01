@@ -1,0 +1,369 @@
+/* --- projects ------------------------------------------------------------ */
+
+.project {
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+
+  /* 17 projects x 100vh puts roughly four of them inside Chrome's lazy-loading
+     threshold, and each one's horizontally-offscreen carousel slides count too:
+     16 images, 1746KB, all at Low priority down one HTTP/2 connection. The LCP
+     image got about a sixteenth of the pipe and took 5.2s to move 158KB.
+     Skipping the subtree means those images never intersect and are never
+     requested: 16 images -> 2, 1746KB -> 306KB, mobile LCP 6.2s -> 2.6s.
+     contain-intrinsic-size is mandatory; without it the skipped boxes collapse
+     and the page loses its scroll height. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100vh;
+
+  /* Behind the slides, so the corners cut out of them reveal this rather than
+     the white page. Each project carries its own extracted colour, which means
+     the notch at a seam is a bite out of one project showing the next surface
+     down — not a hole in the page. */
+  background: var(--project-text-bg, var(--paper));
+}
+
+/* Set from data-title-on / data-dots-on, which main.js writes as the name of
+   the surface underneath. Paper is the default so the title is legible before
+   any script runs. */
+.project {
+  --project-title-color: var(--ink-on-paper);
+  --project-dots-color: var(--ink-on-paper);
+}
+
+.project[data-title-on="panel"] {
+  --project-title-color: var(--ink-on-panel);
+}
+
+.project[data-dots-on="panel"] {
+  --project-dots-color: var(--ink-on-panel);
+}
+
+/* The first project holds the preloaded LCP image and is one short scroll from
+   the fold, so it is never worth skipping. Selected via the intro rather than
+   :first-of-type, which matches .about-section, not the first .project. */
+.about-section + .project,
+.about-section + .project > .project-carousel > .slide:first-child {
+  content-visibility: visible;
+}
+
+/* The title is the way into a project's own page. pointer-events is off on the
+   heading so the click zones still work across the slide; the anchor turns them
+   back on for itself alone. */
+.project-title a {
+  color: inherit;
+  text-decoration: none;
+  pointer-events: auto;
+}
+
+.project-title a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.project-title {
+  position: absolute;
+  top: var(--spacing-large);
+  /* Centred over the leading slide rather than pinned to the indent: the
+     photographs are contained and centred, so a centred title sits with them.
+     Width, not left/right, because at the two-up breakpoint the title belongs
+     over the first slide, not across the seam between both. */
+  left: 0;
+  width: 100%;
+  justify-content: center;
+  z-index: 100;
+  /* Fixed line box so the dot row can be centred against it. */
+  line-height: 1.2;
+  height: calc(var(--font-size-title) * 1.2);
+  display: flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: var(--font-size-title);
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  /* Ink or white depending on the surface underneath, resolved above. No
+     shadow — the contrast is in the colour itself. */
+  color: var(--project-title-color);
+  text-align: center;
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+/* Deck-only: shown when printing, never on the site. Keeps placeholder
+   copy out of the published page. */
+.project-meta {
+  display: none;
+}
+
+.project-carousel {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  position: relative;
+}
+
+.project-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Set by the pointer handler: the outer fifth on each side navigates, so the
+   cursor says so. Only ever applied for a mouse. */
+.project-carousel.zone-prev {
+  cursor: w-resize;
+}
+
+.project-carousel.zone-next {
+  cursor: e-resize;
+}
+
+/* Two cuts in the whole page, not nineteen.
+
+   Where the intro meets the first project, and where the last project meets the
+   footer — the two edges of the work itself. Running the cycle through every
+   project notched every join in the site, which made it the grid rather than a
+   gesture; and the joins BETWEEN projects never needed it, because a project
+   ending and another starting is already a change of colour.
+
+   Applied to every slide rather than only the first, so the edge is cut
+   wherever you happen to be along the carousel.
+
+   --seam is 0 below 1600px, so this is a two-up device only: at narrower widths
+   a slide fills the screen and its corners are the screen's corners. */
+.about-section + .project .slide:first-child {
+  border-radius: 0 var(--seam) 0 0;
+}
+
+/* The same second cut the last project gets, mirrored: top left here, because
+   the first project's seam is with the intro above it. */
+.about-section + .project .slide:nth-child(3) {
+  border-radius: var(--seam) 0 0 0;
+}
+
+/* First slide only, not every slide in the project. The cut belongs to the seam
+   between the work and the page around it, and that seam is only at the start;
+   applied to all of them the curve came back on each slide of Photography as
+   you scrolled, which read as a rounded picture rather than as an edge. */
+.project:last-of-type .slide:first-child {
+  border-radius: 0 0 var(--seam) 0;
+}
+
+/* And once more on the third, cut the other way. At the two-up breakpoint the
+   first slide's curve has scrolled off by the time you are here, so this brings
+   the shape back at the far corner rather than letting it happen once and never
+   again. */
+.project:last-of-type .slide:nth-child(3) {
+  border-radius: 0 0 0 var(--seam);
+}
+
+.slide {
+  min-width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: start;
+  position: relative;
+
+  /* Same trick one level down, for the slides scrolled off to the right inside
+     project one. min-width and height are explicit, so containment changes no
+     geometry: carousel.scrollWidth is byte-identical with and without this,
+     which is what keeps maxIndex() and the dot count correct. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100vw auto 100vh;
+}
+
+/* Skipped content is not hit-testable, and Chrome was still treating a text
+   panel as skipped while it sat in full view: elementFromPoint at the centre of
+   the copy returned .slide, never the paragraph, so every "See the project at…"
+   link inside a text panel was dead to the mouse. Verified by toggling this one
+   declaration back and forth on the live DOM.
+   Nothing is lost by exempting them. The entire point of the containment is to
+   stop offscreen IMAGES being fetched, and neither of these slide types holds
+   an image: the copy panels are text, the video slides a lazy iframe. */
+.slide:has(.slide-content),
+.slide:has(.video-slide) {
+  content-visibility: visible;
+}
+
+/* The photograph again as its own backdrop, blurred and scaled, so a contained
+   image sits in a wash of its own colour rather than on flat paper.
+
+   Over it, a sheet of paper at --backdrop-veil. That is what makes the title
+   and dots safe: the surface under them is no longer "whatever this photograph
+   happens to be" but always paper tinted by it, so ink stays legible without
+   sampling anything or shadowing anything. Sampling is what produced a 1.16:1
+   title here once already.
+
+   --bg-image is set by main.js from the image's own currentSrc after it loads,
+   so the backdrop costs no extra request; until then the shorthand is invalid
+   and simply paints nothing. */
+.image-slide::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--bg-image) center / cover no-repeat;
+  /* saturate compensates for the two things that wash this out: a 40px blur
+     averages neighbouring pixels toward grey, and the veil above lightens what
+     is left. It cannot break the contrast floor, which is computed against a
+     pure black photograph — saturation cannot make black darker. */
+  filter: blur(40px) saturate(1.6);
+  transform: scale(1.4);
+  z-index: 1;
+}
+
+.image-slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Fallback first. rgb(from …) is recent syntax; a browser that does not know
+     it drops the whole declaration, and without a veil the title would be over
+     bare photograph. The flat 0.58 is the combined coverage the layered version
+     reaches behind the header — safe everywhere, just less merged. */
+  background: rgba(238, 236, 232, 0.58);
+  background:
+    linear-gradient(
+      to bottom,
+      rgb(from var(--paper) r g b / var(--backdrop-band)) 0,
+      rgb(from var(--paper) r g b / 0) var(--backdrop-band-height)
+    ),
+    rgb(from var(--paper) r g b / var(--backdrop-veil));
+  z-index: 2;
+}
+
+/* Keyed off content, not DOM position. With :nth-child, inserting a single
+   image flipped a text slide to white-on-white. */
+/* Flat paper rather than a 40px blur of the photo scaled 1.4x. The blur was
+   the most expensive paint on the page, already disabled on mobile and in
+   print, and it turned whole viewports the colour of the photograph. Flat
+   surfaces also make the title's contrast deterministic instead of computed. */
+.slide:has(.image-slide),
+.slide:has(.video-slide) {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* Copy sits at the left edge of its slide, not in the middle of it. The slide
+   is a centring flex container for photographs; left unchanged it also centred
+   the 600px copy column, which put the text at (slide width - 600) / 2 and
+   lined it up with nothing. Flush left, it sits under the project title, which
+   sits under the intro. */
+.slide:has(.slide-content) {
+  background: var(--project-text-bg, var(--project-primary-color));
+  color: #fff;
+  justify-content: flex-start;
+}
+
+.slide-content {
+  max-width: 600px;
+  text-align: left;
+  font-size: var(--font-size-body);
+  /* Flush left on --indent rather than centred in the slide, so the copy sits
+     on the same vertical as the project title above it and the intro above
+     that. Centred, it started at (100vw - 600px) / 2 and lined up with
+     nothing. */
+  padding: 1rem var(--indent);
+  margin: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.slide-content p {
+  margin-bottom: var(--spacing-medium);
+}
+
+/* Full strength, not 0.7: at 0.7 these were 3.23:1 on Järva Stadspark and
+   3.72:1 on Torö, and the press lines contain links. */
+.slide-content .credit,
+.slide-content .press {
+  margin-top: var(--spacing-large);
+  font-size: var(--font-size-chrome);
+  opacity: 1;
+}
+
+.slide-content .press {
+  margin-top: var(--spacing-small);
+}
+
+/* One credit per row. Run together on a single line, "Anders Berensson
+   Architects · Rose Hallgren, Architect · Photo: Linda Hutchins" wrapped
+   wherever the column happened to end, so a name could be split from the role
+   it belonged to. */
+.credit-line {
+  display: block;
+}
+
+/* <picture> must not become the flex item, or the image stops centring. */
+.image-slide picture {
+  display: contents;
+}
+
+.image-slide,
+.video-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* From the slide, so the blurred backdrop and its veil are cut to the same
+     corners. Without it they filled a square box inside a rounded one and
+     painted straight over the cut. */
+  border-radius: inherit;
+}
+
+/* The surface the veil guarantees, stated on the element itself.
+
+   ::before paints the blurred backdrop over this, so nothing changes visually.
+   It matters twice: if the backdrop image fails, the slide is paper rather than
+   whatever shows through, and a contrast checker reading the DOM now sees the
+   light surface the title is actually measured against. Reading only the
+   section's project colour, it scored the ink title at 1.16:1 against a ground
+   no pixel of which is ever under the title. */
+.image-slide {
+  background-color: var(--paper);
+}
+
+.video-slide {
+  background: var(--color-dark-bg);
+}
+
+.image-slide img,
+.video-slide iframe {
+  z-index: 3;
+}
+
+/* The print copy is JPEG: Chrome re-embeds WebP near-uncompressed when
+   printing (a 124KB WebP became 2.47MB in the PDF), and <picture> with
+   media="print" is ignored, so the swap has to be two <img> elements.
+   loading="lazy" keeps this one off the wire on screen — display:none gives
+   it no layout box, so it never intersects. */
+.image-slide img.print-only {
+  display: none;
+}
+
+.image-slide img {
+  max-width: calc(100vw - 5rem);
+  /* Vertical room reserved for the header. The photograph is centred in the
+     slide, so half of this sits above it — it has to clear the title row, and
+     the title row is taller at the widths where the dots stack underneath. */
+  max-height: calc(100vh - var(--image-inset, 9rem));
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  border-radius: 4px;
+}
+
+.video-slide iframe {
+  width: min(80vw, calc(80vh * 16 / 9));
+  height: min(calc(80vw * 9 / 16), 80vh);
+  border: 0;
+}

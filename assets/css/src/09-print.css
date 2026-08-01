@@ -1,0 +1,477 @@
+/* --- pitch deck (Cmd+P) --------------------------------------------------- */
+
+/*
+ * Cmd+P produces a 16:9 widescreen portfolio PDF, two slides per project:
+ *
+ *   slide 1 — title, body copy in a left column, hero image on the right
+ *   slide 2 — the project's remaining images as a full-width collage
+ *
+ * Page is 338.667 x 190.5mm = 13.333 x 7.5in = 1280 x 720 CSS px — the standard
+ * widescreen slide size used by Keynote, PowerPoint and Google Slides, so the
+ * PDF opens full-screen on any display without letterboxing.
+ *
+ * Rules of the road for this block:
+ *  - Millimetres only. Viewport units are unreliable in paged media.
+ *  - Page margins live on @page, not on the sections, so both slides of a
+ *    project get the same margins as the block flows across the break.
+ *  - Never depend on a CSS background for legibility. Chrome's "Background
+ *    graphics" checkbox is user-controlled and cannot be forced from CSS, so
+ *    all type here is black on white and every image is real <img> content.
+ *  - Images swap to JPEG (.print-only). Chrome re-embeds WebP almost
+ *    uncompressed when printing — 124KB of WebP became 2.47MB of PDF.
+ *  - The hero floats right and the copy floats left, so the copy sits first
+ *    visually even in projects whose DOM starts with an image.
+ *  - Chrome and Firefox honour `@page size`; Safari ignores it.
+ *
+ * Live area: 306.7mm wide x 162.5mm tall.
+ */
+@media print {
+  @page {
+    size: 338.667mm 190.5mm;
+    margin: 14mm 16mm;
+  }
+
+  /* ONE gutter for the whole deck. The collage used 4mm between tiles while the
+     hero page used 8mm between the text column and the photograph, which read
+     as two different grids in the same document. */
+  :root {
+    --deck-gap: 4mm;
+  }
+
+  html,
+  body {
+    overflow: visible;
+    scroll-snap-type: none;
+    background: #fff;
+    font-size: 10pt;
+  }
+
+  /* MANDATORY, not defensive. content-visibility: auto skips anything outside
+     the viewport, and the deck is 36 pages of exactly that. Without this the
+     print job renders one project and 35 blank pages. Both the skipping and the
+     size containment have to go, hence `visible` rather than a size override. */
+  .project,
+  .slide {
+    content-visibility: visible !important;
+    contain-intrinsic-size: none !important;
+    /* The seam shapes are a screen device: on the sheet there are no seams,
+       only page edges, and a rounded corner there reads as a printing fault. */
+    border-radius: 0 !important;
+  }
+
+  .carousel-navigation,
+  .video-slide,
+  .slide:has(.video-slide) {
+    display: none !important;
+  }
+
+  /* Eight collage pages were unlabelled grids: landing on one, you could not
+     tell which project you were looking at. */
+  /* Collage pages carry the project name, so landing on one you can tell what
+     you are looking at. In flow, not absolutely positioned: anything placed
+     into the @page margin is clipped by Chrome. */
+  .project-carousel::before {
+    content: attr(data-project);
+    display: none;
+  }
+
+  .project,
+  .about-section,
+  .footer {
+    box-sizing: border-box;
+    display: block;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    position: relative;
+    break-after: page;
+    background: #fff !important;
+    color: #000 !important;
+    transition: none;
+  }
+
+  /* The cover has to fit 162.5mm exactly: logo, heading, three paragraphs and
+     three stacked contact links. At 30mm top padding it overflowed and pushed
+     the last two links onto a slide of their own. */
+  .about-section {
+    min-height: 0;
+    padding-top: 8mm;
+  }
+
+  .footer {
+    break-after: auto; /* no trailing blank slide */
+    min-height: 158mm;
+    padding-top: 42mm;
+    text-align: left;
+  }
+
+  /* .footer-content keeps margin: 0 auto from the screen styles, which left
+     the last page of the deck as the only one not on the left margin. */
+  .footer-content {
+    max-width: none;
+    margin: 0;
+  }
+
+  .on-screen {
+    display: none;
+  }
+
+  .in-print {
+    display: block;
+  }
+
+  .studio-address {
+    font-size: 12pt;
+    margin-top: 6mm;
+    color: #000 !important;
+  }
+
+  .footer-contact a {
+    display: block;
+    font-size: 12pt;
+    line-height: 1.65;
+    color: #000 !important;
+    text-decoration: none;
+    border-bottom: 0.4pt solid #dcdcdc;
+    width: fit-content;
+    padding-bottom: 0.6mm;
+    margin: 0 0 2mm;
+  }
+
+  .about-content {
+    max-width: 195mm;
+    text-align: left;
+    margin: 0;
+  }
+
+  .about-content h1 {
+    font-family: var(--font-display);
+    font-size: 27pt;
+    font-weight: 700;
+    margin-bottom: 6mm;
+  }
+
+  .about-text p {
+    font-size: 13pt;
+    line-height: 1.42;
+    margin-bottom: 5mm;
+    text-align: left;
+  }
+
+  /* Flush left with the copy, not centred. */
+  .wordmark,
+  #logo-top,
+  #logo-bottom {
+    display: block;
+    height: 15mm;
+    margin: 0 0 6mm 0;
+  }
+
+  /* Stacked, and flush left: the screen rule pulls these 8px left with a
+     negative margin to keep the tap target from shifting the layout. */
+  .about-contact p {
+    text-align: left;
+  }
+
+  .about-contact a {
+    display: block;
+    margin: 0 0 2mm 0;
+    padding: 0;
+    font-size: 11.5pt;
+  }
+
+  .wordmark path,
+  #logo-top path,
+  #logo-bottom path {
+    fill: #000 !important;
+  }
+
+  /* Header block is a fixed 20mm so the hero top edge is identical on every
+     page. Photography has no meta line, and its hero was starting 8.7mm higher
+     than everywhere else. */
+  .project-title {
+    position: static;
+    transform: none;
+    display: block;
+    height: auto;
+    font-family: var(--font-display);
+    font-size: 20pt;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    text-transform: none;
+    line-height: 1.05;
+    color: #111 !important;
+    text-align: left;
+    text-shadow: none;
+    margin: 0 0 2.5mm;
+  }
+
+  /* Solid grey, not opacity: opacity on text makes a transparency group in
+     the PDF, which some viewers knock out to a grey box. #6E6E6E is the same
+     value on white. min-height holds the slot on projects with no meta line. */
+  .project-meta {
+    display: block;
+    font-size: 8.5pt;
+    font-weight: 500;
+    letter-spacing: 0.015em;
+    line-height: 1.3;
+    color: #6e6e6e !important;
+    opacity: 1;
+    min-height: 4mm;
+    margin: 0 0 6mm;
+  }
+
+  .project-carousel {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    overflow: visible;
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+  }
+
+  .project-carousel::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+
+  /* --- slide 1: copy left, hero right --- */
+
+  .slide {
+    min-width: 0;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    display: block;
+    background: none !important;
+    scroll-snap-align: none;
+  }
+
+  .slide:has(.slide-content) {
+    float: left;
+    clear: left;
+    width: 96.889mm;
+    margin: 0 0 var(--deck-gap) 0;
+    color: #000 !important;
+  }
+
+  .slide-content {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    font-size: 10pt;
+    line-height: 1.5;
+    color: #1a1a1a;
+    hyphens: none;
+    text-wrap: pretty;
+  }
+
+  .slide-content p {
+    margin-bottom: 3.2mm;
+    text-align: left;
+  }
+
+  /* Lead paragraph carries the project; the rest is support. */
+  .slide-content p:first-of-type {
+    font-size: 11.5pt;
+    line-height: 1.42;
+    font-weight: 500;
+    color: #000;
+    margin-bottom: 4mm;
+  }
+
+  /* Default underline was cutting through the descenders of p and j. */
+  .slide-content a {
+    font-size: 9pt;
+    font-weight: 500;
+    color: #000;
+    text-decoration: none;
+    border-bottom: 0.4pt solid #000;
+    padding-bottom: 0.7mm;
+  }
+
+  .slide-content .credit,
+  .slide-content .press {
+    font-size: 7pt;
+    line-height: 1.4;
+    color: #7a7a7a;
+    opacity: 1;
+    max-width: 68mm;
+  }
+
+  .slide-content .credit {
+    margin-top: 7mm;
+    padding-top: 2mm;
+    border-top: 0.4pt solid #dcdcdc;
+  }
+
+  .slide-content .press {
+    margin-top: 2.5mm;
+  }
+
+  /* Floated right so it sits beside the copy regardless of DOM order — most
+     projects open with an image, not the text. */
+  /* 162.5mm live box minus the 20mm header. The hero was 128mm, leaving a
+     17.7mm shelf of dead white on every text page — and that same leftover
+     strip was where the collage floats fragmented into, which is why every
+     collage's first row rendered 17.7mm short of the height the CSS asked for.
+     One fix, both symptoms. */
+  .deck-hero {
+    float: right;
+    /* text column + one gutter, so this lines up with the collage below it */
+    width: calc(100% - 96.889mm - var(--deck-gap));
+    height: 142.5mm;
+  }
+
+  /* --- slide 2: the rest of the images, full width --- */
+
+  .deck-break {
+    break-before: page;
+    clear: both;
+  }
+
+  /* Tiles per row is set per project in the markup from its image count, so
+     the collage fills the slide instead of leaving a ragged part-row. Each
+     tile carries a 4mm right margin, so N per row needs N*4mm of slack. */
+  .deck-more {
+    float: left;
+    margin: 0 var(--deck-gap) var(--deck-gap) 0;
+  }
+
+  /* Width comes from the column count, height from the ROW count, so a
+     collage always fills the sheet. Previously the height was a guess per
+     column count, and pages with few images used a third of the page. The
+     last tile in each row loses its right margin, so the collage right edge
+     lands on the margin instead of 4mm short of it. */
+  .deck-tiles-2 .deck-more {
+    width: calc((100% - var(--deck-gap)) / 2);
+  }
+
+  .deck-tiles-3 .deck-more {
+    width: calc((100% - 2 * var(--deck-gap)) / 3);
+  }
+
+  .deck-tiles-4 .deck-more {
+    width: calc((100% - 3 * var(--deck-gap)) / 4);
+  }
+
+  .deck-tiles-5 .deck-more {
+    width: calc((100% - 4 * var(--deck-gap)) / 5);
+  }
+
+  .deck-tiles-2 .deck-more:nth-of-type(2n + 2),
+  .deck-tiles-3 .deck-more:nth-of-type(3n + 3),
+  .deck-tiles-4 .deck-more:nth-of-type(4n + 4),
+  .deck-tiles-5 .deck-more:nth-of-type(5n + 5) {
+    margin-right: 0;
+  }
+
+  /* Row heights budget one 4mm gap per row, including the last, because every
+     tile carries margin-bottom: 4mm. Getting this wrong pushed every collage
+     4mm over the page and took the deck from 36 to 51 pages. */
+  .deck-rows-1 .deck-more {
+    height: 158.5mm;
+  }
+
+  .deck-rows-2 .deck-more {
+    height: 77.25mm;
+  }
+
+  .deck-rows-3 .deck-more {
+    height: 50.166mm;
+  }
+
+  .deck-rows-4 .deck-more {
+    height: 36.625mm;
+  }
+
+  .deck-more {
+    break-inside: avoid;
+  }
+
+  /* Plans, sections and maps are white-ground line work. object-fit: cover
+     slices them through their own drawing, and against a white sheet they read
+     as holes rather than images. Contain them and give them a ground. */
+  /* The ground was #f4f2ef, all but invisible against the white sheet, and the
+     drawing sat 3mm inside it — so a drawing tile read as a hole with roughly
+     7mm around it while its neighbours had 4mm. Paper gives the tile the same
+     visible extent as a photograph, and without the padding the gutter is the
+     only gap. object-fit stays contain: cropping a plan slices the linework. */
+  .deck-drawing {
+    background: var(--paper);
+  }
+
+  .deck-drawing img {
+    object-fit: contain;
+  }
+
+  .deck-break {
+    margin-top: 0;
+  }
+
+  /* Photography has no copy, so it needs no hero slide and no page break —
+     one collage, hero included, on a single slide. The clear would otherwise
+     strand the hero alone on the first row. */
+  .project:not(:has(.slide-content)) .deck-break {
+    break-before: auto;
+    clear: none;
+  }
+
+  .project:not(:has(.slide-content)) .deck-hero {
+    float: left;
+    width: calc((100% - 4 * var(--deck-gap)) / 5);
+    height: 50.166mm;
+    margin: 0 var(--deck-gap) var(--deck-gap) 0;
+  }
+
+  .image-slide {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .image-slide::before,
+  .image-slide::after {
+    display: none !important;
+  }
+
+  .image-slide img.screen-only {
+    display: none;
+  }
+
+  .image-slide img.print-only {
+    display: block;
+  }
+
+  .image-slide img {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .footer-contact a {
+    color: #000 !important;
+    min-height: 0;
+    min-width: 0;
+    margin: 0 3mm;
+    padding: 0;
+  }
+
+  .about-contact a {
+    color: #000 !important;
+    min-height: 0;
+    min-width: 0;
+  }
+}

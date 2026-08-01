@@ -18,6 +18,7 @@ on:
       - 'src/**'
       - '.eleventy.js'
       - 'scripts/**'
+      - 'assets/css/src/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/build.yml'
@@ -69,6 +70,12 @@ jobs:
       - name: Build image derivatives
         run: python3 scripts/build-images.py
 
+      # styles.css is generated from assets/css/src/. Building it here means a
+      # partial edited through any route reaches the page, and --check would
+      # catch the built file being edited directly instead.
+      - name: Build the stylesheet
+        run: node scripts/build-css.js
+
       # Fails the run on a missing image, a duplicate web address, an empty
       # title — before anything can reach the live page.
       - run: npm run validate
@@ -90,9 +97,13 @@ jobs:
           # The derivatives too, not only the pages: an upload that generated
           # them here and did not commit them would publish a page whose srcset
           # points at files that are not in the repository.
-          DERIVED="assets/images/avif assets/images/w assets/images/print assets/images/wash"
+          # share/ was missing here when share cards were added, so CI would
+          # generate one and throw it away. styles.css is generated too, from
+          # assets/css/src/.
+          DERIVED="assets/images/avif assets/images/w assets/images/print"
+          DERIVED="$DERIVED assets/images/wash assets/images/share assets/css/styles.css"
           if git diff --quiet -- '*.html' sitemap.xml $DERIVED; then
-            echo "no generated page or image changed — nothing to commit"
+            echo "no generated page, image or stylesheet changed — nothing to commit"
             exit 0
           fi
           git config user.name  "github-actions[bot]"

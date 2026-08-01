@@ -2,12 +2,13 @@
   "name": "rosehallgren.se",
   "version": "1.0.0",
   "private": true,
-  "description": "rosehallgren.se — vanilla site, Pages CMS content in-repo, pre-rendered with Eleventy into index.html",
+  "description": "rosehallgren.se \u2014 vanilla site, Pages CMS content in-repo, pre-rendered with Eleventy into index.html",
   "scripts": {
-    "build": "npm run validate && eleventy && node scripts/publish.js",
+    "build": "node scripts/build-css.js && npm run validate && eleventy && node scripts/publish.js",
     "serve": "eleventy --serve",
     "validate": "node scripts/validate-content.js",
-    "clean": "rm -rf _site"
+    "clean": "rm -rf _site",
+    "css": "node scripts/build-css.js"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1"

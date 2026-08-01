@@ -1,0 +1,85 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text);
+  background: var(--color-bg);
+  /* Must stay on body, not html: overflow-x on html forces overflow-y to
+     `auto`, which makes <html> its own scroll container and stops the page
+     scrolling altogether. */
+  overflow-x: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* The JS passes behavior: "auto" to match; the CSS property alone is
+     ignored when a scroll call names its own behaviour. */
+  html,
+  .project-carousel {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus stays invisible for mouse users but is always shown to the keyboard.
+   currentColor resolves to black on the white slides and white on the dark
+   ones, so one rule covers both. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* Visible only when focused: 207 tab stops separate the top of the page from
+   the footer. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 10000;
+  background: #fff;
+  color: #000;
+  padding: 12px 16px;
+  text-decoration: underline;
+}
+
+.skip-link:focus {
+  left: var(--spacing-large);
+  top: var(--spacing-large);
+}
+
+.in-print {
+  display: none;
+}
+
+*::selection {
+  background-color: #f4a6a6;
+  color: #000;
+}

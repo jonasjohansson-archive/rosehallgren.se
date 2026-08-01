@@ -1,0 +1,61 @@
+/* --- carousel dots ------------------------------------------------------- */
+
+/* Top right, opposite the title, so the two read as one header row rather
+   than the dots floating over the bottom of the photograph. */
+.carousel-navigation {
+  position: absolute;
+  top: var(--spacing-large);
+  right: var(--indent);
+  z-index: var(--z-index-high);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  /* Same top and the same line-box height as the title, so the dots sit on the
+     title's optical centre rather than on its cap line. */
+  height: calc(var(--font-size-title) * 1.2);
+}
+
+.carousel-dots {
+  display: flex;
+  gap: var(--spacing-medium);
+  align-items: center;
+}
+
+/* The dots take the title's treatment: ink on paper, white on the dark panel.
+   In the two-up layout the dots are top-right and the title top-left, so they
+   can be over different slides — main.js therefore tracks them separately
+   rather than reusing --project-title-color. Deterministic surfaces mean no
+   drop-shadow is needed to rescue contrast, the way it was when the dots were
+   always white over an arbitrary photograph. */
+.carousel-dot {
+  width: 11px;
+  height: 11px;
+  border: none;
+  border-radius: 50%;
+  padding: 0;
+  background: color-mix(in srgb, var(--project-dots-color) 45%, transparent);
+  cursor: pointer;
+  /* Deliberately not transitioned: see the @property note at the top. */
+  position: relative;
+}
+
+/* Expands the hit area to 27px without changing the visual size. */
+.carousel-dot::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+}
+
+.carousel-dot:hover {
+  background: color-mix(in srgb, var(--project-dots-color) 75%, transparent);
+}
+
+.carousel-dot.active {
+  background: var(--project-dots-color);
+}
+
+.carousel-dot:focus-visible {
+  outline: 2px solid var(--project-dots-color);
+  outline-offset: 4px;
+}

@@ -1,0 +1,92 @@
+/* --- wide screens: two slides at once ------------------------------------ */
+
+@media (min-width: 1200px) {
+  /* 5vw here was the reason the intro and the project titles never lined up:
+     at 1728px it resolved to 86.4px against the title's 40px, and it drifted
+     with the window. Everything on the left edge now shares --indent. */
+  .about-content {
+    text-align: left;
+  }
+}
+
+/* Two slides at once only when half a viewport is still a generous plate. At
+   the old 1200px threshold every laptop (1440, 1512, 1728) fell on the wrong
+   side and showed the photograph at 40vw: 576px on a 1440 screen, about a
+   sixth of the display. */
+/* Only once two slides share the viewport. Below that a slide fills the screen
+   and its corners are the screen's corners, so cutting them just rounds the
+   page. */
+@media (min-width: 1600px) {
+  :root {
+    --seam: 120px;
+  }
+}
+
+/* Between the phone layout and the two-up one, the title is centred across the
+   whole slide and the dots sat on the same line at the right — on a wide title
+   like PHOTOGRAPHY the two ran into each other. Below the title instead, and
+   centred with it, so they read as one header block. */
+@media (min-width: 769px) and (max-width: 1599px) {
+  /* Title, gap, dot row: about 70px of header here against 40px elsewhere, so
+     the photograph needs correspondingly more reserved or its top edge lands
+     under the dots. */
+  :root {
+    --image-inset: 14rem;
+  }
+
+  .carousel-navigation {
+    top: calc(var(--spacing-large) + var(--font-size-title) * 1.2 + 1.25rem);
+    left: 0;
+    right: auto;
+    width: 100%;
+    height: auto;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1600px) {
+  /* Every other project leads with its copy instead of its photograph, so
+     scrolling alternates between a picture and a coloured panel. Done with
+     `order` rather than in the markup because it only makes sense here, where
+     both slides are on screen at once: at narrower widths a slide fills the
+     screen and opening on text just delays the work. `order` applies to flex
+     children only, so print — which lays these out as floats — is untouched. */
+  .project.copy-first .slide:has(.slide-content) {
+    order: -1;
+  }
+
+  /* Over the first slide, not across both. */
+  .project-title {
+    width: 50%;
+  }
+
+  /* Along the bottom, centred under the second slide. With both slides on
+     screen the header row was carrying the title and the dots at once; down
+     here they sit clear of the photographs and clear of the title, and read as
+     a position indicator rather than as part of the heading. */
+  .carousel-navigation {
+    top: auto;
+    /* The same offset the title takes from the top. --indent is the horizontal
+       rhythm and is nearly five times larger here, which left the dots marooned
+       well above the bottom edge while the title sat tight to the top. */
+    bottom: var(--spacing-large);
+    left: 50%;
+    right: auto;
+    width: 50%;
+    height: auto;
+    justify-content: center;
+  }
+
+  .slide {
+    min-width: 50vw;
+  }
+
+  .image-slide img {
+    max-width: calc(50vw - 5rem);
+  }
+
+  .video-slide iframe {
+    width: min(calc(50vw - 5rem), calc((100vh - 5rem) * 16 / 9));
+    height: min(calc((50vw - 5rem) * 9 / 16), calc(100vh - 5rem));
+  }
+}

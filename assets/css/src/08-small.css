@@ -1,0 +1,134 @@
+/* --- small screens ------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  /* Square corners on a phone. A slide fills the screen there, so a 4px radius
+     cuts the photograph against the page rather than reading as a rounded
+     picture, and the same goes for a project page's stacked images. */
+  .image-slide img,
+  .project-page-media img,
+  .project-page-video iframe {
+    border-radius: 0;
+  }
+
+  :root {
+    --indent: 1.25rem;
+    /* 16px is a desktop measure. On a phone the column is a third as wide and
+       the same size reads oversized. */
+    --font-size-body: 0.9375rem;
+  }
+
+  .about-section {
+    min-height: auto;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .about-text p,
+  .slide-content p {
+    margin-bottom: var(--spacing-large);
+    text-align: left;
+  }
+
+  /* Slides are fixed at 100vh with the project clipping overflow, so long copy
+     on a small phone was being cut off: Barneval needed 812px inside 667px on
+     an iPhone SE. Text slides now start at the top and scroll internally, so
+     nothing is lost whatever the copy length or device. */
+  .slide:has(.slide-content) {
+    align-items: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* NOT contain. `contain` stops the scroll chaining to the page, so once a
+       panel was at its top a swipe up did nothing at all — the page was
+       unreachable from inside the copy. Chaining is the behaviour that lets a
+       short panel scroll the page and a long one scroll itself first. */
+    overscroll-behavior: auto;
+  }
+
+  /* Clear the absolutely positioned title above and the dot row below. The
+     title is z-index 100 against this block's 10, so on the longest copy the
+     text scrolls behind it rather than pushing it around. */
+  .slide-content {
+    text-align: left;
+    padding: 4rem var(--indent) 4.5rem;
+    width: 100%;
+  }
+
+  /* Flush left with the copy beneath it, matching print and desktop. `margin:
+     0 auto` was centring the wordmark over left-aligned text. */
+  .wordmark,
+  #logo-top,
+  #logo-bottom {
+    display: block;
+    margin: 0 0 var(--spacing-medium);
+  }
+
+  /* Free-scrolling on touch; mandatory snap fights the gesture. */
+  .project-carousel {
+    scroll-snap-type: none;
+  }
+
+  /* Off the top entirely and along the bottom edge, so the dots stop competing
+     with the title for the same 40px of a phone screen. Smaller too: 8px reads
+     as a marker rather than a button at this size. The 16px gap is not slack,
+     it is what keeps each ::before hit area a full 24px without the
+     neighbouring ones overlapping (WCAG 2.5.8). */
+  .carousel-navigation {
+    top: auto;
+    bottom: var(--spacing-large);
+    left: var(--indent);
+    right: var(--indent);
+    height: auto;
+    justify-content: center;
+  }
+
+  .carousel-dots {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    max-width: 100%;
+  }
+
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  /* The image covers the slide edge to edge here, so the blurred backdrop is
+     completely hidden — and it was the single most expensive thing on the
+     page, a ~3.8x-viewport surface blurred per slide. */
+  .image-slide::before {
+    display: none;
+  }
+
+  .image-slide img {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Tapping an image advances the carousel, so suppress the tap highlight
+     and the double-tap zoom delay that would otherwise make it feel slow. */
+  .image-slide {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Shorthand, so it has to restate the top and bottom clearance: this rule
+     previously set padding-top to 1.25rem and undid the 768px rule above,
+     which is why the copy ran under the title on small phones. */
+  :root {
+    --font-size-body: 0.875rem;
+  }
+
+  .slide-content {
+    padding: 3.75rem var(--indent) 4.25rem;
+  }
+
+  .slide-content p {
+    margin-bottom: var(--spacing-medium);
+  }
+}

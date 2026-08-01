@@ -1,0 +1,176 @@
+/* Studio Rose Hallgren */
+
+/*
+ * Type is self-hosted. Previously the site used the system stack, which meant
+ * it rendered differently on every machine and the PDF could not embed it.
+ *
+ * Instrument Sans throughout, SIL Open Font License, Latin subset, 30KB.
+ *
+ * To try another, change --font-display or --font-body below. Syne, Bricolage,
+ * Fraunces and SpaceGrotesk are in assets/fonts/ for exactly that; Syne in
+ * particular works well on --font-display alone.
+ */
+
+/*
+ * Registered so these carry a real colour type and a sane value before any
+ * script runs, rather than being untyped strings.
+ *
+ * Note that registering them does NOT make them safe to transition. Chrome
+ * latches a background-color transition between two color-mix() results built
+ * from a custom property: the dots stuck at a mid-interpolation oklab value
+ * and never arrived, so white ink over the dark panel painted as near-black,
+ * permanently. Measured with and without @property, and with `all` narrowed to
+ * `background-color`; only removing the transition fixes it. The dots
+ * therefore change colour instantly, which at 8-11px reads as no different.
+ */
+@property --project-title-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #141414;
+}
+
+@property --project-dots-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #141414;
+}
+
+@font-face {
+  font-family: "Instrument";
+  src: url("../fonts/Instrument.woff2") format("woff2");
+  font-weight: 400 700;
+  /* optional, not swap. The face is preloaded at high priority, so it is
+     normally there for the first paint and gets used. When it is not, `swap`
+     re-wrapped the intro copy the moment it arrived: Helvetica and Instrument
+     wrap identically in the 600px desktop column but differ by one line at
+     372px, so the whole page jumped 21px on a phone. That single shift was the
+     entire mobile CLS. `optional` gives the font one shot at first paint and
+     never reflows afterwards. */
+  font-display: optional;
+}
+
+:root {
+  /* rem so the page respects the reader's browser font-size setting.
+     Body copy sits at 14px; the chrome (titles, contact links) stays at 12px
+     via --font-size-chrome. */
+  /* Deliberately NOT -apple-system/BlinkMacSystemFont. SF Pro wraps the third
+     about-paragraph to five lines where Instrument takes four, so every fallback
+     -> Instrument swap shifted the page up 20px: the whole of the desktop CLS
+     (0.0382, one shift at t=500ms, exactly when document.fonts.ready fired).
+     Helvetica and Arial wrap identically to Instrument. Measured: 0.0001. */
+  --font-display: "Instrument", Helvetica, Arial, sans-serif;
+  --font-body: "Instrument", Helvetica, Arial, sans-serif;
+
+  --font-size-base: 0.875rem;
+  /* Running copy, in the intro and on the project panels alike. They were
+     14px and 16px respectively, which read as two different voices on the
+     same page. */
+  --font-size-body: 1rem;
+  --font-size-chrome: 0.75rem;
+  --font-size-title: 1.0625rem;
+  --line-height-base: 1.5;
+
+  /* The page heading: her name on the home page, a project name on a project
+     page. One token, so the two can never drift apart again. --font-size-title
+     above is a different thing, the small title over a carousel slide. */
+  --font-size-heading: clamp(1.75rem, 5vw, 3rem);
+  --heading-line-height: 1.05;
+  --heading-tracking: -0.02em;
+
+  /* The opening paragraph of the intro and of every project description, set
+     larger than the copy that follows it.
+
+     Off --font-size-body rather than 1.25em. `em` resolves against whatever the
+     paragraph inherits, which is the 16px body token inside .project-page-body
+     but the 14px page default inside .about-text, so the same declaration
+     produced 20px on a project page and 17.5px on the home page. */
+  --font-size-lead: calc(var(--font-size-body) * 1.25);
+  --lead-line-height: 1.45;
+
+  /* The reading measure the intro and a project description share. */
+  --measure: 600px;
+
+  /* A tooth on the coloured grounds, so a flat fill reads as a surface.
+     Tested against every project colour from #282123 to #737670; 3% is
+     invisible, 11% lightens the ground into haze. 5% is the point where it is
+     felt rather than seen.
+
+     A 160px tile that repeats, NOT one viewport-sized feTurbulence: a tile is
+     rasterised once and reused, where a full-bleed filter is re-rasterised on
+     every resize and is expensive to paint over nineteen sections.
+
+     overlay rather than a flat alpha, so it lifts and drops the ground around
+     its own value instead of washing it towards white.
+
+     0.14 is a ceiling set by contrast, not by taste. Noise is centred on
+     mid-grey, which is lighter than every ground here, so any blend mode lifts
+     them: measured, 0.14 raises the intro ground from rgb(107,107,74) to
+     rgb(114,114,79) and takes paper body copy from 4.65:1 to 4.20:1, already
+     under AA. Pushing it to where the grain is unmistakable (soft-light at
+     0.55, which is genuinely visible) lifts the ground 15 levels and needs the
+     whole palette darkened to compensate — a bigger change than a texture.
+     Tried and reverted rather than shipped. */
+  --grain-opacity: 0.18;
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
+
+  /* The portrait column beside the intro. Shown only from 1200px, where there
+     is room for it without squeezing the copy below its measure. */
+  --portrait-width: clamp(240px, 24vw, 400px);
+
+  /* The air above and below a page heading. The project pages set it; the home
+     page was running at a third of it, which is why the two opened at visibly
+     different rhythms. */
+  --heading-gap: 2.5rem;
+
+  /* The two surfaces a slide can present, and the ink that belongs on each.
+     main.js names the surface (data-title-on / data-dots-on) and never a
+     colour, so the palette stays in one place. */
+  --paper: #eeece8;
+  --ink: #141414;
+
+  /* Two layers, because contrast is only needed where text is.
+     The flat veil is what the whole slide gets: at 0.40, 60% of the photograph
+     comes through and the contained image sits IN its own colour rather than on
+     a tint of it. Nothing but the photograph sits on that part of the slide, so
+     it needs no contrast floor at all.
+     The band is the part that does: the title and the dots live in the top
+     ~150px, so paper is added back there until the surface holds --ink. Combined
+     they cover 1 - (1 - 0.30)(1 - 0.40) = 0.58, which against a pure black
+     photograph is value 138 and 5.26:1 — the same guarantee as before, now paid
+     for over a sixth of the slide instead of all of it. */
+  --backdrop-veil: 0.4;
+  --backdrop-band: 0.3;
+  --backdrop-band-height: 150px;
+
+  /* Where two slides meet, the corners are cut away and the page shows
+     through. Cycled over five slides so the seams do not repeat on any one
+     project, and set to 0 below 769px, where a slide fills the screen and
+     there is no visible seam to shape. */
+  --seam: 0px;
+  --ink-on-paper: var(--ink);
+  --ink-on-panel: var(--color-white);
+
+  --color-text: #000;
+  --color-bg: #fff;
+  --color-white: #fff;
+  --color-dark-bg: #1a1a1a;
+  --project-primary-color: #1a1a1a;
+
+  --spacing-small: 8px;
+  --spacing-medium: 16px;
+  --spacing-large: 20px;
+
+  /* One indent for the intro copy, every project title, the project copy, the
+     dot row and the footer — each measured from its own container, so at the
+     two-up breakpoint the title sits --indent from the viewport and the copy
+     sits --indent from its panel. That is the only rule that holds at both
+     breakpoints: the copy's own centred position is (100vw - 600px) / 2 below
+     1600px and 75vw - 300px above it, so nothing can align to both, and a title
+     that tried would land mid-screen over the photograph.
+
+     Fluid, because a fixed 120px is generous on a 1728px display and most of a
+     laptop's margin. */
+  --indent: clamp(2.5rem, 5vw, 7.5rem);
+
+  --z-index-high: 9999;
+}

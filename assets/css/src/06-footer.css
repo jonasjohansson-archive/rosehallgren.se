@@ -1,0 +1,33 @@
+/* --- footer -------------------------------------------------------------- */
+
+.footer {
+  /* The last project's colour, mirroring the intro taking the first project's,
+     so the page opens and closes inside the work rather than on white. */
+  background: var(--footer-bg, var(--color-bg));
+  /* same left edge as the intro and every project title */
+  padding: 2.5rem var(--indent);
+  color: var(--paper);
+}
+
+/* Flush left at --indent and on the intro's measure, so the page closes on the
+   same column it opened on. `margin: 0 auto` centred this 600px block inside
+   the padded footer, which put its left edge somewhere between the indent and
+   the middle of the window and lined it up with nothing. */
+.footer-content {
+  max-width: var(--measure);
+  text-align: left;
+  width: 100%;
+  margin: 0;
+}
+
+.footer-contact p {
+  margin-bottom: var(--spacing-medium);
+}
+
+.footer-contact a {
+  display: inline-block;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 4px 8px;
+  margin: -4px 8px -4px -8px;
+}

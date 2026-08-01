@@ -1,0 +1,217 @@
+/* --- masthead ------------------------------------------------------------ */
+
+.wordmark,
+#logo-top,
+#logo-bottom {
+  height: 2.5rem;
+  width: auto;
+}
+
+.wordmark path,
+#logo-top path,
+#logo-bottom path {
+  fill: var(--paper);
+}
+
+.about-section {
+  min-height: 50vh;
+  display: flex;
+  /* Top-aligned, not centred: the wordmark has to land at a fixed height so it
+     matches a project page, and a centred flex line moves it with the length of
+     the copy. */
+  align-items: flex-start;
+  /* flush left, not centred: the copy now starts on the same vertical as every
+     project title below it */
+  justify-content: flex-start;
+  gap: clamp(2rem, 5vw, 5rem);
+  /* The same top space a project page gives its wordmark: main's indent plus
+     the header's 4rem. The two pages now open at the same height. */
+  padding: calc(var(--indent) + 4rem) var(--indent) 2.5rem;
+  /* The first project's own colour, so the page opens into it rather than
+     starting on white and cutting to a colour field a screen later. */
+  background: var(--intro-bg, var(--color-bg));
+  color: var(--paper);
+  transition: color 1s ease;
+}
+
+.about-content {
+  max-width: var(--measure);
+  text-align: left;
+  width: 100%;
+  /* Holds its width against the portrait rather than being squeezed by it. */
+  flex: 0 1 var(--measure);
+}
+
+.about-content h1 {
+  font-family: var(--font-display);
+  /* Identical to a project page title. Her name should not be set smaller than
+     the name of one of her projects. */
+  font-size: var(--font-size-heading);
+  font-weight: 700;
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-tracking);
+  margin: var(--heading-gap) 0;
+}
+
+/* The grain, on the coloured grounds only.
+
+   z-index -1 puts it behind everything in the section, so it never lies over a
+   photograph: an image slide paints its own paper background, so the grain
+   shows exactly where the project colour shows and nowhere else.
+
+   pointer-events: none because these sections carry the carousel click zones. */
+.about-section::after,
+.project::after,
+.footer::after,
+.project-page::after,
+.slide:has(.slide-content)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--grain);
+  background-repeat: repeat;
+  background-size: 160px 160px;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: overlay;
+}
+
+/* Each needs a stacking context of its own, or z-index -1 escapes the section
+   and lands behind the page. */
+/* The text panel needs its own, because the section's grain sits at z-index -1
+   behind the slides and the panel paints its own ground straight over it. That
+   left the intro grained and the panel beside it flat, the same colour reading
+   as two. */
+.about-section,
+.project,
+.footer,
+.project-page,
+.slide:has(.slide-content) {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Rose and Sigge, beside the intro.
+
+   Hidden below 1200px rather than stacked: on a phone the portrait ran 520px
+   tall and buried the contact links under a scroll. It stays in the DOM for the
+   deck, where print floats it onto the cover.
+
+   Tilted, and deliberately not by a round number. The wordmark has a hand-drawn
+   looseness to it and a portrait squared to the grid beside it looked stuck on.
+   The rotation is small enough to read as a photograph laid down rather than as
+   a broken layout. */
+.about-portrait {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .about-portrait {
+    display: block;
+    order: 2;
+    flex: 0 0 auto;
+    width: var(--portrait-width);
+    /* Centred in the space left beside the copy. Auto margins on both sides of
+       a flex item absorb the free space equally, so this stays centred in
+       whatever is left over as the window changes rather than being pinned to
+       either edge. */
+    margin: 0 auto;
+    /* The section is flex-start so the wordmark lands at a fixed height; the
+       portrait opts out and centres against the copy beside it. */
+    align-self: center;
+    /* No line box under the image; the figure is exactly the picture. */
+    line-height: 0;
+    transform: rotate(2.4deg);
+  }
+}
+
+.about-portrait img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+}
+
+.about-portrait img.print-only {
+  display: none;
+}
+
+/* The wordmark's own paragraph. It is a <p>, so it was picking up the paragraph
+   spacing above and adding it to the heading's, which is the rest of the
+   discrepancy with a project page. line-height collapses the line box the
+   inline SVG otherwise sits in, worth 7px below the mark. */
+.about-text > p:first-child {
+  margin-bottom: 0;
+  line-height: 0;
+}
+
+/* One set of typographic rules for the intro and for a project description.
+   Both selectors live here, in the stylesheet loaded on every page, rather than
+   being stated once here and again in project.css, which is how they drifted to
+   different paragraph spacing in the first place. */
+.about-text p,
+.project-page-body p {
+  font-size: var(--font-size-body);
+  margin-bottom: var(--spacing-large);
+}
+
+/* The lead paragraph. On a project page it is the first paragraph in the block;
+   on the home page the first <p> holds the wordmark, so the lead is the one
+   after the heading. */
+.about-text h1 + p,
+.project-page-body p:first-child {
+  font-size: var(--font-size-lead);
+  line-height: var(--lead-line-height);
+}
+
+.about-contact p {
+  margin-bottom: var(--spacing-small);
+}
+
+/* A link that points at one of Rose's projects carries that project's colour,
+   text and rule alike, wherever on the site it appears. Everything else — the
+   outward links, the contact links, the wordmark — stays at paper.
+
+   The per-slug rules that set --project-link are generated into the page head
+   from the project data, so a colour changed in the CMS changes every link to
+   that project at once.
+
+   60% of the colour against paper, chosen deliberately against the contrast
+   threshold rather than by it: measured on the intro ground the six links run
+   from 2.04:1 down to 1.24:1, where AA asks 4.5:1 for body text. The paler
+   alternative that did clear AA was so washed the hue barely read as colour.
+   These are grounds, picked to carry white type, so any of one used as ink on
+   another spends contrast that is not there. Body copy, credits and every
+   outward link are unaffected and clear AA.
+
+   The declarations themselves are generated per slug in the page head, because
+   CSS cannot ask whether a custom property happens to be set — only a rule that
+   knows the slug can know it is a project link. */
+
+/* Every link in running text, wherever it is: the intro, a project panel, a
+   project page, the footer. One rule so they cannot drift apart. */
+.about-contact a,
+.about-text a,
+.slide-content a,
+.footer-contact a,
+.project-page-body a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+/* Same spacing as the footer, which reads properly: the negative margin here
+   only cancelled the padding, so the links ran together. */
+.about-contact a {
+  display: inline-block;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 4px 8px;
+  margin: -4px 8px -4px -8px;
+}
+
+/* No hover state on links anywhere. Removing the underline withdrew the
+   affordance as it was being used, thickening it moved the line under the
+   cursor, and dimming the ink read as disabled. The underline is constant and
+   the pointer already says it is a link. */
