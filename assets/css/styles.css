@@ -326,7 +326,8 @@ body {
 .about-section::after,
 .project::after,
 .footer::after,
-.project-page::after {
+.project-page::after,
+.slide:has(.slide-content)::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -341,10 +342,15 @@ body {
 
 /* Each needs a stacking context of its own, or z-index -1 escapes the section
    and lands behind the page. */
+/* The text panel needs its own, because the section's grain sits at z-index -1
+   behind the slides and the panel paints its own ground straight over it. That
+   left the intro grained and the panel beside it flat, the same colour reading
+   as two. */
 .about-section,
 .project,
 .footer,
-.project-page {
+.project-page,
+.slide:has(.slide-content) {
   position: relative;
   isolation: isolate;
 }
