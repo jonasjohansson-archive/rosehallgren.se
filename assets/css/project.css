@@ -26,7 +26,7 @@
 /* --- header --------------------------------------------------------------- */
 
 .project-page-header {
-  padding: 0 0 2.5rem;
+  padding: 0 0 var(--heading-gap);
 }
 
 /* Block, with the line box collapsed. As an inline anchor the wordmark sat on
@@ -60,7 +60,7 @@
 }
 
 .project-page h1 {
-  margin: 2.5rem 0 0;
+  margin: var(--heading-gap) 0 0;
   font-family: var(--font-display);
   /* The shared heading token, the same one the home page sets her name in. */
   font-size: var(--font-size-heading);

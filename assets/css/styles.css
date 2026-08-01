@@ -90,6 +90,11 @@
   /* The reading measure the intro and a project description share. */
   --measure: 600px;
 
+  /* The air above and below a page heading. The project pages set it; the home
+     page was running at a third of it, which is why the two opened at visibly
+     different rhythms. */
+  --heading-gap: 2.5rem;
+
   /* The two surfaces a slide can present, and the ink that belongs on each.
      main.js names the surface (data-title-on / data-dots-on) and never a
      colour, so the palette stays in one place. */
@@ -282,7 +287,16 @@ body {
   font-weight: 700;
   line-height: var(--heading-line-height);
   letter-spacing: var(--heading-tracking);
-  margin-bottom: var(--spacing-medium);
+  margin: var(--heading-gap) 0;
+}
+
+/* The wordmark's own paragraph. It is a <p>, so it was picking up the paragraph
+   spacing above and adding it to the heading's, which is the rest of the
+   discrepancy with a project page. line-height collapses the line box the
+   inline SVG otherwise sits in, worth 7px below the mark. */
+.about-text > p:first-child {
+  margin-bottom: 0;
+  line-height: 0;
 }
 
 /* One set of typographic rules for the intro and for a project description.
