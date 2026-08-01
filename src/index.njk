@@ -30,15 +30,21 @@ permalink: index.html
 
     <link
       rel="stylesheet"
-      href="assets/css/styles.css?v=20260802at"
+      href="assets/css/styles.css?v=20260802au"
       media="all"
     />
-    {#- Any link to a project carries that project's colour, wherever it is on
-        the page. Generated from the project data rather than written into the
-        stylesheet, so a colour changed in the CMS changes every link to it. #}
+    {#- A link to a project carries that project's colour, but only in running
+        text. Scoped to the three prose contexts on purpose: an unscoped
+        a[href="/slug/"] also matches the project titles over the carousel and
+        the next-project link, which are chrome and stay in their own ink.
+
+        Generated from the project data rather than written into the stylesheet,
+        so a colour changed in the CMS changes every link to it. #}
     <style>
 {%- for p in projects %}{% if p.color %}
-      a[href="/{{ p.slug }}/"] {
+      .about-text a[href="/{{ p.slug }}/"],
+      .slide-content a[href="/{{ p.slug }}/"],
+      .project-page-body a[href="/{{ p.slug }}/"] {
         color: {{ p.color | linkInk }};
         text-decoration-color: {{ p.color | linkInk }};
       }
