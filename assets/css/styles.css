@@ -748,6 +748,16 @@ body {
     width: 50%;
   }
 
+  /* And the dots centred over the second, mirroring the title on the first, so
+     the two halves of the header read as a pair rather than as a title with
+     something pinned to the far corner. */
+  .carousel-navigation {
+    left: 50%;
+    right: auto;
+    width: 50%;
+    justify-content: center;
+  }
+
   .slide {
     min-width: 50vw;
   }
