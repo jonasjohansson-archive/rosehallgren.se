@@ -21,6 +21,7 @@ class Portfolio {
 
     this.initCarousels();
     this.setupBackdrops();
+    this.setupCarouselReset();
     this.setupEventListeners();
     this.setupPermalinkHandling();
     this.updateCurrentProject();
@@ -417,6 +418,32 @@ class Portfolio {
    * together, since content-visibility does not start the download until the
    * slide is near the viewport anyway.
    */
+  /**
+   * Wind a project's carousel back once it is fully off screen.
+   *
+   * Scroll positions otherwise persist for the life of the page: a project you
+   * paged four slides into is still on slide four when you come back to it,
+   * showing a detail shot with no idea what the project is. Reset on exit
+   * rather than on entry so it is never seen happening, and instantly rather
+   * than smoothly for the same reason.
+   */
+  setupCarouselReset() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) return;
+          const carousel = entry.target.querySelector(".project-carousel");
+          if (!carousel || carousel.scrollLeft === 0) return;
+          carousel.scrollTo({ left: 0, behavior: "instant" });
+          const update = this.navUpdaters.get(carousel);
+          if (update) update();
+        });
+      },
+      { threshold: 0 },
+    );
+    this.projects.forEach((project) => observer.observe(project));
+  }
+
   setupBackdrops() {
     document
       .querySelectorAll(".image-slide img.screen-only")

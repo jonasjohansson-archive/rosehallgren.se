@@ -24,9 +24,6 @@ media:
     alt: "Children and architects parading down Drottninggatan"
   - file: "/assets/images/codesign/barneval-03.jpg"
     alt: "The parade arriving at the Riksdag"
-  - file: "/assets/images/codesign/barneval-04.jpg"
-    alt: "Campaign poster for 3, 2, 1, Barneval!"
-    drawing: true
   - file: "/assets/images/codesign/almedalen-01.jpg"
     alt: "Bicycles at Almedalen carrying the campaign message, with the pink wire figures"
   - file: "/assets/images/codesign/almedalen-02.jpg"

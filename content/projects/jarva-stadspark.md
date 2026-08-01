@@ -30,9 +30,6 @@ media:
     alt: "The district seen from the ski slope at Granholmstoppen"
   - file: "/assets/images/berensson/jarva-stadspark-05.jpg"
     alt: "Aerial view of the new city edge and the park"
-  - file: "/assets/images/berensson/jarva-stadspark-06.jpg"
-    alt: "Masterplan of the city and park"
-    drawing: true
 ---
 
 A proposal to turn Järvafältet, the under-used green wedge between Stockholm's north-western suburbs, into a genuine city park by wrapping a new timber district around its edge. Around 12,000 homes and 140,000 m² of workspace step up from allotment-hut scale to towers along an extended Rinkebystråket with a new tram line.

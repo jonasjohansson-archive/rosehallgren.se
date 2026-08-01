@@ -23,12 +23,6 @@ media:
     alt: "Marieberg seen from Långholmen"
   - file: "/assets/images/berensson/marieberg-03.jpg"
     alt: "View from Västerbroplan"
-  - file: "/assets/images/berensson/marieberg-04.jpg"
-    alt: "Annotated aerial view of the proposal"
-    drawing: true
-  - file: "/assets/images/berensson/marieberg-05.jpg"
-    alt: "City plan"
-    drawing: true
 ---
 
 A densification study for Marieberg on Kungsholmen, tied to a proposed metro line between Fridhemsplan and Liljeholmen. The district's height ceiling comes from Bromma airport's flight paths; with Bromma due to close, the proposal removes that constraint and sets new towers alongside Marieberg's existing landmarks.

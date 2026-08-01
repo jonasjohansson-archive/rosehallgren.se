@@ -37,9 +37,6 @@ media:
     alt: "Sauna outside the Swedish Parliament"
   - file: "/assets/images/berensson/stockholm-shorelines-09.jpg"
     alt: "Västerbron at night"
-  - file: "/assets/images/berensson/stockholm-shorelines-10.jpg"
-    alt: "Map of the proposed shoreline interventions"
-    drawing: true
 ---
 
 A set of small interventions arguing that a city built on islands barely touches its own water. Swimming rafts are scattered into neighbourhoods with no bathing nearby, compact cold bathhouses with saunas and water stairs line the quays, and football pitches float at Liljeholmskajen, Söder Mälarstrand and Hornsbergs strand.

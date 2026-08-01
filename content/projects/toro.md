@@ -34,15 +34,6 @@ media:
     alt: "The house in its clearing on Torö"
   - file: "/assets/images/athh/toro-10.jpg"
     alt: "Interior detail"
-  - file: "/assets/images/athh/toro-11.jpg"
-    alt: "Plan drawing"
-    drawing: true
-  - file: "/assets/images/athh/toro-12.jpg"
-    alt: "Section drawing"
-    drawing: true
-  - file: "/assets/images/athh/toro-13.jpg"
-    alt: "Elevation drawing"
-    drawing: true
 ---
 
 An addition and renovation of a weekend house on Torö, an island in Stockholm's southern archipelago. The existing building is a catalogue home from the early 1970s, standing in a mossy clearing on the highest point of the island.
