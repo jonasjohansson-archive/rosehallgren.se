@@ -83,15 +83,23 @@ permalink: index.html
     <meta property="og:site_name" content="{{ settings.site.title }}" />
     <meta property="og:title" content="{{ shareTitle }}" />
     <meta property="og:description" content="{{ settings.site.description }}" />
+    {#- Size and alt go INSIDE the loop, once per card. og:image:* are structured
+        properties of the og:image above them, not of the page: emitted once
+        after all three, they described only the last card and left the primary
+        one — the one nearly every consumer actually takes — with no declared
+        shape and no alt text.
+
+        1200x630 is safe to hardcode per card because build-images.py generates
+        every share card at exactly that size (SHARE_W, SHARE_H), whatever the
+        source. These were once declared against an image that was actually
+        1500x998, so every crawler that trusted the declaration reserved the
+        wrong shape. #}
 {%- for img in shareImages %}
     <meta property="og:image" content="https://rosehallgren.se{{ img | shareSrc }}" />
-{%- endfor %}
-    {#- The generated card's own size. These were once declared 1200x630 against
-        an image that was actually 1500x998, so every crawler that trusted the
-        declaration reserved the wrong shape. Now the file really is 1200x630. #}
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="{{ settings.site.social_image_alt or settings.site.heading }}" />
+{%- endfor %}
     <meta property="og:locale" content="en_GB" />
     <meta property="og:locale:alternate" content="sv_SE" />
 
