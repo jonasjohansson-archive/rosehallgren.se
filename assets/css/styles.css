@@ -1308,12 +1308,43 @@ body {
     transition: none;
   }
 
-  /* The cover has to fit 162.5mm exactly: logo, heading, three paragraphs and
-     three stacked contact links. At 30mm top padding it overflowed and pushed
-     the last two links onto a slide of their own. */
+  /* A title page: wordmark, name, and how to reach her. Nothing else.
+
+     The intro paragraphs are written for someone arriving at a scroll and
+     deciding whether to keep going. Handed a portfolio, that decision is
+     already made — so they delayed the work by a page, and since the contact
+     block moved onto this cover they also stated the studio address twice.
+     The wordmark is .about-text > p:first-child, hence :not(). */
+  .about-text > p:not(:first-child) {
+    display: none;
+  }
+
+  /* No longer the tight fit it was — logo, heading and the contact block sit
+     where logo, heading, three paragraphs and three links used to. Kept at 8mm
+     regardless: at 30mm it once overflowed and pushed the last two links onto
+     a slide of their own. */
   .about-section {
     min-height: 0;
     padding-top: 8mm;
+  }
+
+  /* With the intro gone, everything piled into the top corner and left two
+     thirds of the sheet empty, which reads as an unfinished page rather than a
+     formal one. So the cover is composed as a title page instead: the mark and
+     the name at the head, the contact details at the foot, the space between
+     them deliberate.
+
+     152mm rather than the 154.5mm actually available (162.5mm live box less
+     the 8mm above): the margin is there so a rounding difference between
+     browsers cannot tip the cover onto a second sheet. */
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 152mm;
+  }
+
+  .about-contact {
+    margin-top: auto;
   }
 
   .footer {
