@@ -120,10 +120,6 @@
   border-radius: 4px;
 }
 
-.about-portrait img.print-only {
-  display: none;
-}
-
 /* The wordmark's own paragraph. It is a <p>, so it was picking up the paragraph
    spacing above and adding it to the heading's, which is the rest of the
    discrepancy with a project page. line-height collapses the line box the

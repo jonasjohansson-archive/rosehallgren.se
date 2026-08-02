@@ -139,7 +139,12 @@ permalink: index.html
         "image": "https://rosehallgren.se{{ settings.site.social_image }}",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": {{ (settings.site.studio_address | replace(", Stockholm", "")) | dump | safe }},
+          {#- Straight from the fields now. This used to be the whole address
+              string with ", Stockholm" chopped off the end, which is the kind
+              of parsing that survives exactly as long as nobody edits the
+              field: the postcode alone would have broken it. #}
+          "streetAddress": {{ settings.site.studio_address | dump | safe }},
+          "postalCode": {{ settings.site.studio_postcode | dump | safe }},
           "addressLocality": "Stockholm",
           "addressCountry": "SE"
         },
@@ -192,12 +197,8 @@ permalink: index.html
                 decoding="async"
                 loading="lazy" />
             </picture>
-            <img
-              class="print-only"
-              src="{{ portrait | printSrc }}"
-              alt=""
-              aria-hidden="true"
-              loading="lazy" />
+            {#- No print JPEG twin here, unlike every slide. The portrait is
+                hidden in print, so the swap has nothing to swap to. #}
           </figure>
 {%- endif %}
         <div class="about-content">
@@ -247,8 +248,18 @@ permalink: index.html
           <div class="about-contact">
             <p>
 {%- for c in settings.contact %}{% if not c.footer_only %}
-              <a href="{{ c.url }}"{% if c.url.startsWith("http") %} target="_blank" rel="noopener noreferrer"{% endif %}{% if c.label == "CV" %} aria-label="Download CV"{% endif %}>{{ c.label }}</a>
+              {#- screen_only marks a link that is meaningless on paper: the CV
+                  is a download, and the deck in your hands IS the portfolio.
+                  `on-screen` is already display:none in print. #}
+              <a{% if c.screen_only %} class="on-screen"{% endif %} href="{{ c.url }}"{% if c.url.startsWith("http") %} target="_blank" rel="noopener noreferrer"{% endif %}{% if c.label == "CV" %} aria-label="Download CV"{% endif %}><span class="on-screen">{{ c.label }}</span><span class="in-print">{{ c.print or c.label }}</span></a>
 {%- endif %}{% endfor %}
+            </p>
+            {#- Deck only, and on the cover rather than only at the very back:
+                someone holding the PDF should not have to reach the last page
+                to find out how to make contact. #}
+            <p class="in-print deck-contact">
+              {{ settings.site.studio_phone }}<br />
+              {{ settings.site.studio_address }}, {{ settings.site.studio_postcode }} Stockholm
             </p>
           </div>
         </div>

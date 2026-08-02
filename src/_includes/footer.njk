@@ -13,7 +13,8 @@
               top of the page and quietly left the footer showing the old one. #}
           <p>
 {%- for c in settings.contact %}
-            <a
+            <a{% if c.screen_only %}
+              class="on-screen"{% endif %}
               href="{{ c.url }}"{% if c.url.startsWith("http") %}
               target="_blank"
               rel="noopener noreferrer"{% endif %}{% if c.label == "CV" %}
@@ -23,7 +24,15 @@
             >
 {%- endfor %}
           </p>
-          <p class="in-print studio-address">{{ settings.site.studio_address }}</p>
+          {#- Deck only, as a letterhead block: the studio's name over the
+              postal address, rather than one run-on line. The city is not a
+              CMS field for the same reason the locale and the canonical URL
+              are not — it is structural, and the schema.org block below states
+              it the same way. #}
+          <p class="in-print studio-address">
+            {{ settings.site.studio_name }}<br />
+            {{ settings.site.studio_address }}, {{ settings.site.studio_postcode }} Stockholm
+          </p>
           <br />
           <p>
             <a

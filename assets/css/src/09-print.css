@@ -115,8 +115,26 @@
     margin: 0;
   }
 
-  .on-screen {
+  /* Not on the cover. The @page is 338.667mm, which is about 1280px, so the
+     1200px rule that shows the portrait on a wide screen was matching here too
+     and floating it onto the deck's first page. The deck reads as a CV, and it
+     opens on the work rather than on a photograph of the author.
+
+     It also reclaims the tightest page in the document: the cover has to fit
+     162.5mm exactly, and it holds the wordmark, the heading, three paragraphs
+     and three contact links already. */
+  .about-portrait {
     display: none;
+  }
+
+  /* !important because this is a promise, not a preference: anything wearing
+     .on-screen must not reach paper. Without it, `.about-contact a { display:
+     block }` below outranked this by one element selector and the CV link —
+     marked screen_only precisely because a download is meaningless in a printed
+     document — kept printing. Any future element hidden this way would have hit
+     the same wall. */
+  .on-screen {
+    display: none !important;
   }
 
   .in-print {
@@ -366,10 +384,13 @@
     width: calc((100% - 4 * var(--deck-gap)) / 5);
   }
 
-  .deck-tiles-2 .deck-more:nth-of-type(2n + 2),
-  .deck-tiles-3 .deck-more:nth-of-type(3n + 3),
-  .deck-tiles-4 .deck-more:nth-of-type(4n + 4),
-  .deck-tiles-5 .deck-more:nth-of-type(5n + 5) {
+  /* Marked in the markup, not counted here.
+     This was :nth-of-type(Nn+N), which counts every sibling div — the hero and
+     each copy panel included — so the tile it zeroed was never the one that
+     ends the row. Torö lost the margin on its third tile and Fluffy Encounters
+     on its first, so those pairs printed butted together while every other gap
+     in the same row was 4mm. See tileIndex in src/_data/projects.js. */
+  .deck-more.deck-row-end {
     margin-right: 0;
   }
 
@@ -459,6 +480,20 @@
     object-fit: cover;
     box-shadow: none;
     border-radius: 0;
+  }
+
+  /* No project colour on paper.
+     The home page writes a per-project link colour into a <style> in its head
+     — right on screen, wrong here. The deck is black on white by rule (see the
+     note at the top about Chrome's background-graphics checkbox), and those
+     inks were chosen for legibility against a coloured ground that print does
+     not have. !important because the generated rules carry attribute-selector
+     specificity and are per project, so there is nothing stable to outrank. */
+  .about-text a,
+  .slide-content a,
+  .project-page-body a {
+    color: #000 !important;
+    text-decoration-color: #000 !important;
   }
 
   .footer-contact a {

@@ -74,6 +74,9 @@
     would open back to back and you would scroll past two screens of text
     before reaching a photograph. Fluffy Encounters is the only one today. #}
 {%- set copyFirst = ((loop.index % 2) == 0) and ((p.panels | length) == 1) %}
+{#- Tiles per collage row, so a tile can say whether it ends one. See tileIndex
+    in src/_data/projects.js for why this is not :nth-of-type. #}
+{%- set tiles = p.supportCount | collageTiles %}
       <section
         class="project deck-tiles-{{ p.supportCount | collageTiles }} deck-rows-{{ p.supportCount | collageRows }}{% if copyFirst %} copy-first{% endif %}"
         id="{{ p.slug }}"
@@ -117,7 +120,7 @@
 {%- for m in p.rest %}
 {%- if m.video %}{{ videoSlide(m) }}
 {%- else %}
-{{- imageSlide(m, ("deck-drawing " if m.drawing else "") + "deck-more" + (" deck-break" if m.leadsCollage else ""), p.title if m.leadsCollage else "") }}
+{{- imageSlide(m, ("deck-drawing " if m.drawing else "") + "deck-more" + (" deck-break" if m.leadsCollage else "") + (" deck-row-end" if (m.tileIndex % tiles) == 0 else ""), p.title if m.leadsCollage else "") }}
 {%- endif %}
 {%- endfor %}
         </div>

@@ -159,6 +159,18 @@ for (const f of files) {
     );
   }
 
+  // The same photograph listed twice. Torö had its opening picture repeated as
+  // the last entry, so the deck printed it once as the hero and again as the
+  // final collage tile on the facing page, and the site showed it on the first
+  // slide and the last. Easy to do in the CMS and invisible until the PDF.
+  const dupes = images
+    .map((m) => m.file)
+    .filter((f, i, all) => all.indexOf(f) !== i)
+    .filter((f, i, all) => all.indexOf(f) === i);
+  dupes.forEach((f) =>
+    warnings.push(`${where}: ${f} is listed more than once, so it appears twice`),
+  );
+
   // The deck's collage grid tops out at 5 tiles x 4 rows. Past that the tiles
   // keep their size and spill onto a third page, quietly breaking the
   // two-pages-per-project shape the whole PDF is built around.

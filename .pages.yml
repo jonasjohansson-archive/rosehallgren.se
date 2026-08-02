@@ -243,10 +243,28 @@ content:
               description: "The text search engines and link previews show (~150 characters).",
             }
           - {
+              name: studio_name,
+              label: Studio name,
+              type: string,
+              description: "The name above the address at the foot of the PDF.",
+            }
+          - {
               name: studio_address,
               label: Studio address,
               type: string,
-              description: "Shown at the foot of the PDF.",
+              description: "Street and number only, e.g. Åsögatan 122. The postcode and city are added around it.",
+            }
+          - {
+              name: studio_postcode,
+              label: Studio postcode,
+              type: string,
+              description: "e.g. 116 24.",
+            }
+          - {
+              name: studio_phone,
+              label: Studio phone,
+              type: string,
+              description: "Shown on the cover of the PDF.",
             }
           - name: portrait
             label: Portrait

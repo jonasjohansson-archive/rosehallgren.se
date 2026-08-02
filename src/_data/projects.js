@@ -59,6 +59,22 @@ module.exports = () => {
       const firstSupport = rest.find((m) => m.file);
       if (firstSupport) firstSupport.leadsCollage = true;
 
+      // Which collage tile each image is, counted among images only.
+      //
+      // The stylesheet needs this to drop the right margin on the tile that
+      // ends each row, and `:nth-of-type` cannot answer it: it counts every
+      // sibling div, so the hero and each copy panel shift the count. On Torö
+      // that zeroed the THIRD tile's margin and on Fluffy Encounters the
+      // FIRST, butting those pairs together while every other gap stayed 4mm.
+      //
+      // Videos are hidden in print and take no slot, hence `m.file`. A project
+      // with no copy floats its hero into the collage as tile one, so the rest
+      // start at two there.
+      let tile = panels.length ? 0 : 1;
+      rest.forEach((m) => {
+        if (m.file) m.tileIndex = ++tile;
+      });
+
       return {
         ...parsed.data,
         slug,
