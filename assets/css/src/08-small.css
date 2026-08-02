@@ -100,6 +100,42 @@
     display: none;
   }
 
+  /* And the veil over the photograph rather than under it.
+
+     It sits at z-index 2 and the photograph at 3, which is correct wherever the
+     photograph is contained: the title is then over the veiled backdrop beside
+     it, not over the picture. Here the picture covers the slide, so it covered
+     the veil too, and the title was left on whatever the top of the photograph
+     happened to be — on eWays, ink over a black concrete ceiling, invisible.
+
+     So on a phone the paper goes on top, and only where the chrome actually is:
+     down from the top edge for the title, up from the bottom edge for the dot
+     row, nothing at all across the middle of the photograph. Held flat past
+     each one, then faded out over the next 4rem so it reads as light falling
+     off rather than as a bar.
+
+     A pseudo-element is not a hit-testing target of its own, so tap-to-advance
+     is untouched. */
+  .image-slide::after {
+    z-index: 4;
+    background:
+      linear-gradient(
+        to bottom,
+        var(--scrim) 0,
+        var(--scrim) 3.5rem,
+        var(--scrim-fade) 7.5rem
+      ),
+      /* 4rem, not the 3rem the dot row itself needs: Photography has sixteen
+         slides and the row wraps to a second line on a phone, which puts the
+         lowest dots at about 54px. Held to where the tallest row can reach. */
+      linear-gradient(
+        to top,
+        var(--scrim) 0,
+        var(--scrim) 4rem,
+        var(--scrim-fade) 8rem
+      );
+  }
+
   .image-slide img {
     max-width: 100%;
     max-height: 100%;

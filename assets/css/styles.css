@@ -70,7 +70,13 @@
      same page. */
   --font-size-body: 1rem;
   --font-size-chrome: 0.75rem;
-  --font-size-title: 1.0625rem;
+  /* The small title over a carousel slide. Fluid, because 17px was picked for a
+     desktop header row and read as a caption on a phone — where it is the only
+     thing naming the project you are looking at. 20px there, 24px on a wide
+     screen. Everything measured against it (the dot row's line box, the
+     vertical room reserved for the photograph) is calc'd from this token, so it
+     can move without anything having to be re-tuned by hand. */
+  --font-size-title: clamp(1.25rem, 1.2vw + 0.75rem, 1.5rem);
   --line-height-base: 1.5;
 
   /* The page heading: her name on the home page, a project name on a project
@@ -144,6 +150,18 @@
   --backdrop-veil: 0.4;
   --backdrop-band: 0.3;
   --backdrop-band-height: 150px;
+
+  /* The same guarantee on a phone, where the photograph covers the slide edge
+     to edge and there is no backdrop beside it to veil. Paper laid OVER the
+     picture instead of under it, and only along the two edges the chrome
+     occupies — 08-small.css shapes it.
+
+     0.45 is a floor, not a preference: over a pure black photograph it paints
+     value 107, which is 3.46:1 against --ink. That clears AA for the title at
+     its size and weight and for the dots as a graphic, and it is the lightest
+     wash that does, so the photograph gives up as little as possible. */
+  --scrim: color-mix(in srgb, var(--paper) 45%, transparent);
+  --scrim-fade: color-mix(in srgb, var(--paper) 0%, transparent);
 
   /* Where two slides meet, the corners are cut away and the page shows
      through. Cycled over five slides so the seams do not repeat on any one
@@ -1128,6 +1146,42 @@ body {
      page, a ~3.8x-viewport surface blurred per slide. */
   .image-slide::before {
     display: none;
+  }
+
+  /* And the veil over the photograph rather than under it.
+
+     It sits at z-index 2 and the photograph at 3, which is correct wherever the
+     photograph is contained: the title is then over the veiled backdrop beside
+     it, not over the picture. Here the picture covers the slide, so it covered
+     the veil too, and the title was left on whatever the top of the photograph
+     happened to be — on eWays, ink over a black concrete ceiling, invisible.
+
+     So on a phone the paper goes on top, and only where the chrome actually is:
+     down from the top edge for the title, up from the bottom edge for the dot
+     row, nothing at all across the middle of the photograph. Held flat past
+     each one, then faded out over the next 4rem so it reads as light falling
+     off rather than as a bar.
+
+     A pseudo-element is not a hit-testing target of its own, so tap-to-advance
+     is untouched. */
+  .image-slide::after {
+    z-index: 4;
+    background:
+      linear-gradient(
+        to bottom,
+        var(--scrim) 0,
+        var(--scrim) 3.5rem,
+        var(--scrim-fade) 7.5rem
+      ),
+      /* 4rem, not the 3rem the dot row itself needs: Photography has sixteen
+         slides and the row wraps to a second line on a phone, which puts the
+         lowest dots at about 54px. Held to where the tallest row can reach. */
+      linear-gradient(
+        to top,
+        var(--scrim) 0,
+        var(--scrim) 4rem,
+        var(--scrim-fade) 8rem
+      );
   }
 
   .image-slide img {

@@ -151,8 +151,15 @@ export class Carousel {
     // Names a surface, never a colour. Which ink belongs on paper and which on
     // the dark panel is a design decision, so it lives in the stylesheet next
     // to --paper and --ink rather than as a hex literal in here.
+    //
+    // A video slide counts as a panel too. It is --color-dark-bg edge to edge,
+    // with no veil over it and no photograph to veil, so the ink title it was
+    // getting ran at about 1.06:1 on the two projects that have one — the same
+    // failure as a dark photograph, just guaranteed rather than occasional.
     const surface = (slide) =>
-      slide && slide.querySelector(".slide-content") ? "panel" : "paper";
+      slide && slide.querySelector(".slide-content, .video-slide")
+        ? "panel"
+        : "paper";
 
     // Which slide is beneath a given point, by geometry rather than by index.
     // Indexing was wrong on the copy-first projects: those reorder with CSS

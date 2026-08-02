@@ -21,6 +21,7 @@ export class Portfolio {
     ).map((el) => new Carousel(el, this));
 
     this.setupPrintImages();
+    this.setupImageWarming();
     this.setupCarouselReset();
     this.setupEventListeners();
     this.setupPermalinkHandling();
@@ -103,6 +104,79 @@ export class Portfolio {
       };
       pump();
     }, 120000);
+  }
+
+  /**
+   * Fetch a project's photographs before it reaches the screen.
+   *
+   * The page is deliberately lazy: content-visibility skips every offscreen
+   * project and every offscreen slide, so their images never intersect and are
+   * never requested. That is what took mobile LCP from 6.2s to 2.6s, and it is
+   * also why a photograph can still be arriving once you are looking at it —
+   * on a phone, where one slide fills the screen and the next is one swipe
+   * away, that is the blank white flash.
+   *
+   * Same lever as the print warming: setting loading="eager" on an
+   * already-parsed lazy image starts the fetch whether or not the browser is
+   * rendering it. Here it is pulled two viewports ahead of the scroll, so these
+   * are the same bytes the page would have fetched anyway — only early enough
+   * to be decoded before they are looked at.
+   *
+   * Three at a time. A project of eight photographs released at once is the
+   * problem the containment was added to solve: everything at Low priority
+   * down one connection, each image getting a fraction of the pipe.
+   */
+  setupImageWarming() {
+    // The two cases where fetching something that may never be looked at is
+    // the wrong trade. Everyone else has already agreed to these bytes by
+    // scrolling toward them.
+    const link = navigator.connection;
+    if (link?.saveData || /(^|-)2g$/.test(link?.effectiveType || "")) return;
+
+    const queue = [];
+    let active = 0;
+
+    const pump = () => {
+      while (active < 3 && queue.length) {
+        const img = queue.shift();
+        // Already eager (the LCP hero) or already here.
+        if (img.loading !== "lazy" || img.complete) continue;
+        active += 1;
+        const done = () => {
+          active -= 1;
+          pump();
+        };
+        img.addEventListener("load", done, { once: true });
+        img.addEventListener("error", done, { once: true });
+        img.loading = "eager";
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          // Once warmed, a project has nothing left to say.
+          observer.unobserve(entry.target);
+          queue.push(
+            ...entry.target.querySelectorAll(".image-slide img.screen-only"),
+          );
+        });
+        pump();
+      },
+      // Two viewports down, one up: down is where you are going, up is what you
+      // see if you turn around. Each project is 100vh, so this is roughly the
+      // next two projects and the previous one — including their sideways
+      // slides, which is where the flash was worst.
+      { rootMargin: "100% 0px 200% 0px" },
+    );
+
+    // After load, never during it: warming must not compete with the LCP image,
+    // the font, or the stylesheet for the connection.
+    const start = () =>
+      this.projects.forEach((project) => observer.observe(project));
+    if (document.readyState === "complete") start();
+    else addEventListener("load", start, { once: true });
   }
 
   /**
