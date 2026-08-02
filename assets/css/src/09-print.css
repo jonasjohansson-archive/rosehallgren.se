@@ -36,6 +36,14 @@
      as two different grids in the same document. */
   :root {
     --deck-gap: 4mm;
+
+    /* Except where copy meets photograph, which is the page's major division
+       rather than one more gutter, and was too tight to read as a division at
+       all. Two gutters, not an unrelated second value: the 8mm this restores
+       is what the hero page used before the unification above, but derived
+       from the module now, so changing --deck-gap still moves everything
+       together. */
+    --deck-copy-gap: calc(2 * var(--deck-gap));
   }
 
   html,
@@ -132,11 +140,20 @@
     margin-top: auto;
   }
 
+  /* The deck ends on the work.
+     This page repeated the contact block, the address and the wordmark that
+     now open the document, so it was a whole sheet saying nothing the cover
+     had not said thirty-eight pages earlier. On screen the footer stays: there
+     it is the end of a scroll, and the only place those links appear twice. */
   .footer {
-    break-after: auto; /* no trailing blank slide */
-    min-height: 158mm;
-    padding-top: 42mm;
-    text-align: left;
+    display: none;
+  }
+
+  /* Every section breaks after itself, which was right while the footer
+     followed the last project. With nothing after it, that break leaves a
+     blank sheet where the footer used to be. */
+  .project:last-of-type {
+    break-after: auto;
   }
 
   /* .footer-content keeps margin: 0 auto from the screen styles, which left
@@ -374,8 +391,9 @@
      One fix, both symptoms. */
   .deck-hero {
     float: right;
-    /* text column + one gutter, so this lines up with the collage below it */
-    width: calc(100% - 96.889mm - var(--deck-gap));
+    /* text column + the major gap; the collage below still lines up on the
+       same left edge, which is what makes the two pages read as one grid */
+    width: calc(100% - 96.889mm - var(--deck-copy-gap));
     height: 142.5mm;
   }
 
@@ -403,7 +421,7 @@
   }
 
   .deck-copy-wide .deck-hero {
-    width: calc(100% - 2 * 96.889mm - 2 * var(--deck-gap));
+    width: calc(100% - 2 * 96.889mm - var(--deck-gap) - var(--deck-copy-gap));
   }
 
   /* --- slide 2: the rest of the images, full width --- */
