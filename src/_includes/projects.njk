@@ -77,8 +77,13 @@
 {#- Tiles per collage row, so a tile can say whether it ends one. See tileIndex
     in src/_data/projects.js for why this is not :nth-of-type. #}
 {%- set tiles = p.supportCount | collageTiles %}
+{#- Two copy panels will not fit one column beside the hero, so that page runs
+    its copy in two columns instead and the hero gives up the width. The word
+    count is a guard for a future project long enough to overflow on a single
+    panel; see copyWords in src/_data/projects.js. #}
+{%- set wideCopy = ((p.panels | length) > 1) or (p.copyWords > 190) %}
       <section
-        class="project deck-tiles-{{ p.supportCount | collageTiles }} deck-rows-{{ p.supportCount | collageRows }}{% if copyFirst %} copy-first{% endif %}"
+        class="project deck-tiles-{{ p.supportCount | collageTiles }} deck-rows-{{ p.supportCount | collageRows }}{% if copyFirst %} copy-first{% endif %}{% if wideCopy %} deck-copy-wide{% endif %}"
         id="{{ p.slug }}"
         {%- if p.color %} style="--project-text-bg: {{ p.color }}"{% endif %}
         {#- The surface the title and dots start on, so they are the right ink

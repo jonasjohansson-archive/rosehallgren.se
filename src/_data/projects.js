@@ -40,6 +40,23 @@ module.exports = () => {
         )
         .filter((panel) => panel.length);
 
+      // Everything that has to fit on the deck's text page: the copy itself,
+      // plus the links, credits and press lines printed under it.
+      //
+      // A guard, not the trigger. What actually overflowed was Fluffy
+      // Encounters, and NOT because it is the longest — it is 139 words where
+      // Barneval is 170 and prints clean. It is the only project with two copy
+      // panels, and two stacked blocks, each with its own 11.5pt lead
+      // paragraph and its own bottom margin, do not fit a column 142.5mm tall
+      // beside the hero. Panel count is therefore what the template keys on;
+      // this count only catches a future project long enough to overflow on
+      // one panel, which nothing does today at 170.
+      const copyWords =
+        panels.flat().join(" ").split(/\s+/).filter(Boolean).length +
+        (parsed.data.credits || []).join(" ").split(/\s+/).filter(Boolean).length +
+        (parsed.data.press || []).map((p) => p.label).join(" ").split(/\s+/).filter(Boolean).length +
+        (parsed.data.links || []).map((l) => l.label).join(" ").split(/\s+/).filter(Boolean).length;
+
       // Images and videos share one ordered list, because a video does not
       // always come last: Fluffy Encounters puts one between two collage
       // images, and reordering it would change the deck.
@@ -82,6 +99,7 @@ module.exports = () => {
         media,
         hero,
         rest,
+        copyWords,
         // Videos are hidden in print, so they never count toward the grid.
         supportCount: Math.max(images.length - 1, 0),
       };

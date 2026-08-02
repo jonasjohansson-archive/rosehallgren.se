@@ -379,6 +379,33 @@
     height: 142.5mm;
   }
 
+  /* Two copy panels, side by side rather than stacked.
+
+     Fluffy Encounters carries two, and stacked in one 96.889mm column they
+     overran the 142.5mm the page has: the credits landed on the collage sheet
+     and pushed the collage's second row onto a third. Not a length problem —
+     it is 139 words where Barneval is 170 and prints clean — but a shape one,
+     two blocks each with an 11.5pt lead paragraph and its own bottom margin.
+
+     So the --- that already splits the copy becomes the column break: panel
+     one on the left, panel two beside it, each at the SAME 96.889mm measure
+     every other page uses, so the type does not change size or line length.
+     The hero gives up the width instead — 2 x 96.889 + 4 + 4 = 202mm of the
+     306.667mm live box leaves it 104.9mm.
+
+     Tried first with `columns: 2` on each panel, which is worse: a panel's two
+     columns are balanced independently, so panel one's short second column
+     left a hole and a paragraph broke across it. Flowing whole panels avoids
+     splitting a paragraph at all. */
+  .deck-copy-wide .slide:has(.slide-content) {
+    clear: none;
+    margin-right: var(--deck-gap);
+  }
+
+  .deck-copy-wide .deck-hero {
+    width: calc(100% - 2 * 96.889mm - 2 * var(--deck-gap));
+  }
+
   /* --- slide 2: the rest of the images, full width --- */
 
   .deck-break {
