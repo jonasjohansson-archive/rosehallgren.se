@@ -25,15 +25,9 @@
     },
     {
       "label": "Instagram",
-      "url": "https://www.instagram.com/rose.hallgren/?hl=en",
-      "print": "instagram.com/rose.hallgren",
-      "footer_only": false
-    },
-    {
-      "label": "Studio",
       "url": "https://www.instagram.com/rosehallgren.studio/?hl=en",
       "print": "instagram.com/rosehallgren.studio",
-      "footer_only": true
+      "footer_only": false
     },
     {
       "label": "CV",
